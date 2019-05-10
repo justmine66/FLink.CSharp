@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{06E15089-8F2D-4E78-AF29-29334A85AAB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Core", "src\FLink.Core\FLink.Core.csproj", "{9E9DA173-C3F3-43DD-AF5B-95950926D046}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Runtime", "src\FLink.Runtime\FLink.Runtime.csproj", "{3E68D635-CFA8-4AE0-9B5B-E0960B7CB04F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Streaming", "src\FLink.Streaming\FLink.Streaming.csproj", "{C34FC0D0-8ACD-42AA-95D9-C29C1DAF5C57}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E9DA173-C3F3-43DD-AF5B-95950926D046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E9DA173-C3F3-43DD-AF5B-95950926D046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E9DA173-C3F3-43DD-AF5B-95950926D046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E9DA173-C3F3-43DD-AF5B-95950926D046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E68D635-CFA8-4AE0-9B5B-E0960B7CB04F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E68D635-CFA8-4AE0-9B5B-E0960B7CB04F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E68D635-CFA8-4AE0-9B5B-E0960B7CB04F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E68D635-CFA8-4AE0-9B5B-E0960B7CB04F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C34FC0D0-8ACD-42AA-95D9-C29C1DAF5C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34FC0D0-8ACD-42AA-95D9-C29C1DAF5C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34FC0D0-8ACD-42AA-95D9-C29C1DAF5C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34FC0D0-8ACD-42AA-95D9-C29C1DAF5C57}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E9DA173-C3F3-43DD-AF5B-95950926D046} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+		{3E68D635-CFA8-4AE0-9B5B-E0960B7CB04F} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+		{C34FC0D0-8ACD-42AA-95D9-C29C1DAF5C57} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}
+	EndGlobalSection
+EndGlobal
