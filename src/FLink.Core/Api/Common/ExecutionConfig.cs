@@ -12,6 +12,20 @@
     /// </summary>
     public class ExecutionConfig
     {
+        /// <summary>
+        /// Returns the interval of the automatic watermark emission.
+        /// </summary>
+        public long AutoWatermarkInterval { get; private set; }
 
+        /// <summary>
+        /// Sets the interval of the automatic watermark emission. Watermarks are used throughout the streaming system to keep track of the progress of time. They are used, for example, for time based windowing.
+        /// </summary>
+        /// <param name="interval">The interval between watermarks in milliseconds.</param>
+        /// <returns></returns>
+        public ExecutionConfig SetAutoWatermarkInterval(long interval)
+        {
+            AutoWatermarkInterval = interval;
+            return this;
+        }
     }
 }

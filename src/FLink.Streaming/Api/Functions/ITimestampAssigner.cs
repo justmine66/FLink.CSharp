@@ -3,11 +3,11 @@
 namespace FLink.Streaming.Api.Functions
 {
     /// <summary>
-    /// A <see cref="ITimestampAssigner"/> assigns event time timestamps to elements. These timestamps are used by all functions that operate on event time, for example event time windows.
+    /// A <see cref="ITimestampAssigner{T}"/> assigns event time timestamps to elements. These timestamps are used by all functions that operate on event time, for example event time windows.
     /// </summary>
     /// <remarks>Timestamps are represented in milliseconds since the Epoch (midnight, January 1, 1970 UTC).</remarks>
     /// <typeparam name="T">The type of the elements to which this assigner assigns timestamps.</typeparam>
-    public interface ITimestampAssigner<T> : IFunction
+    public interface ITimestampAssigner<in T> : IFunction
     {
         /// <summary>
         /// Assigns a timestamp to an element, in milliseconds since the Epoch.
