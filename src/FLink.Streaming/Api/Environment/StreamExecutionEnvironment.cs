@@ -37,6 +37,12 @@ namespace FLink.Streaming.Api.Environment
 
         protected bool IsChainingEnabled = true;
 
+        /** Settings that control the checkpointing behavior. */
+        private readonly CheckpointConfig _checkpointCfg = new CheckpointConfig();
 
+        public StreamExecutionEnvironment EnableCheckpointing(long interval)
+        {
+            return this;
+        }
     }
 }
