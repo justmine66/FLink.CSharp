@@ -16,34 +16,34 @@ namespace FLink.Core.Api.Common.Functions
         string TaskName { get; set; }
 
         /// <summary>
-        /// Returns the metric group for this parallel subtask.
+        /// Returns the metric group for this parallel sub task.
         /// </summary>
         IMetricGroup MetricGroup { get; set; }
 
         /// <summary>
         /// Gets the parallelism with which the parallel task runs.
         /// </summary>
-        int NumberOfParallelSubtasks { get; set; }
+        int NumberOfParallelSubTasks { get; set; }
 
         /// <summary>
         /// Gets the number of max-parallelism with which the parallel task runs.
         /// </summary>
-        int MaxNumberOfParallelSubtasks { get; set; }
+        int MaxNumberOfParallelSubTasks { get; set; }
 
         /// <summary>
-        /// Gets the number of this parallel subtask. The numbering starts from 0 and goes up to parallelism-1(parallelism as returned by <see cref="NumberOfParallelSubtasks"/>)..
+        /// Gets the number of this parallel subTask. The numbering starts from 0 and goes up to parallelism-1(parallelism as returned by <see cref="NumberOfParallelSubTasks"/>)..
         /// </summary>
-        int IndexOfThisSubtask { get; set; }
+        int IndexOfThisSubTask { get; set; }
 
         /// <summary>
-        /// Gets the attempt number of this parallel subtask. First attempt is numbered 0.
+        /// Gets the attempt number of this parallel sub task. First attempt is numbered 0.
         /// </summary>
         int AttemptNumber { get; set; }
 
         /// <summary>
-        /// Returns the name of the task, appended with the subtask indicator, such as "MyTask (3/6)", where 3 would be(<see cref="IndexOfThisSubtask"/> + 1), and 6 would be <see cref="NumberOfParallelSubtasks"/>.
+        /// Returns the name of the task, appended with the sub task indicator, such as "MyTask (3/6)", where 3 would be(<see cref="IndexOfThisSubTask"/> + 1), and 6 would be <see cref="NumberOfParallelSubTasks"/>.
         /// </summary>
-        string TaskNameWithSubtasks { get; set; }
+        string TaskNameWithSubTasks { get; set; }
 
         /// <summary>
         /// Returns the <see cref="ExecutionConfig"/> for the currently executing
@@ -52,7 +52,7 @@ namespace FLink.Core.Api.Common.Functions
 
         /// <summary>
         /// Add this accumulator. Throws an exception if the accumulator already exists in the same Task. 
-        /// Note that the Accumulator name must have an unique name across the Flink job. Otherwise you will get an error when incompatible accumulators from different Tasks are combined at the JobManager upon job completion.
+        /// Note that the Accumulator name must have an unique name across the FLink job. Otherwise you will get an error when incompatible accumulators from different Tasks are combined at the JobManager upon job completion.
         /// </summary>
         /// <typeparam name="TValue"></typeparam>
         /// <typeparam name="TResult"></typeparam>

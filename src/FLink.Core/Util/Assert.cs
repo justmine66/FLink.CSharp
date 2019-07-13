@@ -4,22 +4,28 @@ namespace FLink.Core.Util
 {
     public static class Assert
     {
-        public static void NotNull<T>(T reference)
+        public static T NotNull<T>(T reference)
         {
             if (reference == null)
                 throw new ArgumentNullException(nameof(reference));
+
+            return reference;
         }
 
-        public static void NotNull<T>(T reference, string errorMessage)
+        public static T NotNull<T>(T reference, string errorMessage)
         {
             if (reference == null)
                 throw new ArgumentNullException(nameof(reference), errorMessage);
+
+            return reference;
         }
 
-        public static void NotNull<T>(T reference, string errorMessage, object errorMessageArgs)
+        public static T NotNull<T>(T reference, string errorMessage, object errorMessageArgs)
         {
             if (reference == null)
                 throw new ArgumentNullException(nameof(reference), string.Format(errorMessage, errorMessageArgs));
+
+            return reference;
         }
 
         public static void True(bool condition)
@@ -79,22 +85,52 @@ namespace FLink.Core.Util
         }
 
         #region [ 正数 ]
-        public static void Positive(int value)
+        public static int Positive(int value)
         {
             if (value <= 0)
                 throw new ArgumentOutOfRangeException(nameof(value));
+
+            return value;
         }
 
-        public static void Positive(int value, string errorMessage)
+        public static int Positive(int value, string errorMessage)
         {
             if (value <= 0)
                 throw new ArgumentOutOfRangeException(nameof(value), errorMessage);
+
+            return value;
         }
 
-        public static void Positive(int value, string errorMessage, object errorMessageArgs)
+        public static int Positive(int value, string errorMessage, object errorMessageArgs)
         {
             if (value <= 0)
                 throw new ArgumentOutOfRangeException(nameof(value), string.Format(errorMessage, errorMessageArgs));
+
+            return value;
+        }
+
+        public static long Positive(long value)
+        {
+            if (value <= 0)
+                throw new ArgumentOutOfRangeException(nameof(value));
+
+            return value;
+        }
+
+        public static long Positive(long value, string errorMessage)
+        {
+            if (value <= 0)
+                throw new ArgumentOutOfRangeException(nameof(value), errorMessage);
+
+            return value;
+        }
+
+        public static long Positive(long value, string errorMessage, object errorMessageArgs)
+        {
+            if (value <= 0)
+                throw new ArgumentOutOfRangeException(nameof(value), string.Format(errorMessage, errorMessageArgs));
+
+            return value;
         }
         #endregion
 

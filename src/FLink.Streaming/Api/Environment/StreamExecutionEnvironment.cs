@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Streaming.Api.Transformations;
 
@@ -37,6 +36,39 @@ namespace FLink.Streaming.Api.Environment
 
         protected bool IsChainingEnabled = true;
 
+        public CheckpointConfig CheckpointConfig { get; private set; }
 
+        /// <summary>
+        /// Enables checkpointing for the streaming job.
+        /// The distributed state of the streaming data flow will be periodically snapshotted. In case of a failure, the streaming data flow will be restarted from the latest completed checkpoint.
+        /// </summary>
+        /// <param name="interval">interval Time interval between state checkpoints in milliseconds.</param>
+        /// <returns></returns>
+        public StreamExecutionEnvironment EnableCheckPointing(long interval)
+        {
+            CheckpointConfig.CheckpointInterval = interval;
+            return this;
+        }
+
+        public StreamExecutionEnvironment EnableCheckPointing(long interval, CheckPointingMode mode)
+        {
+            CheckpointConfig.CheckpointInterval = interval;
+            CheckpointConfig.CheckPointingMode = mode;
+            return this;
+        }
+
+        public StreamExecutionEnvironment EnableCheckPointing(long interval, CheckPointingMode mode, bool force)
+        {
+            CheckpointConfig.CheckpointInterval = interval;
+            CheckpointConfig.CheckPointingMode = mode;
+            CheckpointConfig.ForceCheckPointing = force;
+            return this;
+        }
+
+        public StreamExecutionEnvironment EnableCheckPointing()
+        {
+            CheckpointConfig.CheckpointInterval = 500;
+            return this;
+        }
     }
 }
