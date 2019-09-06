@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Streaming.Api.Watermarks;
 
 namespace FLink.Streaming.Api.Functions.Timestamps
 {
@@ -50,7 +51,7 @@ namespace FLink.Streaming.Api.Functions.Timestamps
         /// <returns>The new timestamp.</returns>
         public abstract long ExtractAscendingTimestamp(T element);
 
-        public Watermark.Watermark CurrentWatermark
+        public Watermark CurrentWatermark
         {
             get
             {
@@ -59,7 +60,7 @@ namespace FLink.Streaming.Api.Functions.Timestamps
                 if (potentialWm >= _lastEmittedWatermark)
                     _lastEmittedWatermark = potentialWm;
 
-                return new Watermark.Watermark(_lastEmittedWatermark);
+                return new Watermark(_lastEmittedWatermark);
             }
         }
     }

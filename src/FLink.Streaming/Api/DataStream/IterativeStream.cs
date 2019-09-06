@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using FLink.Core.Api.Dag;
+using FLink.Streaming.Api.Environment;
 
 namespace FLink.Streaming.Api.DataStream
 {
@@ -10,5 +9,8 @@ namespace FLink.Streaming.Api.DataStream
     /// <typeparam name="T">Type of the elements in this Stream</typeparam>
     public class IterativeStream<T> : SingleOutputStreamOperator<T>
     {
+        protected IterativeStream(StreamExecutionEnvironment environment, Transformation<T> transformation) : base(environment, transformation)
+        {
+        }
     }
 }

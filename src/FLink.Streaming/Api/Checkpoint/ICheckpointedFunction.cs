@@ -6,6 +6,6 @@ namespace FLink.Streaming.Api.Checkpoint
     {
         void SnapshotState(IFunctionSnapshotContext context);
 
-        void InitializeState(IFunctionInitializationContext context)
+        void InitializeState(IFunctionInitializationContext context);
     }
 }

@@ -1,4 +1,4 @@
-﻿using FLink.Streaming.Api.Watermark;
+﻿using FLink.Streaming.Api.Watermarks;
 
 namespace FLink.Streaming.Runtime.StreamRecord
 {

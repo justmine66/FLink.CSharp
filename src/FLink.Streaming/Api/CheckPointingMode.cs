@@ -3,7 +3,7 @@
     /// <summary>
     /// The check pointing mode defines what consistency guarantees the system gives in the presence of failures.
     /// </summary>
-    public enum CheckPointingMode
+    public enum CheckpointingMode
     {
         ExactlyOnce,
         AtLeastOnce

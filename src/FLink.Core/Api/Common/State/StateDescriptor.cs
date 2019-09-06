@@ -6,8 +6,6 @@
     /// </summary>
     public abstract class StateDescriptor<TState, T> where TState : IState
     {
-        
-
         /// <summary>
         /// An enumeration of the types of supported states.
         /// Used to identify the state type when writing and restoring checkpoints and savepoints.

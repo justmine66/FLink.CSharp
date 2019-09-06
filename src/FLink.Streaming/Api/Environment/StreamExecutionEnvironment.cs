@@ -1,5 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.TypeInfo;
+using FLink.Streaming.Api.DataStream;
+using FLink.Streaming.Api.Functions.Source;
+using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 
 namespace FLink.Streaming.Api.Environment
@@ -36,6 +41,22 @@ namespace FLink.Streaming.Api.Environment
 
         protected bool IsChainingEnabled = true;
 
+        public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName, TypeInformation<TOut> typeInfo = default)
+        {
+            var isParallel = function is IParallelSourceFunction<TOut>;
 
+            Clean(function);
+
+            var sourceOperator = new StreamSource<TOut, ISourceFunction<TOut>>(function);
+            return new DataStreamSource<TOut>(this, typeInfo, sourceOperator, isParallel, sourceName);
+        }
+
+
+        public int Parallelism { get; } = _config.Parallelism;
+
+        public T Clean<T>(T t)
+        {
+            return t;
+        }
     }
 }

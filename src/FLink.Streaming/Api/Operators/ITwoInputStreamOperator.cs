@@ -1,4 +1,5 @@
-﻿using FLink.Streaming.Runtime.StreamRecord;
+﻿using FLink.Streaming.Api.Watermarks;
+using FLink.Streaming.Runtime.StreamRecord;
 
 namespace FLink.Streaming.Api.Operators
 {
@@ -29,22 +30,22 @@ namespace FLink.Streaming.Api.Operators
         void ProcessElement2(StreamRecord<TInput2> element);
 
         /// <summary>
-        /// Processes a <see cref="Watermark.Watermark"/> that arrived on the first input of this two-input operator.
+        /// Processes a <see cref="Watermark"/> that arrived on the first input of this two-input operator.
         /// </summary>
         /// <remarks>
         /// This method is guaranteed to not be called concurrently with other methods of the operator.
         /// </remarks>
-        /// <param name="mark">The <see cref="Watermark.Watermark"/></param>
-        void ProcessWatermark1(Watermark.Watermark mark);
+        /// <param name="mark">The <see cref="Watermark"/></param>
+        void ProcessWatermark1(Watermark mark);
 
         /// <summary>
-        /// Processes a <see cref="Watermark.Watermark"/> that arrived on the second input of this two-input operator.
+        /// Processes a <see cref="Watermark"/> that arrived on the second input of this two-input operator.
         /// </summary>
         /// <remarks>
         /// This method is guaranteed to not be called concurrently with other methods of the operator.
         /// </remarks>
-        /// <param name="mark">The <see cref="Watermark.Watermark"/></param>
-        void ProcessWatermark2(Watermark.Watermark mark);
+        /// <param name="mark">The <see cref="Watermark"/></param>
+        void ProcessWatermark2(Watermark mark);
 
         /// <summary>
         /// Processes a <see cref="LatencyMarker"/> that arrived on the first input of this two-input operator.

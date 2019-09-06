@@ -1,11 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Api\Transformations\PhysicalTransformation.cs~RF71c128d8.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FLink.Core\FLink.Core.csproj" />
+    <ProjectReference Include="..\FLink.Optimizer\FLink.Optimizer.csproj" />
     <ProjectReference Include="..\FLink.Runtime\FLink.Runtime.csproj" />
   </ItemGroup>
 

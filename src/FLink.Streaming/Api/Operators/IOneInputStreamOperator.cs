@@ -1,4 +1,5 @@
-﻿using FLink.Streaming.Runtime.StreamRecord;
+﻿using FLink.Streaming.Api.Watermarks;
+using FLink.Streaming.Runtime.StreamRecord;
 
 namespace FLink.Streaming.Api.Operators
 {
@@ -19,13 +20,13 @@ namespace FLink.Streaming.Api.Operators
         void ProcessElement(StreamRecord<TInput> element);
 
         /// <summary>
-        /// Processes a <see cref="Watermark.Watermark"/>.
+        /// Processes a <see cref="Watermark"/>.
         /// </summary>
         /// <remarks>
         /// This method is guaranteed to not be called concurrently with other methods of the operator.
         /// </remarks>
-        /// <param name="mark">The <see cref="Watermark.Watermark"/></param>
-        void ProcessWatermark(Watermark.Watermark mark);
+        /// <param name="mark">The <see cref="Watermark"/></param>
+        void ProcessWatermark(Watermark mark);
 
         /// <summary>
         /// Processes a <see cref="LatencyMarker"/>.

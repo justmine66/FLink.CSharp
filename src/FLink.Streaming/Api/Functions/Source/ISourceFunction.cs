@@ -1,15 +1,32 @@
 ﻿using FLink.Core.Api.Common.Functions;
+using FLink.Streaming.Api.Watermarks;
 
 namespace FLink.Streaming.Api.Functions.Source
 {
     /// <summary>
-    /// Base interface for all stream data sources in Flink.
+    /// Base interface for all stream data sources in FLink.
+    /// The contract of a stream source is the following:
+    /// 1. When the source should start emitting elements, the <see cref="Run"/> method is called with a <see cref="ISourceContext{T}"/> that can be used for emitting elements. The run method can run for as long as necessary.
+    /// 2. The source must, however, react to an invocation of <see cref="Cancel"/> by breaking out of its main loop.
     /// </summary>
     /// <remarks>
-    /// Sources may assign timestamps to elements and may manually emit watermarks. However, these are only interpreted if the streaming program runs on <see cref="TimeCharacteristic.EventTime"/>.  On other time characteristics <see cref="TimeCharacteristic.IngestionTime"/> and <see cref="TimeCharacteristic.ProcessingTime"/>, the watermarks from the source function are ignored.
+    /// <example>CheckpointedFunction Sources:</example>
+    /// Sources that also implement the <see cref="Checkpoint.ICheckpointedFunction"/> interface must ensure that state checkpointing, updating of internal state and emission of elements are not done concurrently. This is achieved by using the provided checkpointing lock object to protect update of state and emission of elements in a synchronized block.
+    /// <code><see cref="FLink.Streaming.FunctionalTest.Source.CheckpointedExampleCountSource"/></code>
+    ///
+    /// <example>Timestamps and watermarks:</example>
+    /// Sources may assign timestamps to elements and may manually emit watermarks. However, these are only interpreted if the streaming program runs on <see cref="TimeCharacteristic.EventTime"/>. On other time characteristics <see cref="TimeCharacteristic.IngestionTime"/> and <see cref="TimeCharacteristic.ProcessingTime"/>, the watermarks from the source function are ignored.
+    ///
+    /// <example>Gracefully Stopping Functions:</example>
+    /// Functions may additionally implement the <see cref="IStoppableFunction"/> "Stopping" a function, in contrast to "canceling" means a graceful exit that leaves the
+    /// state and the emitted elements in a consistent state.
+    /// When a source is stopped, the executing thread is not interrupted, but expected to leave the
+    /// <see cref="Run"/> method in reasonable time on its own, preserving the atomicity
+    /// of state updates and element emission.
+    /// interface. 
     /// </remarks>
     /// <typeparam name="T">The type of the elements produced by this source.</typeparam>
-    public interface ISourceFunction<T> : IFunction
+    public interface ISourceFunction<out T> : IFunction
     {
         /// <summary>
         /// Starts the source. Implementations can use the <see cref="ISourceContext{T}"/> emit elements.
@@ -27,7 +44,7 @@ namespace FLink.Streaming.Api.Functions.Source
     /// Interface that source functions use to emit elements, and possibly watermarks.
     /// </summary>
     /// <typeparam name="T">The type of the elements produced by the source.</typeparam>
-    public interface ISourceContext<T>
+    public interface ISourceContext<in T>
     {
         /// <summary>
         /// Emits one element from the source, without attaching a timestamp. In most cases, this is the default way of emitting elements.
@@ -71,10 +88,10 @@ namespace FLink.Streaming.Api.Functions.Source
         void CollectWithTimestamp(T element, long timestamp);
 
         /// <summary>
-        /// Emits the given <see cref="Watermark.Watermark"/>. 
+        /// Emits the given <see cref="Watermark"/>. 
         /// </summary>
         /// <param name="mark">The Watermark to emit</param>
-        void EmitWatermark(Watermark.Watermark mark);
+        void EmitWatermark(Watermark mark);
 
         /// <summary>
         /// Marks the source to be temporarily idle. This tells the system that this source will temporarily stop emitting records and watermarks for an indefinite amount of time. This is only relevant when running on <see cref="TimeCharacteristic.IngestionTime"/> and <see cref="TimeCharacteristic.EventTime"/>, allowing downstream tasks to advance their watermarks without the need to wait for watermarks from this source while it is idle. 

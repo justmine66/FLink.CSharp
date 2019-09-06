@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Streaming.Api.Watermarks;
 
 namespace FLink.Streaming.Api.Functions.Timestamps
 {
@@ -9,6 +10,6 @@ namespace FLink.Streaming.Api.Functions.Timestamps
             throw new NotImplementedException();
         }
 
-        public Watermark.Watermark CurrentWatermark { get; }
+        public Watermark CurrentWatermark { get; }
     }
 }

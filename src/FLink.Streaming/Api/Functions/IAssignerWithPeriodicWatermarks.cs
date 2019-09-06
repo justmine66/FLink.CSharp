@@ -1,4 +1,6 @@
-﻿namespace FLink.Streaming.Api.Functions
+﻿using FLink.Streaming.Api.Watermarks;
+
+namespace FLink.Streaming.Api.Functions
 {
     /// <summary>
     /// Assigns event time timestamps to elements, and generates low watermarks that signal event time progress within the stream.
@@ -10,6 +12,6 @@
         /// <summary>
         /// Returns the current watermark. This method is periodically called by the system to retrieve the current watermark. if no watermark should be emitted, or the next watermark to emit.
         /// </summary>
-        Watermark.Watermark CurrentWatermark { get; }
+        Watermark CurrentWatermark { get; }
     }
 }

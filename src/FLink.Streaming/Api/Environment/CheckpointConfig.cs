@@ -10,7 +10,7 @@ namespace FLink.Streaming.Api.Environment
         /// <summary>
         /// The default checkpoint mode: exactly once.
         /// </summary>
-        public static readonly CheckPointingMode DefaultMode = CheckPointingMode.ExactlyOnce;
+        public static readonly CheckpointingMode DefaultMode = CheckpointingMode.ExactlyOnce;
 
         /// <summary>
         /// The default timeout of a checkpoint attempt: 10 minutes.
@@ -27,11 +27,11 @@ namespace FLink.Streaming.Api.Environment
         /// </summary>
         public static readonly int DefaultMaxConcurrentCheckpoints = 1;
 
-        private CheckPointingMode _checkPointingMode = DefaultMode;
+        private CheckpointingMode _checkPointingMode = DefaultMode;
         /// <summary>
         /// CheckPointing mode (exactly-once vs. at-least-once).
         /// </summary>
-        public CheckPointingMode CheckPointingMode
+        public CheckpointingMode CheckPointingMode
         {
             get => _checkPointingMode;
             set => _checkPointingMode = Assert.NotNull(value);

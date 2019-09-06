@@ -6,7 +6,7 @@
     /// </summary>
     /// <typeparam name="TIn">Type of the value that can be added to the state.</typeparam>
     /// <typeparam name="TOut">Type of the value that can be retrieved from the state.</typeparam>
-    public interface IAppendingState<in TIn, out TOut>
+    public interface IAppendingState<in TIn, out TOut> : IState
     {
         /// <summary>
         /// Returns the current value for the state. 

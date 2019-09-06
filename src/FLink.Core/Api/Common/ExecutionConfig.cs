@@ -27,5 +27,7 @@
             AutoWatermarkInterval = interval;
             return this;
         }
+
+        public int Parallelism { get; }
     }
 }
