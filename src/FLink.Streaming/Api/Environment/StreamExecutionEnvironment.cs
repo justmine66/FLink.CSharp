@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Util;
 using FLink.Streaming.Api.DataStream;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Operators;
@@ -40,6 +41,16 @@ namespace FLink.Streaming.Api.Environment
         private long _bufferTimeout = DefaultNetworkBufferTimeout;
 
         protected bool IsChainingEnabled = true;
+
+        public DataStreamSource<TOut> FromCollection<TOut>(IEnumerable<TOut> data, TypeInformation<TOut> typeInfo)
+        {
+            Preconditions.CheckNotNull(data, "Collection must not be null");
+
+            // must not have null elements and mixed elements
+            FromElementsFunction<TOut>.CheckCollection(data, typeInfo.TypeClass);
+
+
+        }
 
         public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName, TypeInformation<TOut> typeInfo = default)
         {

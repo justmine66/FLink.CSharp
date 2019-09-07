@@ -11,5 +11,10 @@ namespace FLink.Core.Api.Common.TypeInfo
         public abstract bool IsBasicType { get; }
 
         public abstract bool IsTupleType { get; }
+
+        /// <summary>
+        /// Gets the class of the type represented by this type information.
+        /// </summary>
+        public abstract Type TypeClass { get; }
     }
 }

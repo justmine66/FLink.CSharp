@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Core.Exceptions;
 
 namespace FLink.Core.Util
 {
@@ -21,6 +22,34 @@ namespace FLink.Core.Util
                 throw new ArgumentNullException(nameof(reference), errorMessage);
 
             return reference;
+        }
+
+        public static void CheckState(bool condition)
+        {
+            if (!condition)
+                throw new IllegalStateException();
+        }
+
+        public static void CheckState(bool condition, string errorMessage)
+        {
+            if (!condition)
+                throw new IllegalStateException(errorMessage);
+        }
+
+        public static void CheckArgument(bool condition)
+        {
+            if (!condition)
+            {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        public static void CheckArgument(bool condition, string errorMessage)
+        {
+            if (!condition)
+            {
+                throw new IllegalArgumentException(errorMessage);
+            }
         }
     }
 }
