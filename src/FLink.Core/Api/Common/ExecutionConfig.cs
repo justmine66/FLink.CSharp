@@ -29,5 +29,6 @@
         }
 
         public int Parallelism { get; }
+        public static int DefaultParallelism { get; internal set; }
     }
 }

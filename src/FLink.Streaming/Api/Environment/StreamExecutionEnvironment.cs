@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Streaming.Api.DataStream;
 using FLink.Streaming.Api.Functions.Source;
@@ -49,7 +50,18 @@ namespace FLink.Streaming.Api.Environment
             // must not have null elements and mixed elements
             FromElementsFunction<TOut>.CheckCollection(data, typeInfo.TypeClass);
 
+            ISourceFunction<TOut> function;
+            try
+            {
+                function=new FromElementsFunction<TOut>(typeInfo.CreateSerializer(_config),data);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(e.Message, e);
+            }
 
+            return AddSource(function, "Collection Source", typeInfo)
+                .SetParallelism(1);
         }
 
         public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName, TypeInformation<TOut> typeInfo = default)
@@ -68,6 +80,15 @@ namespace FLink.Streaming.Api.Environment
         public T Clean<T>(T t)
         {
             return t;
+        }
+
+        /// <summary>
+        /// Gets the config object.
+        /// </summary>
+        /// <returns></returns>
+        public ExecutionConfig GetConfig()
+        {
+            return _config;
         }
     }
 }

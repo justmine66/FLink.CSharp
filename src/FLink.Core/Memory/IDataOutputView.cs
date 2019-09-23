@@ -6,7 +6,6 @@
     /// </summary>
     public interface IDataOutputView
     {
-        void SkipBytesToWrite(int numBytes);
-        void Write(IDataOutputView source, int numBytes);
+        
     }
 }

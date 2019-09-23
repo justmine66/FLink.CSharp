@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Memory;
 using FLink.Core.Util;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Checkpoint;
@@ -21,38 +22,51 @@ namespace FLink.Streaming.Api.Functions.Source
         // The (de)serializer to be used for the data elements.
         private readonly TypeSerializer<T> _serializer;
 
-        // Flag to make the source cancelable.
-        private volatile bool _isRunning = true;
-
         // The actual data elements, in serialized form.
         private readonly byte[] _elementsSerialized;
 
-        [IgnoreDataMember]
-        private IListState<int> _checkpointedState;
+        // The number of serialized elements.
+        private volatile int _numElements;
+
+        // The number of elements emitted already.
+        private volatile int _numElementsEmitted;
 
         // The number of elements to skip initially.
         private volatile int _numElementsToSkip;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serializer"></param>
-        /// <param name="elements"></param>
-        /// <exception cref="System.IO.IOException"></exception>
+        // Flag to make the source cancelable.
+        private volatile bool _isRunning = true;
+
+        [IgnoreDataMember]
+        private IListState<int> _checkpointedState;
+
         public FromElementsFunction(TypeSerializer<T> serializer, params T[] elements)
             : this(serializer, elements.ToList())
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serializer"></param>
-        /// <param name="elements"></param>
-        /// <exception cref="System.IO.IOException"></exception>
         public FromElementsFunction(TypeSerializer<T> serializer, IEnumerable<T> elements)
         {
+            var stream = new MemoryStream();
+            var output = new DataOutputViewStreamWrapper(stream);
 
+            var count = 0;
+            try
+            {
+                foreach (var element in elements)
+                {
+                    _serializer.Serialize(element, output);
+                    count++;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new IOException("Serializing the source elements failed.", e);
+            }
+
+            _numElements = count;
+            _serializer = serializer;
+            _elementsSerialized = stream.ToArray();
         }
 
         /// <summary>
@@ -76,20 +90,37 @@ namespace FLink.Streaming.Api.Functions.Source
 
         public void Run(ISourceContext<T> ctx)
         {
-            var buffer = new MemoryStream(_elementsSerialized);
-            var input = new DataInputViewStreamWrapper(bais);
+            var stream = new MemoryStream(_elementsSerialized);
+            var input = new DataInputViewStreamWrapper(stream);
 
             // if we are restored from a checkpoint and need to skip elements, skip them now.
             var toSkip = _numElementsToSkip;
-            if (toSkip > 0)
+            if (toSkip <= 0) return;
+
+            try
             {
+                while (toSkip > 0)
+                {
+                    _serializer.Deserialize(input);
+                    toSkip--;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new IOException("Failed to deserialize an element from the source. " +
+                                      "If you are using user-defined serialization (Value and Writable types), check the " +
+                                      "serialization functions.\nSerializer is " + _serializer, e);
+            }
+
+            _numElementsEmitted = _numElementsToSkip;
+
+            var mutex = ctx.GetCheckpointLock();
+            while (_isRunning && _numElementsEmitted < _numElements)
+            {
+                T next;
                 try
                 {
-                    while (toSkip > 0)
-                    {
-                        _serializer.Deserialize(input);
-                        toSkip--;
-                    }
+                    next = _serializer.Deserialize(input);
                 }
                 catch (Exception e)
                 {
@@ -98,7 +129,11 @@ namespace FLink.Streaming.Api.Functions.Source
                                           "serialization functions.\nSerializer is " + _serializer, e);
                 }
 
-                this.numElementsEmitted = this.numElementsToSkip;
+                lock (mutex)
+                {
+                    ctx.Collect(next);
+                    _numElementsEmitted++;
+                }
             }
         }
 
@@ -136,13 +171,13 @@ namespace FLink.Streaming.Api.Functions.Source
         }
 
         /// <summary>
-        /// Gets the number of elements produced in total by this function.
+        /// The number of elements produced in total by this function.
         /// </summary>
-        public int NumElements { get; private set; }
+        public int NumElements => _numElements;
 
         /// <summary>
-        /// Gets the number of elements emitted so far.
+        /// The number of elements emitted so far.
         /// </summary>
-        public int NumElementsEmitted { get; private set; }
+        public int NumElementsEmitted => _numElementsEmitted;
     }
 }
