@@ -1,6 +1,6 @@
-﻿using FLink.Core.Api.Common.Functions;
+﻿using System;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Util;
-using System;
 
 namespace WordCount
 {
@@ -8,7 +8,7 @@ namespace WordCount
     {
         static void Main(string[] args)
         {
-
+            Console.WriteLine("Hello World!");
         }
     }
 
