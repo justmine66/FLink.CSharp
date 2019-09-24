@@ -1,6 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Util;
+using FLink.Streaming.Api.Environment;
 
 namespace WordCount
 {
@@ -8,7 +9,9 @@ namespace WordCount
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var env = ExecutionEnvironment.GetExecutionEnvironment();
+
+            Console.Read();
         }
     }
 

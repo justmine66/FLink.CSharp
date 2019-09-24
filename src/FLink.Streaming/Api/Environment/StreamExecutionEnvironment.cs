@@ -35,7 +35,7 @@ namespace FLink.Streaming.Api.Environment
         private static int _defaultLocalParallelism = System.Environment.ProcessorCount;
 
         // The execution configuration for this environment.
-        private static ExecutionConfig _config = new ExecutionConfig();
+        private static readonly ExecutionConfig Config = new ExecutionConfig();
 
         private readonly List<StreamTransformation<object>> _transformations = new List<StreamTransformation<object>>();
 
@@ -53,7 +53,7 @@ namespace FLink.Streaming.Api.Environment
             ISourceFunction<TOut> function;
             try
             {
-                function=new FromElementsFunction<TOut>(typeInfo.CreateSerializer(_config),data);
+                function = new FromElementsFunction<TOut>(typeInfo.CreateSerializer(Config), data);
             }
             catch (Exception e)
             {
@@ -75,7 +75,7 @@ namespace FLink.Streaming.Api.Environment
         }
 
 
-        public int Parallelism { get; } = _config.Parallelism;
+        public int Parallelism { get; } = Config.GetParallelism();
 
         public T Clean<T>(T t)
         {
@@ -83,12 +83,18 @@ namespace FLink.Streaming.Api.Environment
         }
 
         /// <summary>
-        /// Gets the config object.
+        /// Gets the config object. 
         /// </summary>
         /// <returns></returns>
         public ExecutionConfig GetConfig()
         {
-            return _config;
+            return Config;
+        }
+
+        public StreamExecutionEnvironment SetParallelism(int parallelism)
+        {
+            Config.SetParallelism(parallelism);
+            return this;
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿namespace FLink.Core.Api.Common
+﻿using System;
+using FLink.Core.Exceptions;
+using FLink.Core.Util;
+
+namespace FLink.Core.Api.Common
 {
     /// <summary>
     /// A config to define the behavior of the program execution. It allows to define (among other options) the following settings:
@@ -10,7 +14,8 @@
     ///   <para>Enabling or disabling the "closure cleaner".</para>
     /// </list>
     /// </summary>
-    public class ExecutionConfig
+    [Serializable]
+    public class ExecutionConfig : IArchiveable<ArchivedExecutionConfig>
     {
         /// <summary>
         /// Returns the interval of the automatic watermark emission.
@@ -28,7 +33,82 @@
             return this;
         }
 
-        public int Parallelism { get; }
-        public static int DefaultParallelism { get; internal set; }
+        /// <summary>
+        /// The flag value indicating use of the default parallelism.
+        /// This value can be used to reset the parallelism back to the default state.
+        /// </summary>
+        public const int DefaultParallelism = -1;
+
+        /// <summary>
+        /// The flag value indicating an unknown or unset parallelism.
+        /// This value is not a valid parallelism and indicates that the parallelism should remain unchanged.
+        /// </summary>
+        public const int UnknownParallelism = -2;
+
+        private int _parallelism = DefaultParallelism;
+
+        // The program wide maximum parallelism used for operators which haven't specified a maximum parallelism. The maximum parallelism specifies the upper limit for dynamic scaling and the number of key groups used for partitioned state.
+        private int _maxParallelism = -1;
+
+        /// <summary>
+        /// Sets the parallelism for operations executed through this environment.
+        /// Setting a parallelism of x here will cause all operators (such as join, map, reduce) to run with x parallel instances.
+        /// 
+        /// This method overrides the default parallelism for this environment.
+        /// The local execution environment uses by default a value equal to the number of hardware contexts(CPU cores / threads). When executing the program via the command line client, the default parallelism is the one configured for that setup.
+        /// </summary>
+        /// <param name="parallelism">The parallelism to use</param>
+        /// <returns></returns>
+        public ExecutionConfig SetParallelism(int parallelism)
+        {
+            if (parallelism == UnknownParallelism) return this;
+            if (parallelism < 1 && parallelism != DefaultParallelism)
+            {
+                throw new IllegalArgumentException(
+                    "Parallelism must be at least one, or ExecutionConfig.PARALLELISM_DEFAULT (use system default).");
+            }
+
+            _parallelism = parallelism;
+            return this;
+        }
+
+        /// <summary>
+        /// Gets the parallelism with which operation are executed by default.
+        /// Operations can individually override this value to use a specific parallelism.
+        /// 
+        /// Other operations may need to run with a different parallelism - for example calling a reduce operation over the entire data set will involve an operation that runs with a parallelism of one (the final reduce to the single result value).
+        /// </summary>
+        /// <returns>The parallelism used by operations, unless they override that value.This method returns <see cref="DefaultParallelism"/> if the environment's default parallelism should be used.</returns>
+        public int GetParallelism()
+        {
+            return _parallelism;
+        }
+
+        /// <summary>
+        /// Gets the maximum degree of parallelism defined for the program.
+        /// The maximum degree of parallelism specifies the upper limit for dynamic scaling.
+        /// It also defines the number of key groups used for partitioned state.
+        /// </summary>
+        /// <returns></returns>
+        public int GetMaxParallelism()
+        {
+            return _maxParallelism;
+        }
+
+        /// <summary>
+        /// Sets the maximum degree of parallelism defined for the program.
+        /// </summary>
+        /// <param name="maxParallelism">Maximum degree of parallelism to be used for the program.</param>
+        public void SetMaxParallelism(int maxParallelism)
+        {
+            Preconditions.CheckArgument(maxParallelism > 0, "The maximum parallelism must be greater than 0.");
+
+            _maxParallelism = maxParallelism;
+        }
+
+        public ArchivedExecutionConfig Archive()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
