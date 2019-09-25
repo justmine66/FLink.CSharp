@@ -1,12 +1,15 @@
 ﻿namespace FLink.Streaming.Api.Operators
 {
-    using static FLink.Core.Util.Preconditions;
-
-    public class SimpleOperatorFactory<TTOut> : IStreamOperatorFactory<TTOut>
+    public class SimpleOperatorFactory<TOut> : IStreamOperatorFactory<TOut>
     {
-        public SimpleOperatorFactory(IStreamOperator<TTOut> @operator)
+        public SimpleOperatorFactory(IStreamOperator<TOut> @operator)
         {
-            
+
+        }
+
+        public static SimpleOperatorFactory<TOut> Of(IStreamOperator<TOut> @operator)
+        {
+            return default;
         }
     }
 }
