@@ -12,15 +12,18 @@ namespace WordCount
             // get the execution environment
             var env = StreamExecutionEnvironment.GetExecutionEnvironment();
 
-            // get input data by connecting to the socket
-            var text = env.SocketTextStream("localhost", 5000, "\n");
-            var windowCounts = text
-                .FlatMap(new Splitter())
-                .KeyBy("word")
+            // source: get input data by connecting to the socket.
+            var stream = env.SocketTextStream("localhost", 5000, "\n");
+
+            // transformation
+            var stat = stream
+                .FlatMap(new Splitter())// FlatMap算子对数据进行转换
+                .KeyBy("word")// 按照指定key对数据进行分区，相同key的数据流向相同的SubTask实例。
                 .TimeWindow(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(1))
                 .Reduce(new Reducer());
 
-            windowCounts.Print().SetParallelism(1);
+            // sink: 将数据输出到外部存储(控制台标准输出)。
+            stat.Print().SetParallelism(1);
 
             env.Execute("Socket Window WordCount");
         }

@@ -135,7 +135,6 @@ namespace FLink.Streaming.Api.Environment
         {
             return AddSource(new SocketTextStreamFunction(hostname, port, delimiter, maxRetryIntervalSeconds),
                 "Socket Stream");
-            ;
         }
 
         /// <summary>
