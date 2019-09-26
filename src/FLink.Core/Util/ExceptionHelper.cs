@@ -4,7 +4,7 @@ using FLink.Extensions.Logging;
 
 namespace FLink.Core.Util
 {
-    public static class ExceptionHelper
+    public class ExceptionHelper
     {
         private static readonly ILogger Logger = ObjectContainer.Current.GetService<ILogger<ExceptionHelper>>();
 

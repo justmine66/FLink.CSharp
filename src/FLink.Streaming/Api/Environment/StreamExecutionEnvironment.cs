@@ -6,7 +6,7 @@ using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Streaming.Api.DataStream;
 using FLink.Streaming.Api.Functions.Source;
-using FLink.Streaming.Api.graph;
+using FLink.Streaming.Api.Graph;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 
