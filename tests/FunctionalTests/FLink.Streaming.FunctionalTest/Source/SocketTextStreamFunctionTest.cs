@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using FLink.Streaming.Api.Functions.Source;
+using Xunit;
 
 namespace FLink.Streaming.FunctionalTest.Source
 {
@@ -7,7 +8,8 @@ namespace FLink.Streaming.FunctionalTest.Source
         [Fact]
         public void ReadAllMessages()
         {
-            var function=new sockettex
+            var function = new SocketTextStreamFunction("localhost", 5000, "\n", 3);
+            function.Run(new DummySourceContext());
         }
     }
 }

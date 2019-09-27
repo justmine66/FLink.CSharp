@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using FLink.Extensions.DependencyInjection;
 using FLink.Extensions.Logging;
 using FLink.Extensions.Transport.DotNetty;
@@ -66,7 +67,7 @@ namespace FLink.Streaming.Api.Functions.Source
                     {
                         _logger.LogWarning("Lost connection to server socket. Retrying in " + _delayBetweenRetries +
                                            " msecs...");
-                        Thread.Sleep(_delayBetweenRetries);
+                        Thread.Sleep(_delayBetweenRetries * attempt);
                     }
                     else throw ex;
                 }, () => _isRunning = false).Wait();

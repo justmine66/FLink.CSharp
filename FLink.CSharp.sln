@@ -29,7 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordCount", "samples\DataAn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Streaming.FunctionalTest", "tests\FunctionalTests\FLink.Streaming.FunctionalTest\FLink.Streaming.FunctionalTest.csproj", "{58F80C96-945F-4496-87D6-7B6990126323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Extensions", "src\FLink.Extensions\FLink.Extensions.csproj", "{0C4A1229-E3DE-4E54-B9E9-E2382F425442}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", "{5CA17579-1FD5-41FC-8497-8019C88E9EE6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions", "src\Extensions\FLink.Extensions\FLink.Extensions.csproj", "{95862A7E-B795-4DE4-B90C-B368EA48FFC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Extensions.DependencyInjection.AutoFactory", "src\Extensions\FLink.Extensions.DependencyInjection.AutoFactory\FLink.Extensions.DependencyInjection.AutoFactory.csproj", "{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,10 +69,14 @@ Global
 		{58F80C96-945F-4496-87D6-7B6990126323}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58F80C96-945F-4496-87D6-7B6990126323}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58F80C96-945F-4496-87D6-7B6990126323}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C4A1229-E3DE-4E54-B9E9-E2382F425442}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C4A1229-E3DE-4E54-B9E9-E2382F425442}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C4A1229-E3DE-4E54-B9E9-E2382F425442}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C4A1229-E3DE-4E54-B9E9-E2382F425442}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95862A7E-B795-4DE4-B90C-B368EA48FFC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95862A7E-B795-4DE4-B90C-B368EA48FFC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95862A7E-B795-4DE4-B90C-B368EA48FFC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95862A7E-B795-4DE4-B90C-B368EA48FFC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,7 +92,9 @@ Global
 		{8D115727-19B3-4996-A9A0-2907A4C1F81A} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
 		{A1852AD7-B505-4CE2-882C-0BEDD7DB0DE5} = {C637AFF8-0926-4F8C-94F4-8FABB59E65C1}
 		{58F80C96-945F-4496-87D6-7B6990126323} = {4E9AD229-2BB9-486F-8360-BAF8FE0930E9}
-		{0C4A1229-E3DE-4E54-B9E9-E2382F425442} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+		{5CA17579-1FD5-41FC-8497-8019C88E9EE6} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+		{95862A7E-B795-4DE4-B90C-B368EA48FFC7} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
+		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}

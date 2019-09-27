@@ -131,7 +131,7 @@ namespace FLink.Streaming.Api.Environment
         /// <param name="maxRetryIntervalSeconds">The maximal retry interval in seconds while the program waits for a socket that is temporarily down. Reconnection is initiated every second. A number of 0 means that the reader is immediately terminated, while a negative value ensures retrying forever.</param>
         /// <returns>A data stream containing the strings received from the socket</returns>
         public DataStreamSource<string> SocketTextStream(string hostname, int port, string delimiter,
-            long maxRetryIntervalSeconds)
+            int maxRetryIntervalSeconds)
         {
             return AddSource(new SocketTextStreamFunction(hostname, port, delimiter, maxRetryIntervalSeconds),
                 "Socket Stream");
