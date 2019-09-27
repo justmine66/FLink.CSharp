@@ -1,5 +1,7 @@
-﻿using System.Text;
-using System.Threading;
+﻿using System.Threading;
+using FLink.Extensions.DependencyInjection;
+using FLink.Extensions.Logging;
+using FLink.Extensions.Transport.DotNetty;
 
 namespace FLink.Streaming.Api.Functions.Source
 {
@@ -16,30 +18,28 @@ namespace FLink.Streaming.Api.Functions.Source
         // Default delay between successive connection attempts.
         private const int DefaultConnectionRetrySleep = 500;
 
-        // Default connection timeout when connecting to the server socket (infinite).
-        private const int ConnectionTimeoutTime = 0;
-
         private volatile bool _isRunning;
 
-        private readonly string _hostname;
-        private readonly int _port;
         private readonly string _delimiter;
-        private readonly long _maxNumRetries;
-        private readonly long _delayBetweenRetries;
+        private readonly int _maxNumRetries;
+        private readonly int _delayBetweenRetries;
+        private readonly SocketClient _socket;
+        private readonly ILogger _logger;
 
-        public SocketTextStreamFunction(string hostname, int port, string delimiter, long maxNumRetries)
-            : this(hostname, port, delimiter, maxNumRetries, DefaultConnectionRetrySleep)
+        public SocketTextStreamFunction(string host, int port, string delimiter, int maxNumRetries)
+            : this(host, port, delimiter, maxNumRetries, DefaultConnectionRetrySleep)
         {
+            _socket = new SocketClient(host, port);
+            _logger = ObjectContainer.Current.GetService<ILogger<SocketTextStreamFunction>>();
         }
 
-        public SocketTextStreamFunction(string hostname, int port, string delimiter, long maxNumRetries, long delayBetweenRetries)
+        public SocketTextStreamFunction(string host, int port, string delimiter, int maxNumRetries, int delayBetweenRetries)
         {
+            CheckNotNull(host, "host must not be null");
             CheckArgument(port > 0 && port < 65536, $"The {nameof(port)} is out of range");
             CheckArgument(maxNumRetries >= -1, $"The {nameof(maxNumRetries)} must be zero or larger (num retries), or -1 (infinite retries)");
             CheckArgument(delayBetweenRetries >= 0, $"The {nameof(delayBetweenRetries)} must be zero or positive");
 
-            _hostname = CheckNotNull(hostname, "hostname must not be null");
-            _port = port;
             _delimiter = delimiter;
             _maxNumRetries = maxNumRetries;
             _delayBetweenRetries = delayBetweenRetries;
@@ -47,12 +47,29 @@ namespace FLink.Streaming.Api.Functions.Source
 
         public void Run(ISourceContext<string> ctx)
         {
-            var buffer = new StringBuilder();
-            long attempt;
+            var attempt = 0;
 
             while (_isRunning)
             {
+                _socket.RunAsync((message) =>
+                {
+                    // truncate trailing carriage return
+                    if (_delimiter.Equals("\n") && message.EndsWith("\r"))
+                        message = message.Substring(0, message.Length - 1);
+                    ctx.Collect(message);
+                }, (ex) =>
+                {
+                    if (!_isRunning) throw ex;
 
+                    attempt++;
+                    if (_maxNumRetries == -1 || attempt < _maxNumRetries)
+                    {
+                        _logger.LogWarning("Lost connection to server socket. Retrying in " + _delayBetweenRetries +
+                                           " msecs...");
+                        Thread.Sleep(_delayBetweenRetries);
+                    }
+                    else throw ex;
+                }, () => _isRunning = false).Wait();
             }
         }
 
