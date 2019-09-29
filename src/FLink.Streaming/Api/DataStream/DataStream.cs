@@ -1,7 +1,9 @@
 ﻿using FLink.Core.Api.Common.Functions;
+using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Operators;
 
 namespace FLink.Streaming.Api.DataStream
 {
@@ -58,5 +60,17 @@ namespace FLink.Streaming.Api.DataStream
         {
             return null;
         }
+
+        #region [ private members ] 
+
+        private SingleOutputStreamOperator<TReturn> DoTransform<TReturn>(
+            string operatorName,
+            TypeInformation<TReturn> outTypeInfo,
+            IStreamOperatorFactory<TReturn> operatorFactory)
+        {
+            return null;
+        }
+
+        #endregion
     }
 }

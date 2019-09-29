@@ -1,5 +1,4 @@
-﻿using System.IO;
-using FLink.Core.Api.Common;
+﻿using FLink.Core.Api.Common;
 using FLink.Optimizer.Plan;
 using FLink.Runtime.JobGraphs;
 
@@ -16,11 +15,6 @@ namespace FLink.Streaming.Api.Graph
         }
 
         public override string GetStreamingPlanAsJson()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void DumpStreamingPlanAsJson(FileInfo file)
         {
             throw new System.NotImplementedException();
         }

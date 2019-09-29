@@ -1,5 +1,4 @@
-﻿using System.IO;
-using FLink.Core.Api.Common;
+﻿using FLink.Core.Api.Common;
 using FLink.Runtime.JobGraphs;
 
 namespace FLink.Optimizer.Plan
@@ -9,15 +8,22 @@ namespace FLink.Optimizer.Plan
     /// </summary>
     public abstract class StreamingPlan
     {
+        /// <summary>
+        /// Gets the assembled <see cref="JobGraph"/> with a random <see cref="JobId"/>.
+        /// </summary>
+        /// <returns></returns>
         public JobGraph GetJobGraph()
         {
             return GetJobGraph(null);
         }
 
+        /// <summary>
+        /// Gets the assembled <see cref="JobGraph"/> with a specified <see cref="JobId"/>.
+        /// </summary>
+        /// <param name="jobId"></param>
+        /// <returns></returns>
         public abstract JobGraph GetJobGraph(JobId jobId);
 
         public abstract string GetStreamingPlanAsJson();
-
-        public abstract void DumpStreamingPlanAsJson(FileInfo file);
     }
 }
