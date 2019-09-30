@@ -3,6 +3,7 @@ using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Operators;
 
 namespace FLink.Streaming.Api.DataStream
@@ -61,12 +62,49 @@ namespace FLink.Streaming.Api.DataStream
             return null;
         }
 
+        /// <summary>
+        /// Assigns timestamps to the elements in the data stream and periodically creates watermarks to signal event time progress.
+        /// This method creates watermarks periodically (for example every second), based on the watermarks indicated by the given watermark generator. Even when no new elements in the stream arrive, the given watermark generator will be periodically checked for new watermarks. The interval in which watermarks are generated is defined in <see cref="FLink.Core.Api.Common.ExecutionConfig.SetAutoWatermarkInterval"/>.
+        /// Use this method for the common cases, where some characteristic over all elements should generate the watermarks, or where watermarks are simply trailing behind the wall clock time by a certain amount.
+        /// For the second case and when the watermarks are required to lag behind the maximum timestamp seen so far in the elements of the stream by a fixed amount of time, and this amount is known in advance, use the  <see cref="FLink.Streaming.Api.Functions.Timestamps.BoundedOutOfOrdernessTimestampExtractor{T}"/>.
+        /// For cases where watermarks should be created in an irregular fashion, for example based on certain markers that some element carry, use the <see cref="IAssignerWithPunctuatedWatermarks{T}"/>.
+        /// </summary>
+        /// <param name="timestampAndWatermarkAssigner">The implementation of the timestamp assigner and watermark generator.</param>
+        /// <returns>The stream after the transformation, with assigned timestamps and watermarks.</returns>
+        public SingleOutputStreamOperator<T> AssignTimestampsAndWatermarks(
+            IAssignerWithPeriodicWatermarks<T> timestampAndWatermarkAssigner)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Assigns timestamps to the elements in the data stream and creates watermarks to signal event time progress based on the elements themselves.
+        /// </summary>
+        /// <param name="timestampAndWatermarkAssigner">The implementation of the timestamp assigner and watermark generator.</param>
+        /// <returns>The stream after the transformation, with assigned timestamps and watermarks.</returns>
+        public SingleOutputStreamOperator<T> AssignTimestampsAndWatermarks(
+            IAssignerWithPunctuatedWatermarks<T> timestampAndWatermarkAssigner)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Applies a Filter transformation on a <see cref="DataStream{T}"/>.
+        /// The transformation calls a <see cref="IFilterFunction{T}"/> for each element of the DataStream and retains only those element for which the function returns true. Elements for which the function returns false are filtered. The user can also extend <see cref="IRichFunction"/> to gain access to other features provided by the <see cref="IRichFunction"/> interface.
+        /// </summary>
+        /// <param name="filter">The FilterFunction that is called for each element of the DataStream.</param>
+        /// <returns>The filtered DataStream.</returns>
+        public SingleOutputStreamOperator<T> Filter(IFilterFunction<T> filter)
+        {
+            return null;
+        }
+
         #region [ private members ] 
 
-        private SingleOutputStreamOperator<TReturn> DoTransform<TReturn>(
-            string operatorName,
-            TypeInformation<TReturn> outTypeInfo,
-            IStreamOperatorFactory<TReturn> operatorFactory)
+            private SingleOutputStreamOperator<TReturn> DoTransform<TReturn>(
+        string operatorName,
+        TypeInformation<TReturn> outTypeInfo,
+        IStreamOperatorFactory<TReturn> operatorFactory)
         {
             return null;
         }

@@ -33,7 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions", "src\Extensions\FLink.Extensions\FLink.Extensions.csproj", "{95862A7E-B795-4DE4-B90C-B368EA48FFC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Extensions.DependencyInjection.AutoFactory", "src\Extensions\FLink.Extensions.DependencyInjection.AutoFactory\FLink.Extensions.DependencyInjection.AutoFactory.csproj", "{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions.DependencyInjection.AutoFactory", "src\Extensions\FLink.Extensions.DependencyInjection.AutoFactory\FLink.Extensions.DependencyInjection.AutoFactory.csproj", "{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BatchAnalytics", "BatchAnalytics", "{62201495-71C8-41FD-B522-4E8D37329BE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotProducts", "samples\DataAnalytics\BatchAnalytics\HotProducts\HotProducts.csproj", "{4BF667E7-F4D4-4779-B398-6559990BBE8B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Extensions.IO", "src\Extensions\FLink.Extensions.IO\FLink.Extensions.IO.csproj", "{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +83,14 @@ Global
 		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BF667E7-F4D4-4779-B398-6559990BBE8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BF667E7-F4D4-4779-B398-6559990BBE8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BF667E7-F4D4-4779-B398-6559990BBE8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BF667E7-F4D4-4779-B398-6559990BBE8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +109,9 @@ Global
 		{5CA17579-1FD5-41FC-8497-8019C88E9EE6} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
 		{95862A7E-B795-4DE4-B90C-B368EA48FFC7} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
 		{97FE88E1-3EA4-4159-BD0A-CEB4523F2EAF} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
+		{62201495-71C8-41FD-B522-4E8D37329BE1} = {B0B9665A-1422-4D90-908E-A109D5B90838}
+		{4BF667E7-F4D4-4779-B398-6559990BBE8B} = {62201495-71C8-41FD-B522-4E8D37329BE1}
+		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}

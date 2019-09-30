@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Exceptions;
@@ -43,6 +44,7 @@ namespace FLink.Streaming.Api.Environment
         private long _bufferTimeout = DefaultNetworkBufferTimeout;
 
         protected bool IsChainingEnabled = true;
+        private TimeCharacteristic _timeCharacteristic = DefaultTimeCharacteristic;
 
         public DataStreamSource<TOut> FromCollection<TOut>(IEnumerable<TOut> data, TypeInformation<TOut> typeInfo)
         {
@@ -147,6 +149,11 @@ namespace FLink.Streaming.Api.Environment
             return null;
         }
 
+        public DataStreamSource<TOut> ReadCsvFile<TOut>(string filePath)
+        {
+            return null;
+        }
+
         /// <summary>
         /// Creates a <see cref="LocalStreamEnvironment"/>.  
         /// The local execution environment will run the program in a multi-threaded fashion in the same CLR as the  environment was created in. The default parallelism of the local environment is the number of hardware contexts(CPU cores / threads), unless it was specified differently by  <see cref="StreamExecutionEnvironment.SetParallelism"/>.
@@ -188,5 +195,15 @@ namespace FLink.Streaming.Api.Environment
         {
             return null;
         }
+
+        #region [ Time characteristic ]
+
+        public void SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
+        {
+            _timeCharacteristic = Preconditions.CheckNotNull(characteristic);
+            GetConfig().SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
+        }
+
+        #endregion
     }
 }
