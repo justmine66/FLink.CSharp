@@ -16,5 +16,15 @@ namespace FLink.Streaming.Api.Operators
         {
             throw new NotImplementedException();
         }
+
+        public override void Open()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Close()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace FLink.Streaming.Api.Operators
     /// <typeparam name="TOut">The output type of the operator</typeparam>
     public abstract class AbstractStreamOperator<TOut> : IStreamOperator<TOut>
     {
-        public void NotifyCheckpointComplete(long checkpointId)
+        public virtual void NotifyCheckpointComplete(long checkpointId)
         {
             throw new NotImplementedException();
         }
@@ -26,17 +26,20 @@ namespace FLink.Streaming.Api.Operators
             throw new NotImplementedException();
         }
 
-        public void Open()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// This method is called immediately before any elements are processed, it should contain the operator's initialization logic, e.g. state initialization.
+        /// </summary>
+        /// <exception cref="System.Exception">An exception in this method causes the operator to fail.</exception>
+        public abstract void Open();
 
-        public void Close()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// This method is called after all records have been added to the operators.
+        /// The method is expected to flush all remaining buffered data. Exceptions during this flushing of buffered should be propagated, in order to cause the operation to be recognized asa failed, because the last data items are not processed properly.
+        /// </summary>
+        /// <exception cref="System.Exception">An exception in this method causes the operator to fail.</exception>
+        public abstract void Close();
 
-        void IStreamOperator<TOut>.Dispose()
+        public virtual void Dispose()
         {
             throw new NotImplementedException();
         }
@@ -46,18 +49,13 @@ namespace FLink.Streaming.Api.Operators
             throw new NotImplementedException();
         }
 
-        public OperatorSnapshotFutures SnapshotState(long checkpointId, long timestamp, CheckpointOptions checkpointOptions,
+        public virtual OperatorSnapshotFutures SnapshotState(long checkpointId, long timestamp, CheckpointOptions checkpointOptions,
             ICheckpointStreamFactory storageLocation)
         {
             throw new NotImplementedException();
         }
 
-        public void InitializeState()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IDisposable.Dispose()
+        public virtual void InitializeState()
         {
             throw new NotImplementedException();
         }
