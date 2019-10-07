@@ -57,9 +57,9 @@ namespace HotProducts
         }
     }
 
-    public class WindowResultFunction : IWindowFunction<long, ProductClickCount, long, TimeWindow>
+    public class WindowResultFunction : IWindowFunction<long, ProductClickCount, object, TimeWindow>
     {
-        public void Apply(long key, TimeWindow window, IEnumerable<long> input, ICollector<ProductClickCount> output)
+        public void Apply(object key, TimeWindow window, IEnumerable<long> input, ICollector<ProductClickCount> output)
         {
             throw new NotImplementedException();
         }
@@ -91,7 +91,7 @@ namespace HotProducts
         }
     }
 
-    public class TopNHotProducts : KeyedProcessFunction<long, ProductClickCount, string>
+    public class TopNHotProducts : KeyedProcessFunction<object, ProductClickCount, string>
     {
         private static int _topSize;
 

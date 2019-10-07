@@ -10,13 +10,15 @@ namespace FLink.Streaming.Api.Watermarks
     {
         public static readonly Watermark MaxWatermark = new Watermark(long.MaxValue);
 
-        // The timestamp of the watermark in milliseconds.
+        /// <summary>
+        /// The timestamp of the watermark in milliseconds.
+        /// </summary>
         public long Timestamp { get; }
 
         /// <summary>
         /// Creates a new watermark with the given timestamp in milliseconds.
         /// </summary>
-        /// <param name="timestamp"></param>
+        /// <param name="timestamp">The timestamp of the watermark in milliseconds.</param>
         public Watermark(long timestamp)
         {
             Timestamp = timestamp;
