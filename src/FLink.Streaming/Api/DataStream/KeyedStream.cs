@@ -3,6 +3,7 @@ using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions;
+using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.DataStream
@@ -20,6 +21,18 @@ namespace FLink.Streaming.Api.DataStream
         }
 
         /// <summary>
+        /// Windows this <see cref="KeyedStream{T,TKey}"/> into tumbling time windows.
+        /// </summary>
+        /// <param name="size">The size of the window.</param>
+        /// <returns></returns>
+        public WindowedStream<T, TKey, TimeWindow> TimeWindow(TimeSpan size)
+        {
+            return Environment.GetStreamTimeCharacteristic() == TimeCharacteristic.ProcessingTime
+                ? Window(TumblingProcessingTimeWindows<T>.Of(size))
+                : Window(TumblingEventTimeWindows<T>.Of(size));
+        }
+
+        /// <summary>
         /// Windows this <see cref="KeyedStream{T,TKey}"/> into sliding time windows.
         /// </summary>
         /// <param name="size">The size of the window.</param>
@@ -27,7 +40,42 @@ namespace FLink.Streaming.Api.DataStream
         /// <returns></returns>
         public WindowedStream<T, TKey, TimeWindow> TimeWindow(TimeSpan size, TimeSpan slide)
         {
+            return Environment.GetStreamTimeCharacteristic() == TimeCharacteristic.ProcessingTime
+                ? Window(SlidingProcessingTimeWindows<T>.Of(size, slide))
+                : Window(SlidingEventTimeWindows<T>.Of(size, slide));
+        }
+
+        /// <summary>
+        /// Windows this KeyedStream into tumbling count windows.
+        /// </summary>
+        /// <param name="size">The size of the windows in number of elements.</param>
+        /// <returns></returns>
+        public WindowedStream<T, TKey, GlobalWindow> CountWindow(long size)
+        {
             return null;
+        }
+
+        /// <summary>
+        /// Windows this KeyedStream into sliding count windows.
+        /// </summary>
+        /// <param name="size">The size of the windows in number of elements.</param>
+        /// <param name="slide">The slide interval in number of elements.</param>
+        /// <returns></returns>
+        public WindowedStream<T, TKey, GlobalWindow> CountWindow(long size, long slide)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Windows this data stream to a <see cref="WindowedStream{T,TK,TW}"/>, which evaluates windows over a key grouped stream. Elements are put into windows by a <see cref="WindowAssigner{T,TW}"/>. The grouping of elements is done both by key and by window.
+        /// </summary>
+        /// <typeparam name="TW"></typeparam>
+        /// <param name="assigner">The WindowAssigner that assigns elements to windows.</param>
+        /// <returns>The trigger windows data stream.</returns>
+        public WindowedStream<T, TKey, TW> Window<TW>(WindowAssigner<T, TW> assigner)
+            where TW : Window
+        {
+            return new WindowedStream<T, TKey, TW>(this, assigner);
         }
 
         /// <summary>

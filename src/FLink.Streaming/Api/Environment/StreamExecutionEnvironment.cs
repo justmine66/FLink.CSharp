@@ -204,6 +204,11 @@ namespace FLink.Streaming.Api.Environment
             GetConfig().SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
         }
 
+        public TimeCharacteristic GetStreamTimeCharacteristic()
+        {
+            return _timeCharacteristic;
+        }
+
         #endregion
     }
 }

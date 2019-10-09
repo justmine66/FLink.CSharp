@@ -1,6 +1,7 @@
 ﻿using FLink.Core.Api.Common.Functions;
 using FLink.Streaming.Api.Functions.Windowing;
 using FLink.Streaming.Api.Windowing.Assigners;
+using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.DataStream
@@ -14,6 +15,20 @@ namespace FLink.Streaming.Api.DataStream
     public class WindowedStream<T, TK, TW>
         where TW : Window
     {
+        // The keyed data stream that is windowed by this stream.
+        private readonly KeyedStream<T, TK> _input;
+        // The window assigner.
+        private readonly WindowAssigner<T, TW> _windowAssigner;
+        // The trigger that is used for window evaluation/emission.
+        private Trigger<T, TW> _trigger;
+
+        public WindowedStream(KeyedStream<T, TK> input, WindowAssigner<T, TW> windowAssigner)
+        {
+            _input = input;
+            _windowAssigner = windowAssigner;
+            _trigger = windowAssigner.GetDefaultTrigger(input.Environment);
+        }
+
         public SingleOutputStreamOperator<T> Reduce(IReduceFunction<T> function)
         {
             return null;
