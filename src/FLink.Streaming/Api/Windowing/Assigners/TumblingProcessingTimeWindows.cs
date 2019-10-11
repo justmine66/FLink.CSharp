@@ -32,7 +32,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new NotImplementedException();
         }
 
-        public override bool IsEventTime() => false;
+        public override bool IsEventTime => false;
 
         public override string ToString() => "TumblingProcessingTimeWindows(" + _size + ")";
 

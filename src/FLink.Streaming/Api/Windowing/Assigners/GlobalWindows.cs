@@ -22,7 +22,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             return new NeverTrigger();
         }
 
-        public override bool IsEventTime() => false;
+        public override bool IsEventTime => false;
 
         /// <summary>
         /// Creates a new <see cref="GlobalWindow"/> that assigns all elements to the same <see cref="GlobalWindow"/>.

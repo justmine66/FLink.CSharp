@@ -33,7 +33,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new NotImplementedException();
         }
 
-        public override bool IsEventTime() => true;
+        public override bool IsEventTime => true;
 
         public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeCallback<TimeWindow> callback)
         {

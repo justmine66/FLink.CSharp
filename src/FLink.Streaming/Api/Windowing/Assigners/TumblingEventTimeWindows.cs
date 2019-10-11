@@ -32,7 +32,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new System.NotImplementedException();
         }
 
-        public override bool IsEventTime() => true;
+        public override bool IsEventTime => true;
 
         /// <summary>
         /// Creates a new TumblingEventTimeWindows, WindowAssigner that assigns elements to time windows based on the element timestamp.

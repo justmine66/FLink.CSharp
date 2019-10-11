@@ -35,7 +35,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new System.NotImplementedException();
         }
 
-        public override bool IsEventTime() => true;
+        public override bool IsEventTime => true;
 
         public static SlidingEventTimeWindows<TElement> Of(TimeSpan size, TimeSpan slide)
         {

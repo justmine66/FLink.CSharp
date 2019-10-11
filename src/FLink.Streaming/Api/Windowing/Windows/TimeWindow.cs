@@ -3,7 +3,7 @@
 namespace FLink.Streaming.Api.Windowing.Windows
 {
     /// <summary>
-    /// A <see cref="Window"/> that represents a time interval from {@code start} (inclusive) to {@code end}(exclusive).
+    /// A <see cref="Window"/> that represents a time interval from <see cref="Start"/> (inclusive) to <see cref="End"/>(exclusive).
     /// </summary>
     public class TimeWindow : Window, IEquatable<TimeWindow>
     {
