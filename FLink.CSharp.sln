@@ -37,9 +37,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions.Dependency
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BatchAnalytics", "BatchAnalytics", "{62201495-71C8-41FD-B522-4E8D37329BE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotProducts", "samples\DataAnalytics\BatchAnalytics\HotProducts\HotProducts.csproj", "{4BF667E7-F4D4-4779-B398-6559990BBE8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotProducts", "samples\DataAnalytics\BatchAnalytics\HotProducts\HotProducts.csproj", "{4BF667E7-F4D4-4779-B398-6559990BBE8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Extensions.IO", "src\Extensions\FLink.Extensions.IO\FLink.Extensions.IO.csproj", "{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions.IO", "src\Extensions\FLink.Extensions.IO\FLink.Extensions.IO.csproj", "{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Examples.Streaming", "tests\FunctionalTests\FLink.Examples.Streaming\FLink.Examples.Streaming.csproj", "{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +93,10 @@ Global
 		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +118,7 @@ Global
 		{62201495-71C8-41FD-B522-4E8D37329BE1} = {B0B9665A-1422-4D90-908E-A109D5B90838}
 		{4BF667E7-F4D4-4779-B398-6559990BBE8B} = {62201495-71C8-41FD-B522-4E8D37329BE1}
 		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
+		{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F} = {4E9AD229-2BB9-486F-8360-BAF8FE0930E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}
