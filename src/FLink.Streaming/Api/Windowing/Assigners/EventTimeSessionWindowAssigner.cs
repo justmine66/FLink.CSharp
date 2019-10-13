@@ -11,11 +11,11 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// A WindowAssigner that windows elements into sessions based on the timestamp of the elements.Windows cannot overlap.
     /// </summary>
     /// <typeparam name="TElement"></typeparam>
-    public class EventTimeSessionWindows<TElement> : MergingWindowAssigner<TElement, TimeWindow>
+    public class EventTimeSessionWindowAssigner<TElement> : MergingWindowAssigner<TElement, TimeWindow>
     {
         public long SessionTimeout { get; }
 
-        protected EventTimeSessionWindows(long sessionTimeout)
+        protected EventTimeSessionWindowAssigner(long sessionTimeout)
         {
             if (sessionTimeout <= 0)
                 throw new IllegalArgumentException("EventTimeSessionWindows parameters must satisfy 0 < size");
@@ -28,7 +28,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new NotImplementedException();
         }
 
-        public override Trigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             throw new NotImplementedException();
         }

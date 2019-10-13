@@ -9,11 +9,11 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <summary>
     /// A WindowAssigner that windows elements into sessions based on the current processing time. Windows cannot overlap.
     /// </summary>
-    public class ProcessingTimeSessionWindows<TElement> : MergingWindowAssigner<TElement, TimeWindow>
+    public class ProcessingTimeSessionWindowAssigner<TElement> : MergingWindowAssigner<TElement, TimeWindow>
     {
         public long SessionTimeout { get; }
 
-        protected ProcessingTimeSessionWindows(long sessionTimeout)
+        protected ProcessingTimeSessionWindowAssigner(long sessionTimeout)
         {
             if (sessionTimeout <= 0)
                 throw new IllegalArgumentException("ProcessingTimeSessionWindows parameters must satisfy 0 < size");
@@ -26,7 +26,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new System.NotImplementedException();
         }
 
-        public override Trigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             throw new System.NotImplementedException();
         }

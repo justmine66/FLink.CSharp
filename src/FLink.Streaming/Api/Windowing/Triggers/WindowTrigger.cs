@@ -8,7 +8,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     /// </summary>
     /// <typeparam name="T">The type of elements on which this Trigger works.</typeparam>
     /// <typeparam name="TW">The type of window on which this trigger can operate.</typeparam>
-    public abstract class Trigger<T, TW> where TW : Window
+    public abstract class WindowTrigger<T, TW> where TW : Window
     {
         /// <summary>
         /// Called for every element that gets added to a pane. The result of this will determine whether the pane is evaluated to emit results.
@@ -19,7 +19,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// <param name="window">The window to which the element is being added.</param>
         /// <param name="ctx">A context object that can be used to register timer callbacks.</param>
         /// <returns></returns>
-        public abstract TriggerResult OnElement(T element, long timestamp, TW window, ITriggerContext ctx);
+        public abstract WindowTriggerResult OnElement(T element, long timestamp, TW window, ITriggerContext ctx);
 
         /// <summary>
         /// Called when a processing-time timer that was set using the trigger context fires.
@@ -29,7 +29,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// <param name="window">The window for which the timer fired.</param>
         /// <param name="ctx">A context object that can be used to register timer callbacks.</param>
         /// <returns></returns>
-        public abstract TriggerResult OnProcessingTime(long time, TW window, ITriggerContext ctx);
+        public abstract WindowTriggerResult OnProcessingTime(long time, TW window, ITriggerContext ctx);
 
         /// <summary>
         /// Called when an event-time timer that was set using the trigger context fires.
@@ -39,7 +39,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// <param name="window">The window for which the timer fired.</param>
         /// <param name="ctx">A context object that can be used to register timer callbacks.</param>
         /// <returns></returns>
-        public abstract TriggerResult OnEventTime(long time, TW window, ITriggerContext ctx);
+        public abstract WindowTriggerResult OnEventTime(long time, TW window, ITriggerContext ctx);
 
         /// <summary>
         /// Returns true if this trigger supports merging of trigger state and can therefore be used with a <see cref="MergingWindowAssigner{T,TW}"/>
@@ -64,13 +64,13 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             /// <summary>
             /// Register a system time callback.
             /// </summary>
-            /// <param name="time">The time at which to invoke <see cref="Trigger{T,TW}.OnProcessingTime"/></param>.
+            /// <param name="time">The time at which to invoke <see cref="WindowTrigger{T,TW}.OnProcessingTime"/></param>.
             void RegisterProcessingTimeTimer(long time);
 
             /// <summary>
             /// Register an event-time callback.
             /// </summary>
-            /// <param name="time">The watermark at which to invoke <see cref="Trigger{T,TW}.OnEventTime"/></param></param>
+            /// <param name="time">The watermark at which to invoke <see cref="WindowTrigger{T,TW}.OnEventTime"/></param></param>
             void RegisterEventTimeTimer(long time);
 
             /// <summary>

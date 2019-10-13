@@ -32,8 +32,7 @@ namespace FLink.Streaming.Api.Windowing.Windows
         /// Gets the largest timestamp that still belongs to this window.
         /// This timestamp is identical to <code><see cref="End"/> -1</code>.
         /// </summary>
-        /// <returns></returns>
-        public override long MaxTimestamp() => End - 1;
+        public override long MaxTimestamp => End - 1;
 
         public override string ToString() => "TimeWindow{" + "start=" + Start + ", end=" + End + '}';
 

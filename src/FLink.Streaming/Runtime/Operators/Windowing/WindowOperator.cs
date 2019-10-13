@@ -11,7 +11,7 @@ using FLink.Streaming.Runtime.StreamRecord;
 namespace FLink.Streaming.Runtime.Operators.Windowing
 {
     /// <summary>
-    /// An operator that implements the logic for windowing based on a <see cref="WindowAssigner{T,TW}"/> and <see cref="Trigger{T,TW}"/>.
+    /// An operator that implements the logic for windowing based on a <see cref="WindowAssigner{T,TW}"/> and <see cref="WindowTrigger{T,TW}"/>.
     /// </summary>
     /// <typeparam name="TK">The type of key.</typeparam>
     /// <typeparam name="TIn">The type of the incoming elements.</typeparam>

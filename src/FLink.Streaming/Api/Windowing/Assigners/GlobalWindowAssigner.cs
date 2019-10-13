@@ -8,16 +8,16 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <summary>
     /// A WindowAssigner that assigns all elements to the same GlobalWindow.
     /// </summary>
-    public class GlobalWindows : WindowAssigner<object, GlobalWindow>
+    public class GlobalWindowAssigner : WindowAssigner<object, GlobalWindow>
     {
-        private GlobalWindows() { }
+        private GlobalWindowAssigner() { }
 
         public override IEnumerable<GlobalWindow> AssignWindows(object element, long timestamp, WindowAssignerContext context)
         {
             throw new System.NotImplementedException();
         }
 
-        public override Trigger<object, GlobalWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<object, GlobalWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             return new NeverTrigger();
         }
@@ -28,9 +28,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// Creates a new <see cref="GlobalWindow"/> that assigns all elements to the same <see cref="GlobalWindow"/>.
         /// </summary>
         /// <returns></returns>
-        public static GlobalWindows Create()
+        public static GlobalWindowAssigner Create()
         {
-            return new GlobalWindows();
+            return new GlobalWindowAssigner();
         }
 
         public override string ToString()
@@ -41,21 +41,21 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <summary>
         /// A trigger that never fires, as default Trigger for GlobalWindows.
         /// </summary>
-        public class NeverTrigger : Trigger<object, GlobalWindow>
+        public class NeverTrigger : WindowTrigger<object, GlobalWindow>
         {
-            public override TriggerResult OnElement(object element, long timestamp, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnElement(object element, long timestamp, GlobalWindow window, ITriggerContext ctx)
             {
-                return TriggerResult.Continue;
+                return WindowTriggerResult.Continue;
             }
 
-            public override TriggerResult OnProcessingTime(long time, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnProcessingTime(long time, GlobalWindow window, ITriggerContext ctx)
             {
-                return TriggerResult.Continue;
+                return WindowTriggerResult.Continue;
             }
 
-            public override TriggerResult OnEventTime(long time, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnEventTime(long time, GlobalWindow window, ITriggerContext ctx)
             {
-                return TriggerResult.Continue;
+                return WindowTriggerResult.Continue;
             }
         }
     }

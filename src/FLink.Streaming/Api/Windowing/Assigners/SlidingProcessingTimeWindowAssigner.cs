@@ -7,7 +7,7 @@ using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
-    public class SlidingProcessingTimeWindows<TElement> : WindowAssigner<TElement, TimeWindow>
+    public class SlidingProcessingTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
         private readonly long _size;
 
@@ -15,7 +15,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
 
         private readonly long _offset;
 
-        public SlidingProcessingTimeWindows(long size, long slide, long offset)
+        public SlidingProcessingTimeWindowAssigner(long size, long slide, long offset)
         {
             if (offset < 0 || offset >= slide || size <= 0)
                 throw new IllegalArgumentException("SlidingProcessingTimeWindows parameters must satisfy 0 <= offset < slide and size > 0");
@@ -30,7 +30,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new NotImplementedException();
         }
 
-        public override Trigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             throw new NotImplementedException();
         }
@@ -39,9 +39,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
 
         public override string ToString() => "SlidingProcessingTimeWindows(" + _size + ", " + _slide + ")";
 
-        public static SlidingProcessingTimeWindows<TElement> Of(TimeSpan size, TimeSpan slide)
+        public static SlidingProcessingTimeWindowAssigner<TElement> Of(TimeSpan size, TimeSpan slide)
         {
-            return new SlidingProcessingTimeWindows<TElement>((long)size.TotalMilliseconds, (long)slide.TotalMilliseconds,
+            return new SlidingProcessingTimeWindowAssigner<TElement>((long)size.TotalMilliseconds, (long)slide.TotalMilliseconds,
                 0);
         }
     }

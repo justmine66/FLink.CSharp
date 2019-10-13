@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using FLink.Core.Exceptions;
+﻿using FLink.Core.Exceptions;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
+using System;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
-    public class TumblingEventTimeWindows<TElement> : WindowAssigner<TElement, TimeWindow>
+    public class TumblingEventTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
         private readonly long _size;
 
         private readonly long _offset;
 
-        public TumblingEventTimeWindows(long size, long offset)
+        public TumblingEventTimeWindowAssigner(long size, long offset)
         {
             if (offset < 0 || offset >= size)
                 throw new IllegalArgumentException("TumblingEventTimeWindows parameters must satisfy 0 <= offset < size");
@@ -27,7 +27,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new System.NotImplementedException();
         }
 
-        public override Trigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             throw new System.NotImplementedException();
         }
@@ -39,9 +39,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// </summary>
         /// <param name="size">The size of the generated windows.</param>
         /// <returns>The time policy.</returns>
-        public static TumblingEventTimeWindows<TElement> Of(TimeSpan size)
+        public static TumblingEventTimeWindowAssigner<TElement> Of(TimeSpan size)
         {
-            return new TumblingEventTimeWindows<TElement>((long)size.TotalMilliseconds, 0);
+            return new TumblingEventTimeWindowAssigner<TElement>((long)size.TotalMilliseconds, 0);
         }
     }
 }

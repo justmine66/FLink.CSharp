@@ -7,13 +7,13 @@ using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
-    public class TumblingProcessingTimeWindows<TElement> : WindowAssigner<TElement, TimeWindow>
+    public class TumblingProcessingTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
         private readonly long _size;
 
         private readonly long _offset;
 
-        public TumblingProcessingTimeWindows(long size, long offset)
+        public TumblingProcessingTimeWindowAssigner(long size, long offset)
         {
             if (offset < 0 || offset >= size)
                 throw new IllegalArgumentException("TumblingEventTimeWindows parameters must satisfy 0 <= offset < size");
@@ -27,7 +27,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             throw new NotImplementedException();
         }
 
-        public override Trigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             throw new NotImplementedException();
         }
@@ -41,9 +41,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// </summary>
         /// <param name="size"></param>
         /// <returns></returns>
-        public static TumblingProcessingTimeWindows<TElement> Of(TimeSpan size)
+        public static TumblingProcessingTimeWindowAssigner<TElement> Of(TimeSpan size)
         {
-            return new TumblingProcessingTimeWindows<TElement>((long)size.TotalMilliseconds, 0);
+            return new TumblingProcessingTimeWindowAssigner<TElement>((long)size.TotalMilliseconds, 0);
         }
     }
 }

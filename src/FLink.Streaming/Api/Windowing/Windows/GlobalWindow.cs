@@ -13,7 +13,10 @@ namespace FLink.Streaming.Api.Windowing.Windows
 
         public static GlobalWindow Get() => Instance;
 
-        public override long MaxTimestamp() => long.MaxValue;
+        /// <summary>
+        /// Gets the largest timestamp that still belongs to this window.
+        /// </summary>
+        public override long MaxTimestamp => long.MaxValue;
 
         public bool Equals(GlobalWindow other)
         {

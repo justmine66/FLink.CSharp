@@ -6,13 +6,13 @@ using FLink.Streaming.Api.Windowing.Windows;
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
     /// <summary>
-    /// A <see cref="WindowAssigner{TElement,TWindow}"/> assigns zero or more windows to an element.
+    /// A WindowAssigner is responsible for assigning each incoming element to one or more windows.
     /// </summary>
     /// <typeparam name="TElement">The type of elements that this WindowAssigner can assign windows to.</typeparam>
     /// <typeparam name="TWindow">The type of <see cref="Window"/> that this assigner assigns.</typeparam>
     public abstract class WindowAssigner<TElement, TWindow> where TWindow : Window
-    {
-        /// <summary>
+    {   
+        /// <summary>       
         /// Returns a Collection of windows that should be assigned to the element.
         /// </summary>
         /// <param name="element">The element to which windows should be assigned.</param>
@@ -26,7 +26,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// </summary>
         /// <param name="env"></param>
         /// <returns></returns>
-        public abstract Trigger<TElement, TWindow> GetDefaultTrigger(StreamExecutionEnvironment env);
+        public abstract WindowTrigger<TElement, TWindow> GetDefaultTrigger(StreamExecutionEnvironment env);
 
         /// <summary>
         /// Returns true if elements are assigned to windows based on event time, false otherwise.

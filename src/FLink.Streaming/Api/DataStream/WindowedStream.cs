@@ -20,7 +20,7 @@ namespace FLink.Streaming.Api.DataStream
         // The window assigner.
         private readonly WindowAssigner<T, TW> _windowAssigner;
         // The trigger that is used for window evaluation/emission.
-        private Trigger<T, TW> _trigger;
+        private WindowTrigger<T, TW> _trigger;
 
         public WindowedStream(KeyedStream<T, TK> input, WindowAssigner<T, TW> windowAssigner)
         {

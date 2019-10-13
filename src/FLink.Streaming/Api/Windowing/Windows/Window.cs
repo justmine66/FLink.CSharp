@@ -9,7 +9,6 @@
         /// <summary>
         /// Gets the largest timestamp that still belongs to this window.
         /// </summary>
-        /// <returns>The largest timestamp that still belongs to this window.</returns>
-        public abstract long MaxTimestamp();
+        public abstract long MaxTimestamp { get; }
     }
 }
