@@ -1,26 +1,23 @@
-﻿using System.Collections.Generic;
-using FLink.Streaming.Api.Environment;
+﻿using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
     /// <summary>
-    /// A WindowAssigner that assigns all elements to the same GlobalWindow.
+    /// A <see cref="WindowAssigner{TElement,TWindow}"/> that assigns all elements with the same key to the same single global window. This windowing scheme is only useful if you also specify a custom trigger. Otherwise, no computation will be performed, as the global window does not have a natural end at which we could process the aggregated elements.
     /// </summary>
-    public class GlobalWindowAssigner : WindowAssigner<object, GlobalWindow>
+    public class GlobalWindowAssigner<TElement> : WindowAssigner<TElement, GlobalWindow>
     {
         private GlobalWindowAssigner() { }
 
-        public override IEnumerable<GlobalWindow> AssignWindows(object element, long timestamp, WindowAssignerContext context)
+        public override IEnumerable<GlobalWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context)
         {
             throw new System.NotImplementedException();
         }
 
-        public override WindowTrigger<object, GlobalWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
-        {
-            return new NeverTrigger();
-        }
+        public override WindowTrigger<TElement, GlobalWindow> GetDefaultTrigger(StreamExecutionEnvironment env) => new NeverTrigger();
 
         public override bool IsEventTime => false;
 
@@ -28,22 +25,16 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// Creates a new <see cref="GlobalWindow"/> that assigns all elements to the same <see cref="GlobalWindow"/>.
         /// </summary>
         /// <returns></returns>
-        public static GlobalWindowAssigner Create()
-        {
-            return new GlobalWindowAssigner();
-        }
+        public static GlobalWindowAssigner<TElement> Create() => new GlobalWindowAssigner<TElement>();
 
-        public override string ToString()
-        {
-            return "GlobalWindows()";
-        }
+        public override string ToString() => "GlobalWindows()";
 
         /// <summary>
         /// A trigger that never fires, as default Trigger for GlobalWindows.
         /// </summary>
-        public class NeverTrigger : WindowTrigger<object, GlobalWindow>
+        public class NeverTrigger : WindowTrigger<TElement, GlobalWindow>
         {
-            public override WindowTriggerResult OnElement(object element, long timestamp, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnElement(TElement element, long timestamp, GlobalWindow window, ITriggerContext ctx)
             {
                 return WindowTriggerResult.Continue;
             }

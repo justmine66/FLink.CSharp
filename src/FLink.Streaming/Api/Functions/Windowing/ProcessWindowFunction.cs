@@ -16,8 +16,21 @@ namespace FLink.Streaming.Api.Functions.Windowing
     public abstract class ProcessWindowFunction<TInput, TOutput, TKey, TWindow> : AbstractRichFunction
         where TWindow : Window
     {
+        /// <summary>
+        /// Evaluates the window and outputs none or several elements.
+        /// </summary>
+        /// <param name="key">The key for which this window is evaluated.</param>
+        /// <param name="context">The context in which the window is being evaluated.</param>
+        /// <param name="elements">The elements in the window being evaluated.</param>
+        /// <param name="output">A collector for emitting elements.</param>
+        /// <exception cref="System.Exception">The function may throw exceptions to fail the program and trigger recovery.</exception>
         public abstract void Process(TKey key, Context context, IEnumerable<TInput> elements, ICollector<TOutput> output);
 
+        /// <summary>
+        /// Deletes any state in the context when the Window is purged.
+        /// </summary>
+        /// <param name="context">The context to which the window is being evaluated.</param>
+        /// <exception cref="System.Exception">The function may throw exceptions to fail the program and trigger recovery.</exception>
         public abstract void Clear(Context context);
 
         /// <summary>

@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using FLink.Core.Exceptions;
+﻿using FLink.Core.Exceptions;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
+using System;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
+    /// <summary>
+    /// A <see cref="WindowAssigner{TElement,TWindow}"/> that windows elements into sliding windows based on the current system time of the machine the operation is running on. Windows can possibly overlap.
+    /// </summary>
+    /// <typeparam name="TElement"></typeparam>
     public class SlidingProcessingTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
         private readonly long _size;
@@ -15,10 +19,10 @@ namespace FLink.Streaming.Api.Windowing.Assigners
 
         private readonly long _offset;
 
-        public SlidingProcessingTimeWindowAssigner(long size, long slide, long offset)
+        public SlidingProcessingTimeWindowAssigner(long size, long slide, long offset = 0)
         {
             if (offset < 0 || offset >= slide || size <= 0)
-                throw new IllegalArgumentException("SlidingProcessingTimeWindows parameters must satisfy 0 <= offset < slide and size > 0");
+                throw new IllegalArgumentException("the parameters must satisfy 0 <= offset < slide and size > 0");
 
             _size = size;
             _slide = slide;

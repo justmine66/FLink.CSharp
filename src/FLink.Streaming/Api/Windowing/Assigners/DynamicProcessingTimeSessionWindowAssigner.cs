@@ -1,6 +1,4 @@
-﻿using System;
-using FLink.Core.Exceptions;
-using FLink.Streaming.Api.Environment;
+﻿using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using System.Collections.Generic;
@@ -8,18 +6,16 @@ using System.Collections.Generic;
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
     /// <summary>
-    /// A WindowAssigner that windows elements into sessions based on the current processing time. Windows cannot overlap.
+    /// A <see cref="WindowAssigner{TElement,TWindow}"/> that windows elements into sessions based on the current processing time with a dynamic time gap. Windows cannot overlap.
     /// </summary>
-    public class ProcessingTimeSessionWindowAssigner<TElement> : MergingWindowAssigner<TElement, TimeWindow>
+    /// <typeparam name="TElement">The type of the input elements</typeparam>
+    public class DynamicProcessingTimeSessionWindowAssigner<TElement> : MergingWindowAssigner<TElement, TimeWindow>
     {
-        public long SessionTimeout { get; }
+        public ISessionWindowTimeGapExtractor<TElement> SessionWindowTimeGapExtractor;
 
-        protected ProcessingTimeSessionWindowAssigner(long sessionTimeout)
+        public DynamicProcessingTimeSessionWindowAssigner(ISessionWindowTimeGapExtractor<TElement> sessionWindowTimeGapExtractor)
         {
-            if (sessionTimeout <= 0)
-                throw new IllegalArgumentException("the parameters must satisfy 0 < size");
-
-            SessionTimeout = sessionTimeout;
+            SessionWindowTimeGapExtractor = sessionWindowTimeGapExtractor;
         }
 
         public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context)
@@ -33,19 +29,10 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         }
 
         public override bool IsEventTime => false;
-
         public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeCallback<TimeWindow> callback)
         {
             throw new System.NotImplementedException();
         }
-
-        /// <summary>
-        /// Creates a new <see cref="ProcessingTimeSessionWindowAssigner{TElement}"/> that assigns elements to sessions based on the element timestamp.
-        /// </summary>
-        /// <param name="size">The session timeout, i.e. the time gap between sessions</param>
-        /// <returns>The policy.</returns>
-        public static ProcessingTimeSessionWindowAssigner<TElement> WithGap(TimeSpan size) =>
-            new ProcessingTimeSessionWindowAssigner<TElement>((long)size.TotalMilliseconds);
 
         /// <summary>
         /// Creates a new <see cref="DynamicProcessingTimeSessionWindowAssigner{TElement}"/> that assigns elements to sessions based on the element timestamp.
@@ -54,5 +41,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <param name="sessionWindowTimeGapExtractor">The extractor to use to extract the time gap from the input elements</param>
         /// <returns>The policy.</returns>
         public static DynamicProcessingTimeSessionWindowAssigner<T> WithDynamicGap<T>(ISessionWindowTimeGapExtractor<T> sessionWindowTimeGapExtractor) => new DynamicProcessingTimeSessionWindowAssigner<T>(sessionWindowTimeGapExtractor);
+
+        public override string ToString() => "DynamicProcessingTimeSessionWindowAssigner()";
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace FLink.Core.Api.Common.Accumulators
 {
     /// <summary>
-    /// 
+    /// Accumulators collect distributed statistics or aggregates in a from user functions and operators. Each parallel instance creates and updates its own accumulator object, and the different parallel instances of the accumulator are later merged by the system at the end of the job. The result can be obtained from the result of a job execution, or from the web runtime monitor.
     /// </summary>
     /// <typeparam name="TValue">Type of values that are added to the accumulator.</typeparam>
-    /// <typeparam name="TResult">Type of the accumulator result as it will be reported to the client</typeparam>
+    /// <typeparam name="TResult">Type of the accumulator result as it will be reported to the client.</typeparam>
     public interface IAccumulator<TValue, TResult>
     {
         /// <summary>

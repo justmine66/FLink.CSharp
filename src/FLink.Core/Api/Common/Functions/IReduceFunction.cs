@@ -1,7 +1,7 @@
 ﻿namespace FLink.Core.Api.Common.Functions
 {
     /// <summary>
-    /// Base interface for Reduce functions. Reduce functions combine groups of elements to a single value, by taking always two elements and combining them into one.Reduce functions may be used on entire data sets, or on grouped data sets.In the latter case, each group is reduced individually.
+    /// Base interface for Reduce functions. Reduce functions combine groups of elements to a single value, by taking always two elements and combining them into one. Reduce functions may be used on entire data sets, or on grouped data sets.In the latter case, each group is reduced individually.
     /// </summary>
     /// <typeparam name="T">Type of the elements that this function processes.</typeparam>
     public interface IReduceFunction<T> : IFunction
