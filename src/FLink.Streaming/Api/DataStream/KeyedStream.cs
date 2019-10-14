@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Streaming.Api.Environment;
@@ -77,6 +78,21 @@ namespace FLink.Streaming.Api.DataStream
         {
             return new WindowedStream<T, TKey, TW>(this, assigner);
         }
+
+        #region [ Non-Windowed aggregation operations ]
+
+        /// <summary>
+        /// Applies a reduce transformation on the grouped data stream grouped on by the given key position. The <see cref="IReduceFunction{T}"/> will receive input values based on the key value. Only input values with the same key will go to the same reducer.
+        /// </summary>
+        /// <param name="reducer">The <see cref="IReduceFunction{T}"/> that will be called for every element of the input values with the same key.</param>
+        /// <returns>The transformed DataStream.</returns>
+        public SingleOutputStreamOperator<T> Reduce(IReduceFunction<T> reducer)
+        {
+            return null;
+        }
+
+        #endregion
+
 
         /// <summary>
         /// Applies the given <see cref="KeyedProcessFunction{TK,TI,TO}"/> on the input stream, thereby creating a transformed output stream.

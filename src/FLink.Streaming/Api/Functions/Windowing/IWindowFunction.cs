@@ -6,7 +6,7 @@ using FLink.Streaming.Api.Windowing.Windows;
 namespace FLink.Streaming.Api.Functions.Windowing
 {
     /// <summary>
-    /// Base interface for functions that are evaluated over keyed (grouped) windows.
+    /// Base interface for functions that are evaluated over keyed (grouped) windows. This is an older version of ProcessWindowFunction that provides less contextual information and does not have some advances features, such as per-window keyed state. This interface will be deprecated at some point.
     /// </summary>
     /// <typeparam name="TInput">The type of the input value.</typeparam>
     /// <typeparam name="TOutput">The type of the output value.</typeparam>

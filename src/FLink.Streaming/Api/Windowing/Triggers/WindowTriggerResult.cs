@@ -25,13 +25,25 @@
         /// </summary>
         public static WindowTriggerResult Purge = new WindowTriggerResult(false, true);
 
+        /// <summary>
+        /// Create a <see cref="WindowTriggerResult"/> instance.
+        /// </summary>
+        /// <param name="fire">Whether to trigger the computation in the window or not.</param>
+        /// <param name="purge">Whether to clear the elements in the window or not.</param>
         public WindowTriggerResult(bool fire, bool purge)
         {
             IsFire = fire;
             IsPurge = purge;
         }
 
+        /// <summary>
+        /// Whether to trigger the computation in the window or not.
+        /// </summary>
         public bool IsFire { get; }
+
+        /// <summary>
+        /// Whether to clear the elements in the window or not.
+        /// </summary>
         public bool IsPurge { get; }
     }
 }
