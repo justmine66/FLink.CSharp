@@ -10,7 +10,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     {
         private EventTimeWindowTrigger() { }
 
-        public override void clear(TimeWindow window, ITriggerContext ctx)
+        public override void Clear(TimeWindow window, ITriggerContext ctx)
         {
             throw new System.NotImplementedException();
         }

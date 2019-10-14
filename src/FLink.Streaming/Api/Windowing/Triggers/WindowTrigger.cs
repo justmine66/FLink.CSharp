@@ -60,7 +60,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// </summary>
         /// <param name="window"></param>
         /// <param name="ctx"></param>
-        public abstract void clear(TWindow window, ITriggerContext ctx);
+        public abstract void Clear(TWindow window, ITriggerContext ctx);
 
         /// <summary>
         /// A context object that is given to trigger methods to allow them to register timer callbacks and deal with state.

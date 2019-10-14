@@ -20,9 +20,9 @@ namespace HotProducts
     {
         static void Main(string[] args)
         {
-            var env = StreamExecutionEnvironment.GetExecutionEnvironment();
-            env.SetStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-            env.SetParallelism(1);
+            var env = StreamExecutionEnvironment.GetExecutionEnvironment()
+                .SetStreamTimeCharacteristic(TimeCharacteristic.EventTime)
+                .SetParallelism(1);
 
             var stat = env.ReadCsvFile<UserBehavior>("")// 创建数据源，得到UserBehavior类型的DataStream
                     .AssignTimestampsAndWatermarks(new UserBehaviorAscendingTimestampExtractor())// 抽取出时间和生成watermark

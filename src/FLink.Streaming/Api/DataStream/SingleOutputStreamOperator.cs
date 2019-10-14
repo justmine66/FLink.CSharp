@@ -13,14 +13,14 @@ namespace FLink.Streaming.Api.DataStream
         /** Indicate this is a non-parallel operator and cannot set a non-1 degree of parallelism. **/
         protected bool NonParallel = false;
 
-        protected SingleOutputStreamOperator(StreamExecutionEnvironment environment, Transformation<T> transformation) 
+        protected SingleOutputStreamOperator(StreamExecutionEnvironment environment, Transformation<T> transformation)
             : base(environment, transformation)
         {
         }
 
         public SingleOutputStreamOperator<T> SetParallelism(int parallelism)
         {
-            Preconditions.CheckArgument(CanBeParallel() || parallelism == 1,
+            Preconditions.CheckArgument(CanBeParallel || parallelism == 1,
                 "The parallelism of non parallel operator must be 1.");
 
             Transformation.SetParallelism(parallelism);
@@ -28,9 +28,6 @@ namespace FLink.Streaming.Api.DataStream
             return this;
         }
 
-        private bool CanBeParallel()
-        {
-            return !NonParallel;
-        }
+        private bool CanBeParallel => !NonParallel;
     }
 }

@@ -1,8 +1,10 @@
 ﻿using FLink.Core.Api.Common.Functions;
+using FLink.Core.Util;
 using FLink.Streaming.Api.Functions.Windowing;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
+using System;
 
 namespace FLink.Streaming.Api.DataStream
 {
@@ -21,12 +23,40 @@ namespace FLink.Streaming.Api.DataStream
         private readonly WindowAssigner<TElement, TWindow> _windowAssigner;
         // The trigger that is used for window evaluation/emission.
         private WindowTrigger<TElement, TWindow> _trigger;
+        // The user-specified allowed lateness.
+        private long _allowedLateness = 0L;
 
         public WindowedStream(KeyedStream<TElement, TKey> input, WindowAssigner<TElement, TWindow> windowAssigner)
         {
             _input = input;
             _windowAssigner = windowAssigner;
             _trigger = windowAssigner.GetDefaultTrigger(input.Environment);
+        }
+
+        /// <summary>
+        /// Sets the time by which elements are allowed to be late. Elements that arrive behind the watermark by more than the specified time will be dropped. By default, the allowed lateness is 0.
+        /// Setting an allowed lateness is only valid for event-time windows.
+        /// </summary>
+        /// <param name="lateness"> Allowed lateness specifies by how much time elements can be late before they are dropped.</param>
+        /// <returns></returns>
+        public WindowedStream<TElement, TKey, TWindow> AllowedLateness(TimeSpan lateness)
+        {
+            var millis = lateness.TotalMilliseconds;
+
+            Preconditions.CheckArgument(millis >= 0, "The allowed lateness cannot be negative.");
+
+            _allowedLateness = (long)millis;
+            return this;
+        }
+
+        /// <summary>
+        /// Send late arriving data to the side output identified by the given <see cref="OutputTag{T}"/>. Data is considered late after the watermark has passed the end of the window plus the allowed lateness set using <see cref="AllowedLateness"/>.
+        /// </summary>
+        /// <param name="outputTag"></param>
+        /// <returns></returns>
+        public WindowedStream<TElement, TKey, TWindow> SideOutputLateData(OutputTag<TElement> outputTag)
+        {
+            return null;
         }
 
         #region [ Reduce Transformations ]

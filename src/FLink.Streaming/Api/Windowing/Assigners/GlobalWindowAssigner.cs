@@ -48,6 +48,11 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             {
                 return WindowTriggerResult.Continue;
             }
+
+            public override void Clear(GlobalWindow window, ITriggerContext ctx)
+            {
+                throw new System.NotImplementedException();
+            }
         }
     }
 }

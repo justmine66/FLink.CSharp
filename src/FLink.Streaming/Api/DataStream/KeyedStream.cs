@@ -28,7 +28,7 @@ namespace FLink.Streaming.Api.DataStream
         /// <returns></returns>
         public WindowedStream<T, TKey, TimeWindow> TimeWindow(TimeSpan size)
         {
-            return Environment.GetStreamTimeCharacteristic() == TimeCharacteristic.ProcessingTime
+            return Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? Window(TumblingProcessingTimeWindowAssigner<T>.Of(size))
                 : Window(TumblingEventTimeWindowAssigner<T>.Of(size));
         }
@@ -41,7 +41,7 @@ namespace FLink.Streaming.Api.DataStream
         /// <returns></returns>
         public WindowedStream<T, TKey, TimeWindow> TimeWindow(TimeSpan size, TimeSpan slide)
         {
-            return Environment.GetStreamTimeCharacteristic() == TimeCharacteristic.ProcessingTime
+            return Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? Window(SlidingProcessingTimeWindowAssigner<T>.Of(size, slide))
                 : Window(SlidingEventTimeWindowAssigner<T>.Of(size, slide));
         }

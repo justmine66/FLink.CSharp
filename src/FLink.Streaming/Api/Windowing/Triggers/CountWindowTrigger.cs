@@ -15,7 +15,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             _maxCount = maxCount;
         }
 
-        public override void clear(TWindow window, ITriggerContext ctx)
+        public override void Clear(TWindow window, ITriggerContext ctx)
         {
             throw new System.NotImplementedException();
         }

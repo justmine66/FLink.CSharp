@@ -44,7 +44,8 @@ namespace FLink.Streaming.Api.Environment
         private long _bufferTimeout = DefaultNetworkBufferTimeout;
 
         protected bool IsChainingEnabled = true;
-        private TimeCharacteristic _timeCharacteristic = DefaultTimeCharacteristic;
+
+        public TimeCharacteristic TimeCharacteristic;
 
         public DataStreamSource<TOut> FromCollection<TOut>(IEnumerable<TOut> data, TypeInformation<TOut> typeInfo)
         {
@@ -198,15 +199,11 @@ namespace FLink.Streaming.Api.Environment
 
         #region [ Time characteristic ]
 
-        public void SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
+        public StreamExecutionEnvironment SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
         {
-            _timeCharacteristic = Preconditions.CheckNotNull(characteristic);
+            TimeCharacteristic = Preconditions.CheckNotNull(characteristic);
             GetConfig().SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
-        }
-
-        public TimeCharacteristic GetStreamTimeCharacteristic()
-        {
-            return _timeCharacteristic;
+            return this;
         }
 
         #endregion

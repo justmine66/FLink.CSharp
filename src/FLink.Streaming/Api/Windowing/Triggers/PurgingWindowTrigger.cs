@@ -18,7 +18,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             NestedTrigger = nestedTrigger;
         }
 
-        public override void clear(TWindow window, ITriggerContext ctx)
+        public override void Clear(TWindow window, ITriggerContext ctx)
         {
             throw new NotImplementedException();
         }
