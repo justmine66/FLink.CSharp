@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using FLink.Streaming.Api.Windowing.Triggers;
+﻿using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using FLink.Streaming.Runtime.Operators.Windowing;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Evictors
 {
@@ -18,8 +18,8 @@ namespace FLink.Streaming.Api.Windowing.Evictors
         /// <param name="elements">The elements currently in the window pane.</param>
         /// <param name="size">The current number of elements in the window pane.</param>
         /// <param name="window">The <see cref="Window"/>.</param>
-        /// <param name="evictorContext">The context for the Evictor.</param>
-        void EvictBefore(IEnumerable<TimestampedValue<T>> elements, int size, TW window, IEvictorContext evictorContext);
+        /// <param name="ctx">The context for the Evictor.</param>
+        void EvictBefore(IEnumerable<TimestampedValue<T>> elements, int size, TW window, IWindowEvictorContext ctx);
 
         /// <summary>
         /// Optionally evicts elements. Called after windowing function.
@@ -27,23 +27,23 @@ namespace FLink.Streaming.Api.Windowing.Evictors
         /// <param name="elements">The elements currently in the window pane.</param>
         /// <param name="size">The current number of elements in the window pane.</param>
         /// <param name="window">The <see cref="Window"/>.</param>
-        /// <param name="evictorContext">The context for the Evictor.</param>
-        void EvictAfter(IEnumerable<TimestampedValue<T>> elements, int size, TW window, IEvictorContext evictorContext);
+        /// <param name="ctx">The context for the Evictor.</param>
+        void EvictAfter(IEnumerable<TimestampedValue<T>> elements, int size, TW window, IWindowEvictorContext ctx);
+    }
+
+    /// <summary>
+    ///  A context object that is given to evictor methods.
+    /// </summary>
+    public interface IWindowEvictorContext
+    {
+        /// <summary>
+        /// The current processing time.
+        /// </summary>
+        long CurrentProcessingTime { get; }
 
         /// <summary>
-        ///  A context object that is given to evictor methods.
+        /// The current watermark time.
         /// </summary>
-        interface IEvictorContext
-        {
-            /// <summary>
-            /// The current processing time.
-            /// </summary>
-            long CurrentProcessingTime { get; }
-
-            /// <summary>
-            /// The current watermark time.
-            /// </summary>
-            long CurrentWatermark { get; }
-        }
+        long CurrentWatermark { get; }
     }
 }
