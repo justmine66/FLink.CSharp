@@ -34,6 +34,19 @@ namespace FLink.Streaming.Api.Windowing.Windows
         /// </summary>
         public override long MaxTimestamp => End - 1;
 
+        /// <summary>
+        /// Returns true if this window intersects the given window.
+        /// </summary>
+        /// <param name="other">The other window.</param>
+        public bool Intersects(TimeWindow other) => Start <= other.End && End >= other.Start;
+
+        /// <summary>
+        /// Returns the minimal window covers both this window and the given window.
+        /// </summary>
+        /// <param name="other">The other window.</param>
+        public TimeWindow Cover(TimeWindow other) =>
+            new TimeWindow(Math.Min(Start, other.Start), Math.Max(End, other.End));
+
         public override string ToString() => "TimeWindow{" + "start=" + Start + ", end=" + End + '}';
 
         public bool Equals(TimeWindow other)
@@ -53,5 +66,18 @@ namespace FLink.Streaming.Api.Windowing.Windows
                 return (Start.GetHashCode() * 397) ^ End.GetHashCode();
             }
         }
+
+        #region [ Utilities ]
+
+        /// <summary>
+        /// Get the window start for a timestamp.
+        /// </summary>
+        /// <param name="timestamp">epoch millisecond to get the window start.</param>
+        /// <param name="offset">The offset which window start would be shifted by.</param>
+        /// <param name="windowSize">The size of the generated windows.</param>
+        /// <returns>window start</returns>
+        public static long GetWindowStartWithOffset(long timestamp, long offset, long windowSize) => timestamp - (timestamp - offset + windowSize) % windowSize;
+
+        #endregion
     }
 }
