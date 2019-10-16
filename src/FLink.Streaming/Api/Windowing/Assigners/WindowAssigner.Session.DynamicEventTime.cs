@@ -1,9 +1,10 @@
-﻿using FLink.Streaming.Api.Environment;
-using FLink.Streaming.Api.Windowing.Triggers;
-using FLink.Streaming.Api.Windowing.Windows;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Exceptions;
+using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Windowing.Triggers;
+using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
@@ -22,13 +23,15 @@ namespace FLink.Streaming.Api.Windowing.Assigners
 
         public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context)
         {
-            throw new System.NotImplementedException();
+            var sessionTimeout = SessionWindowTimeGapExtractor.Extract(element);
+            if (sessionTimeout <= 0)
+                throw new IllegalArgumentException("Dynamic session time gap must satisfy 0 < gap");
+
+            yield return new TimeWindow(timestamp, timestamp + sessionTimeout);
         }
 
-        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env) =>
+            EventTimeWindowTrigger<TElement>.Create();
 
         public override TypeSerializer<TimeWindow> GetWindowSerializer(ExecutionConfig executionConfig)
         {
@@ -36,10 +39,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         }
 
         public override bool IsEventTime => true;
-        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback)
-        {
-            throw new System.NotImplementedException();
-        }
+
+        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback) =>
+            TimeWindow.MergeWindows(windows, callback);
 
         /// <summary>
         /// Creates a new <see cref="DynamicEventTimeSessionWindowAssigner{TElement}"/> that assigns elements to sessions based on the element timestamp.
@@ -49,6 +51,6 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <returns>The policy.</returns>
         public static DynamicEventTimeSessionWindowAssigner<T> WithDynamicGap<T>(ISessionWindowTimeGapExtractor<T> sessionWindowTimeGapExtractor)=> new DynamicEventTimeSessionWindowAssigner<T>(sessionWindowTimeGapExtractor);
 
-        public override string ToString() => "DynamicEventTimeSessionWindows()";
+        public override string ToString() => "DynamicEventTimeSessionWindowAssigner()";
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Exceptions;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
-using System.Collections.Generic;
-using FLink.Core.Api.Common;
-using FLink.Core.Api.Common.TypeUtils;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
@@ -24,15 +24,15 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             SessionTimeout = sessionTimeout;
         }
 
-        public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context)
+        public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp,
+            WindowAssignerContext context)
         {
-            throw new System.NotImplementedException();
+            var processingTime = context.CurrentProcessingTime;
+            yield return new TimeWindow(processingTime, processingTime + SessionTimeout);
         }
 
-        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env) =>
+            ProcessingTimeWindowTrigger<TElement>.Create();
 
         public override TypeSerializer<TimeWindow> GetWindowSerializer(ExecutionConfig executionConfig)
         {
@@ -41,10 +41,10 @@ namespace FLink.Streaming.Api.Windowing.Assigners
 
         public override bool IsEventTime => false;
 
-        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback) =>
+            TimeWindow.MergeWindows(windows, callback);
+
+        public override string ToString() => "ProcessingTimeSessionWindowAssigner(" + SessionTimeout + ")";
 
         /// <summary>
         /// Creates a new <see cref="ProcessingTimeSessionWindowAssigner{TElement}"/> that assigns elements to sessions based on the element timestamp.

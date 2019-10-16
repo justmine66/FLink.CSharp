@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FLink.Streaming.Api.Windowing.Assigners;
 
 namespace FLink.Streaming.Api.Windowing.Windows
 {
@@ -77,6 +80,57 @@ namespace FLink.Streaming.Api.Windowing.Windows
         /// <param name="windowSize">The size of the generated windows.</param>
         /// <returns>window start</returns>
         public static long GetWindowStartWithOffset(long timestamp, long offset, long windowSize) => timestamp - (timestamp - offset + windowSize) % windowSize;
+
+        /// <summary>
+        /// Merge overlapping <see cref="TimeWindow"/>s. For use by merging <see cref="WindowAssigner{TElement,TWindow}"/>.
+        /// </summary>
+        /// <param name="windows"></param>
+        /// <param name="callback"></param>
+        public static void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback)
+        {
+            // sort the windows by the start time and then merge overlapping windows
+            var sortedWindows = windows.OrderBy(it => it.Start);
+
+            var merged = new List<MergedItem>();
+            MergedItem currentMerge = null;
+
+            foreach (var candidate in sortedWindows)
+            {
+                if (currentMerge == null)
+                    currentMerge = new MergedItem(candidate, candidate);
+                else if (currentMerge.MergeResult.Intersects(candidate))
+                {
+                    currentMerge.MergeResult = currentMerge.MergeResult.Cover(candidate);
+                    currentMerge.ToBeMerged.Add(candidate);
+                }
+                else
+                {
+                    merged.Add(currentMerge);
+                    currentMerge = new MergedItem(candidate, candidate);
+                }
+            }
+
+            if (currentMerge != null)
+                merged.Add(currentMerge);
+
+            foreach (var mergeItem in merged)
+            {
+                if (mergeItem.ToBeMerged.Count > 0)
+                    callback.Merge(mergeItem.ToBeMerged, mergeItem.MergeResult);
+            }
+        }
+
+        private class MergedItem
+        {
+            public MergedItem(TimeWindow window, params TimeWindow[] candidates)
+            {
+                MergeResult = window;
+                ToBeMerged = new HashSet<TimeWindow>(candidates);
+            }
+
+            public TimeWindow MergeResult { get; set; }
+            public HashSet<TimeWindow> ToBeMerged { get; }
+        }
 
         #endregion
     }

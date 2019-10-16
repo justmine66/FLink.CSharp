@@ -1,11 +1,11 @@
-﻿using FLink.Core.Exceptions;
-using FLink.Streaming.Api.Environment;
-using FLink.Streaming.Api.Windowing.Triggers;
-using FLink.Streaming.Api.Windowing.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Exceptions;
+using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Windowing.Triggers;
+using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
@@ -29,20 +29,21 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             SessionTimeout = sessionTimeout;
         }
 
-        public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context)
+        public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp,
+            WindowAssignerContext context)
         {
-            throw new NotImplementedException();
+            yield return new TimeWindow(timestamp, timestamp + SessionTimeout);
         }
 
-        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
-        {
-            throw new NotImplementedException();
-        }
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env) =>
+            EventTimeWindowTrigger<TElement>.Create();
 
         public override TypeSerializer<TimeWindow> GetWindowSerializer(ExecutionConfig executionConfig)
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString() => "EventTimeSessionWindowAssigner(" + SessionTimeout + ")";
 
         /// <summary>
         /// Creates a new <see cref="EventTimeSessionWindowAssigner{TElement}"/> that assigns elements to sessions based on the element timestamp.
@@ -57,14 +58,10 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <typeparam name="T"></typeparam>
         /// <param name="sessionWindowTimeGapExtractor">The extractor to use to extract the time gap from the input elements.</param>
         /// <returns>The policy.</returns>
-        public static DynamicEventTimeSessionWindowAssigner<T> WithDynamicGap<T>(
-            ISessionWindowTimeGapExtractor<T> sessionWindowTimeGapExtractor) => new DynamicEventTimeSessionWindowAssigner<T>(sessionWindowTimeGapExtractor);
+        public static DynamicEventTimeSessionWindowAssigner<T> WithDynamicGap<T>(ISessionWindowTimeGapExtractor<T> sessionWindowTimeGapExtractor) => new DynamicEventTimeSessionWindowAssigner<T>(sessionWindowTimeGapExtractor);
 
         public override bool IsEventTime => true;
 
-        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback)
-        {
-            throw new NotImplementedException();
-        }
+        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback)=> TimeWindow.MergeWindows(windows, callback);
     }
 }
