@@ -1,7 +1,8 @@
-﻿using FLink.Streaming.Api.Windowing.Windows;
-using FLink.Streaming.Runtime.Operators.Windowing;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using FLink.Core.Api.Common.Accumulators;
+using FLink.Streaming.Api.Windowing.Windows;
+using FLink.Streaming.Runtime.Operators.Windowing;
 
 namespace FLink.Streaming.Api.Windowing.Evictors
 {
@@ -13,14 +14,83 @@ namespace FLink.Streaming.Api.Windowing.Evictors
     public class TimeWindowEvictor<TElement, TWindow> : IWindowEvictor<TElement, TWindow>
         where TWindow : Window
     {
-        public void EvictAfter(IEnumerable<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictorContext ctx)
+        public long WindowSize;
+        public bool DoEvictAfter;
+
+        public TimeWindowEvictor(long windowSize)
         {
-            throw new NotImplementedException();
+            WindowSize = windowSize;
+            DoEvictAfter = false;
         }
 
-        public void EvictBefore(IEnumerable<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictorContext ctx)
+        public TimeWindowEvictor(long windowSize, bool doEvictAfter)
         {
-            throw new NotImplementedException();
+            WindowSize = windowSize;
+            DoEvictAfter = doEvictAfter;
         }
+
+        public void EvictAfter(IList<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictorContext ctx)
+        {
+            if (!DoEvictAfter) return;
+
+            Evict(elements, size, ctx);
+        }
+
+        public void EvictBefore(IList<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictorContext ctx)
+        {
+            if (DoEvictAfter) return;
+
+            Evict(elements, size, ctx);
+        }
+
+        public override string ToString() => "TimeWindowEvictor(" + WindowSize + ")";
+
+        private void Evict(IList<TimestampedValue<TElement>> elements, int size, IWindowEvictorContext ctx)
+        {
+            if (!HasTimestamp(elements)) return;
+
+            var currentTime = GetMaxTimestamp(elements);
+            var evictCutoff = currentTime - WindowSize;
+
+            foreach (var element in elements)
+                if (element.Timestamp <= evictCutoff)
+                    elements.Remove(element);
+        }
+
+        private bool HasTimestamp(IList<TimestampedValue<TElement>> elements)
+        {
+            foreach (var element in elements)
+                if (element.HasTimestamp) return true;
+
+            return false;
+        }
+
+        private long GetMaxTimestamp(IList<TimestampedValue<TElement>> elements)
+        {
+            var accumulator = new LongMaximum();
+            foreach (var element in elements)
+                accumulator.Add(element.Timestamp);
+
+            return accumulator.GetLocalValue();
+        }
+
+        /// <summary>
+        /// Creates a <see cref="TimeWindowEvictor{TElement,TWindow}"/> that keeps the given number of elements.
+        /// Eviction is done before the window function.
+        /// </summary>
+        /// <typeparam name="TE"></typeparam>
+        /// <typeparam name="TW"></typeparam>
+        /// <param name="windowSize">The amount of time for which to keep elements.</param>
+        public static TimeWindowEvictor<TE, TW> Of<TE, TW>(TimeSpan windowSize) where TW : Window => new TimeWindowEvictor<TE, TW>((long)windowSize.TotalMilliseconds);
+
+        /// <summary>
+        /// Creates a <see cref="TimeWindowEvictor{TElement,TWindow}"/> that keeps the given number of elements.
+        /// Eviction is done before the window function.
+        /// </summary>
+        /// <typeparam name="TE"></typeparam>
+        /// <typeparam name="TW"></typeparam>
+        /// <param name="windowSize">The amount of time for which to keep elements.</param>
+        /// <param name="doEvictAfter">Whether eviction is done after window function.</param>
+        public static TimeWindowEvictor<TE, TW> Of<TE, TW>(TimeSpan windowSize, bool doEvictAfter) where TW : Window => new TimeWindowEvictor<TE, TW>((long)windowSize.TotalMilliseconds, doEvictAfter);
     }
 }

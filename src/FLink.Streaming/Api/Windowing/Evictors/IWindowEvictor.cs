@@ -19,7 +19,7 @@ namespace FLink.Streaming.Api.Windowing.Evictors
         /// <param name="size">The current number of elements in the window pane.</param>
         /// <param name="window">The <see cref="Window"/>.</param>
         /// <param name="ctx">The context for the Evictor.</param>
-        void EvictBefore(IEnumerable<TimestampedValue<T>> elements, int size, TWindow window, IWindowEvictorContext ctx);
+        void EvictBefore(IList<TimestampedValue<T>> elements, int size, TWindow window, IWindowEvictorContext ctx);
 
         /// <summary>
         /// Optionally evicts elements. Called after windowing function.
@@ -28,7 +28,7 @@ namespace FLink.Streaming.Api.Windowing.Evictors
         /// <param name="size">The current number of elements in the window pane.</param>
         /// <param name="window">The <see cref="Window"/>.</param>
         /// <param name="ctx">The context for the Evictor.</param>
-        void EvictAfter(IEnumerable<TimestampedValue<T>> elements, int size, TWindow window, IWindowEvictorContext ctx);
+        void EvictAfter(IList<TimestampedValue<T>> elements, int size, TWindow window, IWindowEvictorContext ctx);
     }
 
     /// <summary>
