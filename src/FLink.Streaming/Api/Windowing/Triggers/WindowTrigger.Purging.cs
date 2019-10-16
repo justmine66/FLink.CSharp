@@ -17,21 +17,21 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             NestedTrigger = nestedTrigger;
         }
 
-        public override void Clear(TWindow window, ITriggerContext ctx) => NestedTrigger.Clear(window, ctx);
+        public override void Clear(TWindow window, IWindowTriggerContext ctx) => NestedTrigger.Clear(window, ctx);
 
-        public override WindowTriggerResult OnElement(TElement element, long timestamp, TWindow window, ITriggerContext ctx)
+        public override WindowTriggerResult OnElement(TElement element, long timestamp, TWindow window, IWindowTriggerContext ctx)
         {
             var triggerResult = NestedTrigger.OnElement(element, timestamp, window, ctx);
             return triggerResult.IsFire ? WindowTriggerResult.FireAndPurge : triggerResult;
         }
 
-        public override WindowTriggerResult OnEventTime(long time, TWindow window, ITriggerContext ctx)
+        public override WindowTriggerResult OnEventTime(long time, TWindow window, IWindowTriggerContext ctx)
         {
             var triggerResult = NestedTrigger.OnEventTime(time, window, ctx);
             return triggerResult.IsFire ? WindowTriggerResult.FireAndPurge : triggerResult;
         }
 
-        public override WindowTriggerResult OnProcessingTime(long time, TWindow window, ITriggerContext ctx)
+        public override WindowTriggerResult OnProcessingTime(long time, TWindow window, IWindowTriggerContext ctx)
         {
             var triggerResult = NestedTrigger.OnProcessingTime(time, window, ctx);
             return triggerResult.IsFire ? WindowTriggerResult.FireAndPurge : triggerResult;
@@ -39,7 +39,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
 
         public override bool CanMerge => NestedTrigger.CanMerge;
 
-        public override void OnMerge(TWindow window, IOnMergeContext ctx) => NestedTrigger.OnMerge(window, ctx);
+        public override void OnMerge(TWindow window, IWindowOnMergeContext ctx) => NestedTrigger.OnMerge(window, ctx);
 
         public override string ToString() => "PurgingTrigger(" + NestedTrigger + ")";
 

@@ -40,22 +40,22 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// </summary>
         public class NeverTrigger : WindowTrigger<TElement, GlobalWindow>
         {
-            public override WindowTriggerResult OnElement(TElement element, long timestamp, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnElement(TElement element, long timestamp, GlobalWindow window, IWindowTriggerContext ctx)
             {
                 return WindowTriggerResult.Continue;
             }
 
-            public override WindowTriggerResult OnProcessingTime(long time, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnProcessingTime(long time, GlobalWindow window, IWindowTriggerContext ctx)
             {
                 return WindowTriggerResult.Continue;
             }
 
-            public override WindowTriggerResult OnEventTime(long time, GlobalWindow window, ITriggerContext ctx)
+            public override WindowTriggerResult OnEventTime(long time, GlobalWindow window, IWindowTriggerContext ctx)
             {
                 return WindowTriggerResult.Continue;
             }
 
-            public override void Clear(GlobalWindow window, ITriggerContext ctx)
+            public override void Clear(GlobalWindow window, IWindowTriggerContext ctx)
             {
                 throw new System.NotImplementedException();
             }

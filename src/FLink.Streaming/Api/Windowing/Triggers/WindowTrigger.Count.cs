@@ -19,9 +19,9 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             Limit = maxCount;
         }
 
-        public override void Clear(TWindow window, ITriggerContext ctx) => ctx.GetPartitionedState(_stateDesc).Clear();
+        public override void Clear(TWindow window, IWindowTriggerContext ctx) => ctx.GetPartitionedState(_stateDesc).Clear();
 
-        public override WindowTriggerResult OnElement(TElement element, long timestamp, TWindow window, ITriggerContext ctx)
+        public override WindowTriggerResult OnElement(TElement element, long timestamp, TWindow window, IWindowTriggerContext ctx)
         {
             var count = ctx.GetPartitionedState(_stateDesc);
             count.Add(1L);
@@ -34,9 +34,9 @@ namespace FLink.Streaming.Api.Windowing.Triggers
 
         }
 
-        public override WindowTriggerResult OnEventTime(long time, TWindow window, ITriggerContext ctx) => WindowTriggerResult.Continue;
+        public override WindowTriggerResult OnEventTime(long time, TWindow window, IWindowTriggerContext ctx) => WindowTriggerResult.Continue;
 
-        public override WindowTriggerResult OnProcessingTime(long time, TWindow window, ITriggerContext ctx) => WindowTriggerResult.Continue;
+        public override WindowTriggerResult OnProcessingTime(long time, TWindow window, IWindowTriggerContext ctx) => WindowTriggerResult.Continue;
 
         public override bool CanMerge => true;
 

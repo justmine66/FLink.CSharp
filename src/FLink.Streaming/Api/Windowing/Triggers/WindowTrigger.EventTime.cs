@@ -10,10 +10,10 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     {
         private EventTimeWindowTrigger() { }
 
-        public override void Clear(TimeWindow window, ITriggerContext ctx) =>
+        public override void Clear(TimeWindow window, IWindowTriggerContext ctx) =>
             ctx.DeleteEventTimeTimer(window.MaxTimestamp);
 
-        public override WindowTriggerResult OnElement(TElement element, long timestamp, TimeWindow window, ITriggerContext ctx)
+        public override WindowTriggerResult OnElement(TElement element, long timestamp, TimeWindow window, IWindowTriggerContext ctx)
         {
             if (window.MaxTimestamp <= ctx.CurrentWatermark)
             {
@@ -25,10 +25,10 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             return WindowTriggerResult.Continue;
         }
 
-        public override WindowTriggerResult OnEventTime(long time, TimeWindow window, ITriggerContext ctx) =>
+        public override WindowTriggerResult OnEventTime(long time, TimeWindow window, IWindowTriggerContext ctx) =>
             time == window.MaxTimestamp ? WindowTriggerResult.Fire : WindowTriggerResult.Continue;
 
-        public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, ITriggerContext ctx) => WindowTriggerResult.Continue;
+        public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, IWindowTriggerContext ctx) => WindowTriggerResult.Continue;
 
         public override bool CanMerge => true;
 
