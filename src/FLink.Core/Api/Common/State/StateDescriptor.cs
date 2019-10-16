@@ -1,9 +1,16 @@
-﻿namespace FLink.Core.Api.Common.State
+﻿using System;
+using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Util;
+
+namespace FLink.Core.Api.Common.State
 {
+    using static Preconditions;
+
     /// <summary>
     /// Base class for state descriptors.
     /// A <see cref="StateDescriptor{TState,T}"/> is used for creating partitioned <see cref="IState"/> in stateful operations.
     /// </summary>
+    [Serializable]
     public abstract class StateDescriptor<TState, T> where TState : IState
     {
         /// <summary>
@@ -15,6 +22,7 @@
             Value,
             List,
             Reducing,
+            Folding,
             Aggregating,
             Map
         }
@@ -22,26 +30,39 @@
         /// <summary>
         /// Name that uniquely identifies state created from this StateDescriptor.
         /// </summary>
-        public string Name { get; protected set; }
+        public string Name;
 
         /// <summary>
         /// The default value returned by the state when no other value is bound to a key.
         /// </summary>
-        public T DefaultValue { get; protected set; }
+        public T DefaultValue;
+
+        /// <summary>
+        /// The serializer for the type. May be eagerly initialized in the constructor or lazily.
+        /// </summary>
+        public TypeSerializer<T> Serializer;
 
         /// <summary>
         /// Returns the queryable state name.
         /// </summary>
-        public string QueryableStateName { get; protected set; }
+        public string QueryableStateName;
 
-        public bool IsQueryable()
-        {
-            return !string.IsNullOrEmpty(QueryableStateName);
-        }
+        /// <summary>
+        /// Returns whether the state created from this descriptor is queryable.
+        /// </summary>
+        public bool IsQueryable => !string.IsNullOrEmpty(QueryableStateName);
 
-        protected StateDescriptor(string name, T defaultValue = default)
+        /// <summary>
+        /// Create a new <see cref="StateDescriptor{TState,T}"/> with the given name and the given type serializer.
+        /// </summary>
+        /// <param name="name">The name of the <see cref="StateDescriptor{TState,T}"/>.</param>
+        /// <param name="serializer">The type serializer for the values in the state.</param>
+        /// <param name="defaultValue">The default value that will be set when requesting state without setting a value before.</param>
+        protected StateDescriptor(string name, TypeSerializer<T> serializer, T defaultValue = default)
         {
-            Name = name;
+            Name = CheckNotNull(name);
+            Serializer = CheckNotNull(serializer, "serializer must not be null");
+            DefaultValue = defaultValue;
         }
     }
 }

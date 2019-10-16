@@ -10,20 +10,23 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     {
         private EventTimeWindowTrigger() { }
 
-        public override void Clear(TimeWindow window, ITriggerContext ctx)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void Clear(TimeWindow window, ITriggerContext ctx) =>
+            ctx.DeleteEventTimeTimer(window.MaxTimestamp);
 
         public override WindowTriggerResult OnElement(TElement element, long timestamp, TimeWindow window, ITriggerContext ctx)
         {
-            throw new System.NotImplementedException();
+            if (window.MaxTimestamp <= ctx.CurrentWatermark)
+            {
+                // if the watermark is already past the window fire immediately
+                return WindowTriggerResult.Fire;
+            }
+
+            ctx.RegisterEventTimeTimer(window.MaxTimestamp);
+            return WindowTriggerResult.Continue;
         }
 
-        public override WindowTriggerResult OnEventTime(long time, TimeWindow window, ITriggerContext ctx)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override WindowTriggerResult OnEventTime(long time, TimeWindow window, ITriggerContext ctx) =>
+            time == window.MaxTimestamp ? WindowTriggerResult.Fire : WindowTriggerResult.Continue;
 
         public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, ITriggerContext ctx) => WindowTriggerResult.Continue;
 

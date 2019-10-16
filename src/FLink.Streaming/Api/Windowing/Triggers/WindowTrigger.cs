@@ -86,7 +86,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             /// <summary>
             /// Register an event-time callback.
             /// </summary>
-            /// <param name="time">The watermark at which to invoke <see cref="WindowTrigger{T,TW}.OnEventTime"/></param></param>
+            /// <param name="time">The watermark at which to invoke <see cref="WindowTrigger{T,TW}.OnEventTime"/></param>
             void RegisterEventTimeTimer(long time);
 
             /// <summary>
@@ -100,6 +100,17 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             /// </summary>
             /// <param name="time"></param>
             void DeleteEventTimeTimer(long time);
+
+            /// <summary>
+            /// Retrieves a <see cref="IState"/> object that can be used to interact with fault-tolerant state that is scoped to the window and key of the current trigger invocation.
+            /// </summary>
+            /// <typeparam name="TState">The type of the state.</typeparam>
+            /// <typeparam name="TValue">Type of the value in state.</typeparam>
+            /// <param name="stateDescriptor">The StateDescriptor that contains the name and type of the state that is being accessed.</param>
+            /// <returns>The partitioned state object.</returns>
+            /// <exception cref="InvalidOperationException">Thrown, if no partitioned state is available for the function (function is not part os a KeyedStream).</exception>
+            TState GetPartitionedState<TState, TValue>(StateDescriptor<TState, TValue> stateDescriptor)
+                where TState : IState;
         }
 
         public interface IOnMergeContext : ITriggerContext

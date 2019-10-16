@@ -11,25 +11,20 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     {
         private ProcessingTimeWindowTrigger() { }
 
-        public override void Clear(TimeWindow window, ITriggerContext ctx)
-        {
-            throw new NotImplementedException();
-        }
+        public override void Clear(TimeWindow window, ITriggerContext ctx) =>
+            ctx.DeleteProcessingTimeTimer(window.MaxTimestamp);
 
         public override WindowTriggerResult OnElement(TElement element, long timestamp, TimeWindow window, ITriggerContext ctx)
         {
-            throw new NotImplementedException();
+            ctx.RegisterProcessingTimeTimer(window.MaxTimestamp);
+            return WindowTriggerResult.Continue;
         }
 
-        public override WindowTriggerResult OnEventTime(long time, TimeWindow window, ITriggerContext ctx)
-        {
-            throw new NotImplementedException();
-        }
+        public override WindowTriggerResult OnEventTime(long time, TimeWindow window, ITriggerContext ctx) =>
+            WindowTriggerResult.Continue;
 
-        public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, ITriggerContext ctx)
-        {
-            throw new NotImplementedException();
-        }
+        public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, ITriggerContext ctx) =>
+            WindowTriggerResult.Fire;
 
         public override bool CanMerge => true;
 

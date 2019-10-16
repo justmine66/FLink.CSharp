@@ -1,4 +1,6 @@
-﻿using FLink.Streaming.Api.Windowing.Windows;
+﻿using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.TypeUtils.Base;
+using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Triggers
 {
@@ -8,21 +10,28 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     public class CountWindowTrigger<TElement, TWindow> : WindowTrigger<TElement, TWindow>
         where TWindow : Window
     {
-        private readonly long _maxCount;
+        private readonly ReducingStateDescriptor<long> _stateDesc = new ReducingStateDescriptor<long>("count", LongSerializer.Instance);
+
+        public long Limit;
 
         private CountWindowTrigger(long maxCount)
         {
-            _maxCount = maxCount;
+            Limit = maxCount;
         }
 
-        public override void Clear(TWindow window, ITriggerContext ctx)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void Clear(TWindow window, ITriggerContext ctx) => ctx.GetPartitionedState(_stateDesc).Clear();
 
         public override WindowTriggerResult OnElement(TElement element, long timestamp, TWindow window, ITriggerContext ctx)
         {
-            throw new System.NotImplementedException();
+            var count = ctx.GetPartitionedState(_stateDesc);
+            count.Add(1L);
+
+            if (count.Get() < Limit) 
+                return WindowTriggerResult.Continue;
+
+            count.Clear();
+            return WindowTriggerResult.Fire;
+
         }
 
         public override WindowTriggerResult OnEventTime(long time, TWindow window, ITriggerContext ctx) => WindowTriggerResult.Continue;
@@ -31,10 +40,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
 
         public override bool CanMerge => true;
 
-        public static CountWindowTrigger<TE, TW> Of<TE, TW>(long maxCount) 
-            where TW : Window
-        {
-            return new CountWindowTrigger<TE, TW>(maxCount);
-        }
+        public static CountWindowTrigger<TE, TW> Of<TE, TW>(long maxCount) where TW : Window =>
+            new CountWindowTrigger<TE, TW>(maxCount);
     }
 }
