@@ -36,7 +36,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         }
 
         public override bool IsEventTime => true;
-        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeCallback<TimeWindow> callback)
+        public override void MergeWindows(IEnumerable<TimeWindow> windows, IMergeWindowCallback<TimeWindow> callback)
         {
             throw new System.NotImplementedException();
         }
