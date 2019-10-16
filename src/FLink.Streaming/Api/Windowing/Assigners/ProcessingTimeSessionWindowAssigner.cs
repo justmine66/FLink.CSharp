@@ -4,6 +4,8 @@ using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using System.Collections.Generic;
+using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.TypeUtils;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
@@ -30,6 +32,11 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
         {
             throw new System.NotImplementedException();
+        }
+
+        public override TypeSerializer<TimeWindow> GetWindowSerializer(ExecutionConfig executionConfig)
+        {
+            throw new NotImplementedException();
         }
 
         public override bool IsEventTime => false;

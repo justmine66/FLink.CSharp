@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using FLink.Streaming.Api.Windowing.Windows;
+﻿using FLink.Streaming.Api.Windowing.Windows;
 using FLink.Streaming.Runtime.Operators.Windowing;
+using System;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Evictors
 {
@@ -13,12 +13,12 @@ namespace FLink.Streaming.Api.Windowing.Evictors
     public class CountWindowEvictor<TElement, TWindow> : IWindowEvictor<TElement, TWindow>
         where TWindow : Window
     {
-        public void EvictAfter(IEnumerable<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictor<TElement, TWindow>.IEvictorContext evictorContext)
+        public void EvictAfter(IEnumerable<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictorContext ctx)
         {
             throw new NotImplementedException();
         }
 
-        public void EvictBefore(IEnumerable<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictor<TElement, TWindow>.IEvictorContext evictorContext)
+        public void EvictBefore(IEnumerable<TimestampedValue<TElement>> elements, int size, TWindow window, IWindowEvictorContext ctx)
         {
             throw new NotImplementedException();
         }

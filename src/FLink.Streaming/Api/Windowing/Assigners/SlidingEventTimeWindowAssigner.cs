@@ -1,4 +1,6 @@
-﻿using FLink.Core.Exceptions;
+﻿using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Exceptions;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
@@ -13,11 +15,11 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <typeparam name="TElement"></typeparam>
     public class SlidingEventTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
-        private readonly long _size;
+        public long Size;
 
-        private readonly long _slide;
+        public long Slide;
 
-        private readonly long _offset;
+        public long Offset;
 
         /// <summary>
         /// Create a <see cref="SlidingEventTimeWindowAssigner{TElement}"/> instance.
@@ -30,29 +32,52 @@ namespace FLink.Streaming.Api.Windowing.Assigners
             if (offset < 0 || offset >= slide || size <= 0)
                 throw new IllegalArgumentException("the parameters must satisfy 0 <= offset < slide and size > 0");
 
-            _size = size;
-            _slide = slide;
-            _offset = offset;
+            Size = size;
+            Slide = slide;
+            Offset = offset;
         }
 
         public override IEnumerable<TimeWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context)
         {
-            throw new System.NotImplementedException();
+            if (timestamp <= long.MinValue)
+                throw new RuntimeException("Record has Long.MIN_VALUE timestamp (= no timestamp marker). " +
+                                           "Is the time characteristic set to 'ProcessingTime', or did you forget to call " +
+                                           "'DataStream.assignTimestampsAndWatermarks(...)'?");
+
+            var lastStart = TimeWindow.GetWindowStartWithOffset(timestamp, Offset, Slide);
+            for (var start = lastStart; start > timestamp - Size; start -= Slide)
+                yield return new TimeWindow(start, start + Size);
         }
 
-        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env)
+        public override WindowTrigger<TElement, TimeWindow> GetDefaultTrigger(StreamExecutionEnvironment env) =>
+            EventTimeWindowTrigger<TElement>.Create();
+
+        public override TypeSerializer<TimeWindow> GetWindowSerializer(ExecutionConfig executionConfig)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override bool IsEventTime => true;
 
-        public static SlidingEventTimeWindowAssigner<TElement> Of(TimeSpan size, TimeSpan slide)
-        {
-            return new SlidingEventTimeWindowAssigner<TElement>((long)size.TotalMilliseconds, (long)slide.TotalMilliseconds,
-                0);
-        }
+        /// <summary>
+        /// Creates a new <see cref="SlidingEventTimeWindowAssigner{TElement}"/> that assigns elements to sliding time windows based on the element timestamp.
+        /// </summary>
+        /// <param name="size">The size of the generated windows.</param>
+        /// <param name="slide">The slide interval of the generated windows.</param>
+        /// <returns>The time policy.</returns>
+        public static SlidingEventTimeWindowAssigner<TElement> Of(TimeSpan size, TimeSpan slide) => new SlidingEventTimeWindowAssigner<TElement>((long)size.TotalMilliseconds, (long)slide.TotalMilliseconds);
 
-        public override string ToString() => "SlidingEventTimeWindows(" + _size + ", " + _slide + ")";
+        /// <summary>
+        /// Creates a new <see cref="SlidingEventTimeWindowAssigner{TElement}"/> that assigns elements to sliding time windows based on the element timestamp.
+        /// </summary>
+        /// <param name="size">The size of the generated windows.</param>
+        /// <param name="slide">The slide interval of the generated windows.</param>
+        /// <param name="offset">The offset which window start would be shifted by.</param>
+        /// <returns>The time policy.</returns>
+        public static SlidingEventTimeWindowAssigner<TElement> Of(TimeSpan size, TimeSpan slide, TimeSpan offset) =>
+            new SlidingEventTimeWindowAssigner<TElement>((long)size.TotalMilliseconds, (long)slide.TotalMilliseconds,
+                (long)offset.TotalMilliseconds);
+
+        public override string ToString() => "SlidingEventTimeWindowAssigner(" + Size + ", " + Slide + ", " + Offset + ")";
     }
 }

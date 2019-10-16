@@ -1,9 +1,10 @@
 ﻿using System;
+using FLink.Streaming.Api.Windowing.Assigners;
 
 namespace FLink.Streaming.Api.Windowing.Windows
 {
     /// <summary>
-    /// The default window into which all data is placed (via <see cref="GlobalWindow"/>).
+    /// The default window into which all data is placed (via <see cref="GlobalWindowAssigner{TElement}"/>).
     /// </summary>
     public class GlobalWindow : Window, IEquatable<GlobalWindow>
     {
