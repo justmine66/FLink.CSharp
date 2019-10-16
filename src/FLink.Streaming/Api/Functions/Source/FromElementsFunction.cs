@@ -155,7 +155,7 @@ namespace FLink.Streaming.Api.Functions.Source
             Preconditions.CheckState(_checkpointedState != null, $"The {GetType()} has not been properly initialized.");
 
             _checkpointedState = context.OperatorStateStore
-                .GetListState(new ListStateDescriptor<int>("from-elements-state"));
+                .GetListState(new ListStateDescriptor<int>("from-elements-state", null));
 
             if (context.IsRestored)
             {

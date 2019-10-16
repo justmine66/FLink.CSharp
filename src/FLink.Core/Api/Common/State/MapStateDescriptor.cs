@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FLink.Core.Api.Common.TypeUtils;
 
 namespace FLink.Core.Api.Common.State
 {
@@ -9,8 +10,8 @@ namespace FLink.Core.Api.Common.State
     /// <typeparam name="TV"></typeparam>
     public class MapStateDescriptor<TK, TV> : StateDescriptor<IMapState<TK, TV>, Dictionary<TK, TV>>
     {
-        public MapStateDescriptor(string name, Dictionary<TK, TV> defaultValue = null)
-            : base(name, defaultValue)
+        public MapStateDescriptor(string name, TypeSerializer<Dictionary<TK, TV>> serializer, Dictionary<TK, TV> defaultValue = default) 
+            : base(name, serializer, defaultValue)
         {
         }
     }
