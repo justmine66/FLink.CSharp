@@ -53,7 +53,10 @@ namespace FLink.Streaming.Api.Windowing.Evictors
                 else elements.Remove(element);
             }
         }
+    }
 
+    public class CountWindowEvictor
+    {
         /// <summary>
         /// Creates a <see cref="CountWindowEvictor{TElement,TWindow}"/> that keeps the given number of elements.
         /// Eviction is done before the window function.

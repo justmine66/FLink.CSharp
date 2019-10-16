@@ -73,7 +73,10 @@ namespace FLink.Streaming.Api.Windowing.Evictors
 
             return accumulator.GetLocalValue();
         }
+    }
 
+    public class TimeWindowEvictor
+    {
         /// <summary>
         /// Creates a <see cref="TimeWindowEvictor{TElement,TWindow}"/> that keeps the given number of elements.
         /// Eviction is done before the window function.

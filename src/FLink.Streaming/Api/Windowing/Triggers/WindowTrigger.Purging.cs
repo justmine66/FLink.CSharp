@@ -12,7 +12,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     {
         public WindowTrigger<TElement, TWindow> NestedTrigger;
 
-        private PurgingWindowTrigger(WindowTrigger<TElement, TWindow> nestedTrigger)
+        public PurgingWindowTrigger(WindowTrigger<TElement, TWindow> nestedTrigger)
         {
             NestedTrigger = nestedTrigger;
         }
@@ -42,7 +42,10 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         public override void OnMerge(TWindow window, IWindowOnMergeContext ctx) => NestedTrigger.OnMerge(window, ctx);
 
         public override string ToString() => "PurgingTrigger(" + NestedTrigger + ")";
+    }
 
+    public class PurgingWindowTrigger
+    {
         /// <summary>
         /// Creates a new purging trigger from the given <see cref="WindowTrigger{TElement,TWindow}"/>.
         /// </summary>

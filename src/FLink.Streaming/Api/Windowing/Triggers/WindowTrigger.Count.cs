@@ -14,7 +14,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
 
         public long Limit;
 
-        private CountWindowTrigger(long maxCount)
+        public CountWindowTrigger(long maxCount)
         {
             Limit = maxCount;
         }
@@ -39,7 +39,10 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         public override WindowTriggerResult OnProcessingTime(long time, TWindow window, IWindowTriggerContext ctx) => WindowTriggerResult.Continue;
 
         public override bool CanMerge => true;
+    }
 
+    public class CountWindowTrigger
+    {
         public static CountWindowTrigger<TE, TW> Of<TE, TW>(long maxCount) where TW : Window =>
             new CountWindowTrigger<TE, TW>(maxCount);
     }
