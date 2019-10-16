@@ -12,14 +12,14 @@ namespace FLink.Streaming.Api.DataStream
     /// A DataStream represents a stream of elements of the same type.
     /// A DataStream can be transformed into another DataStream by applying a transformation as for example:
     /// </summary>
-    /// <typeparam name="T">The type of the elements in this stream.</typeparam>
-    public class DataStream<T>
+    /// <typeparam name="TElement">The type of the elements in this stream.</typeparam>
+    public class DataStream<TElement>
     {
         public StreamExecutionEnvironment Environment { get; }
 
-        public Transformation<T> Transformation { get; }
+        public Transformation<TElement> Transformation { get; }
 
-        public DataStream(StreamExecutionEnvironment environment, Transformation<T> transformation)
+        public DataStream(StreamExecutionEnvironment environment, Transformation<TElement> transformation)
         {
             Environment = Preconditions.CheckNotNull(environment, "Execution Environment must not be null.");
             Transformation = Preconditions.CheckNotNull(transformation, "Stream Transformation must not be null.");
@@ -36,7 +36,18 @@ namespace FLink.Streaming.Api.DataStream
         /// <typeparam name="TOutput">The output type.</typeparam>
         /// <param name="flatMapper">The MapFunction that is called for each element of the DataStream.</param>
         /// <returns>The transformed <see cref="DataStream{T}"/>.</returns>
-        public SingleOutputStreamOperator<TOutput> FlatMap<TOutput>(IFlatMapFunction<T, TOutput> flatMapper)
+        public SingleOutputStreamOperator<TOutput> FlatMap<TOutput>(IFlatMapFunction<TElement, TOutput> flatMapper)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Applies a Map transformation on a <see cref="DataStream{T}"/>. The transformation calls a <see cref="IMapFunction{TInput,TOutput}"/> for each element of the DataStream.
+        /// </summary>
+        /// <typeparam name="TOutput">The output type</typeparam>
+        /// <param name="mapper">The MapFunction that is called for each element of the DataStream.</param>
+        /// <returns>The transformed <see cref="DataStream{T}"/>.</returns>
+        public SingleOutputStreamOperator<TOutput> Map<TOutput>(IMapFunction<TElement, TOutput> mapper)
         {
             return null;
         }
@@ -46,7 +57,7 @@ namespace FLink.Streaming.Api.DataStream
         /// </summary>
         /// <param name="fields">One or more field expressions on which the state of the <see cref="DataStream{T}"/> operators will be partitioned.</param>
         /// <returns>The <see cref="DataStream{T}"/> with partitioned state (i.e. KeyedStream)</returns>
-        public KeyedStream<T, object> KeyBy(params string[] fields)
+        public KeyedStream<TElement, object> KeyBy(params string[] fields)
         {
             return null;
         }
@@ -57,7 +68,7 @@ namespace FLink.Streaming.Api.DataStream
         /// NOTE: This will print to stdout on the machine where the code is executed, i.e. the FLink worker.
         /// </summary>
         /// <returns>The closed DataStream.</returns>
-        public DataStreamSink<T> Print()
+        public DataStreamSink<TElement> Print()
         {
             return null;
         }
@@ -71,8 +82,8 @@ namespace FLink.Streaming.Api.DataStream
         /// </summary>
         /// <param name="timestampAndWatermarkAssigner">The implementation of the timestamp assigner and watermark generator.</param>
         /// <returns>The stream after the transformation, with assigned timestamps and watermarks.</returns>
-        public SingleOutputStreamOperator<T> AssignTimestampsAndWatermarks(
-            IAssignerWithPeriodicWatermarks<T> timestampAndWatermarkAssigner)
+        public SingleOutputStreamOperator<TElement> AssignTimestampsAndWatermarks(
+            IAssignerWithPeriodicWatermarks<TElement> timestampAndWatermarkAssigner)
         {
             return null;
         }
@@ -82,8 +93,8 @@ namespace FLink.Streaming.Api.DataStream
         /// </summary>
         /// <param name="timestampAndWatermarkAssigner">The implementation of the timestamp assigner and watermark generator.</param>
         /// <returns>The stream after the transformation, with assigned timestamps and watermarks.</returns>
-        public SingleOutputStreamOperator<T> AssignTimestampsAndWatermarks(
-            IAssignerWithPunctuatedWatermarks<T> timestampAndWatermarkAssigner)
+        public SingleOutputStreamOperator<TElement> AssignTimestampsAndWatermarks(
+            IAssignerWithPunctuatedWatermarks<TElement> timestampAndWatermarkAssigner)
         {
             return null;
         }
@@ -94,7 +105,7 @@ namespace FLink.Streaming.Api.DataStream
         /// </summary>
         /// <param name="filter">The FilterFunction that is called for each element of the DataStream.</param>
         /// <returns>The filtered DataStream.</returns>
-        public SingleOutputStreamOperator<T> Filter(IFilterFunction<T> filter)
+        public SingleOutputStreamOperator<TElement> Filter(IFilterFunction<TElement> filter)
         {
             return null;
         }

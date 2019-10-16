@@ -5,6 +5,7 @@ using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using System;
+using FLink.Streaming.Api.Windowing.Evictors;
 
 namespace FLink.Streaming.Api.DataStream
 {
@@ -59,15 +60,46 @@ namespace FLink.Streaming.Api.DataStream
             return null;
         }
 
-        #region [ Reduce Transformations ]
+        /// <summary>
+        /// Sets the <see cref="IWindowEvictor{TElement,TWindow}"/> that should be used to evict elements from a window before emission.
+        /// Note: When using an evictor window performance will degrade significantly, since incremental aggregation of window results cannot be used.
+        /// </summary>
+        /// <param name="evictor"></param>
+        /// <returns></returns>
+        public WindowedStream<TElement, TKey, TWindow> Evictor(IWindowEvictor<TElement, TWindow> evictor)
+        {
+            return this;
+        }
 
         /// <summary>
-        /// Applies a reduce function to the window. The window function is called for each evaluation of the window for each key individually. The output of the reduce function is interpreted as a regular non-windowed stream.
-        /// This window will try and incrementally aggregate data as much as the window policies permit. For example, tumbling time windows can aggregate the data, meaning that only one element per key is stored. Sliding time windows will aggregate on the granularity of the slide interval, so a few elements are stored per key (one per slide interval). Custom windows may not be able to incrementally aggregate, or may need to store extra values in an aggregation tree.
+        /// Sets the <see cref="WindowTrigger{TElement,TWindow}"/> that should be used to trigger window emission.
         /// </summary>
-        /// <param name="function">The reduce function.</param>
-        /// <returns>The data stream that is the result of applying the reduce function to the window.</returns>
-        public SingleOutputStreamOperator<TElement> Reduce(IReduceFunction<TElement> function)
+        /// <param name="trigger"></param>
+        /// <returns></returns>
+        public WindowedStream<TElement, TKey, TWindow> Trigger(WindowTrigger<TElement,TWindow> trigger)
+        {
+            return this;
+        }
+
+        /// <summary>
+        /// Applies an aggregation that gives the maximum element of every window of the data stream by the given position.
+        /// </summary>
+        /// <param name="positionToMaxBy">The position to maximize by</param>
+        /// <returns>The transformed DataStream.</returns>
+        public SingleOutputStreamOperator<TElement> MaxBy(int positionToMaxBy)
+        {
+            return null;
+        }
+
+        #region [ Reduce Transformations ]
+
+            /// <summary>
+            /// Applies a reduce function to the window. The window function is called for each evaluation of the window for each key individually. The output of the reduce function is interpreted as a regular non-windowed stream.
+            /// This window will try and incrementally aggregate data as much as the window policies permit. For example, tumbling time windows can aggregate the data, meaning that only one element per key is stored. Sliding time windows will aggregate on the granularity of the slide interval, so a few elements are stored per key (one per slide interval). Custom windows may not be able to incrementally aggregate, or may need to store extra values in an aggregation tree.
+            /// </summary>
+            /// <param name="function">The reduce function.</param>
+            /// <returns>The data stream that is the result of applying the reduce function to the window.</returns>
+            public SingleOutputStreamOperator<TElement> Reduce(IReduceFunction<TElement> function)
         {
             return null;
         }

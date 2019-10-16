@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Exceptions;
@@ -152,6 +153,26 @@ namespace FLink.Streaming.Api.Environment
 
         public DataStreamSource<TOut> ReadCsvFile<TOut>(string filePath)
         {
+            return null;
+        }
+
+        /// <summary>
+        /// Reads the given file line-by-line and creates a data stream that contains a string with the contents of each such line. The file will be read with the UTF-8 character set.
+        /// </summary>
+        /// <param name="filePath">The path of the file.</param>
+        /// <returns>The data stream that represents the data read from the given file as text lines.</returns>
+        public DataStreamSource<string> ReadTextFile(string filePath) => ReadTextFile(filePath, Encoding.UTF8);
+
+        /// <summary>
+        /// Reads the given file line-by-line and creates a data stream that contains a string with the contents of each such line. The file will be read with the UTF-8 character set.
+        /// </summary>
+        /// <param name="filePath">The path of the file.</param>
+        /// <param name="charset">The name of the character set used to read the file.</param>
+        /// <returns>The data stream that represents the data read from the given file as text lines.</returns>
+        public DataStreamSource<string> ReadTextFile(string filePath, Encoding charset)
+        {
+            Preconditions.CheckArgument(!string.IsNullOrWhiteSpace(filePath), "The file path must not be null or blank.");
+
             return null;
         }
 
