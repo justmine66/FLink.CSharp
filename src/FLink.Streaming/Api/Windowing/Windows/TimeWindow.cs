@@ -99,7 +99,7 @@ namespace FLink.Streaming.Api.Windowing.Windows
                 if (currentMerge == null)
                     currentMerge = new MergedItem(candidate, candidate);
                 else if (currentMerge.MergeResult.Intersects(candidate))
-                {
+                {   // 两个窗口的时间段相互重叠，则属于同一会话，因此会话窗口策略把这两个窗口合并成一个新的、更长的会话窗口。
                     currentMerge.MergeResult = currentMerge.MergeResult.Cover(candidate);
                     currentMerge.ToBeMerged.Add(candidate);
                 }
