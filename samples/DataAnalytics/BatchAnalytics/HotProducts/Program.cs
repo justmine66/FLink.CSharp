@@ -100,16 +100,6 @@ namespace HotProducts
             _topSize = topSize;
         }
 
-        public override void Close()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Open(Configuration parameters)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void ProcessElement(ProductClickCount value, Context ctx, ICollector<string> output)
         {
             throw new NotImplementedException();

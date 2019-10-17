@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using FLink.Core.Configurations;
 using FLink.Core.Exceptions;
 
@@ -16,9 +17,9 @@ namespace FLink.Core.Api.Common.Functions
 
         #region [ Default life cycle methods ]
 
-        public abstract void Open(Configuration parameters);
+        public void Open(Configuration parameters) => throw new NotSupportedException();
 
-        public abstract void Close();
+        public void Close() => throw new NotSupportedException();
 
         #endregion
 

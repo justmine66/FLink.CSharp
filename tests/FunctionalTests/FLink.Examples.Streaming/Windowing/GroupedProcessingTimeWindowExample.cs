@@ -44,16 +44,6 @@ namespace FLink.Examples.Streaming.Windowing
         {
             private volatile bool _running = true;
 
-            public override void Open(Configuration parameters)
-            {
-                throw new System.NotImplementedException();
-            }
-
-            public override void Close()
-            {
-                throw new System.NotImplementedException();
-            }
-
             public override void Run(ISourceContext<Element> ctx)
             {
                 var startTime = DateTime.Now.Ticks;
