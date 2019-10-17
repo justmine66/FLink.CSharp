@@ -8,7 +8,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     /// <summary>
     /// A Trigger determines when a pane of a window should be evaluated to emit the results for that part of the window.
     /// </summary>
-    /// <typeparam name="TElement">The type of elements on which this Trigger works.</typeparam>
+    /// <typeparam name="TElement">The type of elements on which this trigger works.</typeparam>
     /// <typeparam name="TWindow">The type of window on which this trigger can operate.</typeparam>
     public abstract class WindowTrigger<TElement, TWindow> where TWindow : Window
     {
