@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FLink.Core.Api.Common.Functions;
-using FLink.Core.Configuration;
+using FLink.Core.Configurations;
 using FLink.Core.Util;
 using FLink.Streaming.Api;
 using FLink.Streaming.Api.Environment;

@@ -4,6 +4,7 @@ using FLink.Core.Api.Dag;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions;
+using FLink.Streaming.Api.Functions.Sink;
 using FLink.Streaming.Api.Operators;
 
 namespace FLink.Streaming.Api.DataStreams
@@ -116,6 +117,16 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="filter">The FilterFunction that is called for each element of the DataStream.</param>
         /// <returns>The filtered DataStream.</returns>
         public SingleOutputStreamOperator<TElement> Filter(IFilterFunction<TElement> filter)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Adds the given sink to this DataStream. Only streams with sinks added will be executed once the <see cref="StreamContextEnvironment.Execute()"/> method is called.
+        /// </summary>
+        /// <param name="sinkFunction">The object containing the sink's invoke function.</param>
+        /// <returns>The closed DataStream.</returns>
+        public DataStreamSink<TElement> AddSink(ISinkFunction<TElement> sinkFunction)
         {
             return null;
         }
