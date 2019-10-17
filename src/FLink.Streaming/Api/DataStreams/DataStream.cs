@@ -63,6 +63,16 @@ namespace FLink.Streaming.Api.DataStreams
         }
 
         /// <summary>
+        /// Partitions the operator state of a <see cref="DataStream{TElement}"/> by the given key positions.
+        /// </summary>
+        /// <param name="fields">The position of the fields on which the <see cref="DataStream{TElement}"/> will be grouped.</param>
+        /// <returns>The <see cref="DataStream{TElement}"/> with partitioned state (i.e. <see cref="KeyedStream{T,TKey}"/>)</returns>
+        public KeyedStream<TElement, object> KeyBy(params int[] fields)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Writes a DataStream to the standard output stream (stdout).
         /// For each element of the DataStream the result of <see cref="object.ToString()"/> is written.
         /// NOTE: This will print to stdout on the machine where the code is executed, i.e. the FLink worker.
@@ -112,10 +122,10 @@ namespace FLink.Streaming.Api.DataStreams
 
         #region [ private members ] 
 
-            private SingleOutputStreamOperator<TReturn> DoTransform<TReturn>(
-        string operatorName,
-        TypeInformation<TReturn> outTypeInfo,
-        IStreamOperatorFactory<TReturn> operatorFactory)
+        private SingleOutputStreamOperator<TReturn> DoTransform<TReturn>(
+    string operatorName,
+    TypeInformation<TReturn> outTypeInfo,
+    IStreamOperatorFactory<TReturn> operatorFactory)
         {
             return null;
         }

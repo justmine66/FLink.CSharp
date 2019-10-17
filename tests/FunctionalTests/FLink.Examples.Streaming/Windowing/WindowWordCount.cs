@@ -17,7 +17,7 @@ namespace FLink.Examples.Streaming.Windowing
             var steam = env.ReadTextFile("");
 
             var transformation = steam.FlatMap(new Splitter())
-                .KeyBy("Word")
+                .KeyBy(0)
                 .CountWindow(10, 5)
                 .Sum(1); // sum up tuple field "Count"
 
