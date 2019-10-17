@@ -7,7 +7,7 @@ using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Windows;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
     /// A <see cref="KeyedStream{T,TKey}"/> represents a <see cref="DataStream{T}"/>.

@@ -1,8 +1,7 @@
-﻿using FLink.Streaming.Api.Environment;
-using FLink.Streaming.Api.Operators;
+﻿using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
     /// A Stream Sink. This is used for emitting elements from a streaming topology.

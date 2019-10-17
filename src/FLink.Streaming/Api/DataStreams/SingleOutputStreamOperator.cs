@@ -2,7 +2,7 @@
 using FLink.Core.Util;
 using FLink.Streaming.Api.Environment;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
     /// <see cref="SingleOutputStreamOperator{T}"/> represents a user defined transformation applied on a <see cref="DataStream{T}"/> with one predefined output type.

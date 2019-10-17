@@ -5,7 +5,7 @@ using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
     /// The DataStreamSource represents the starting point of a DataStream.

@@ -1,13 +1,13 @@
-﻿using FLink.Core.Api.Common.Functions;
+﻿using System;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Functions.Windowing;
 using FLink.Streaming.Api.Windowing.Assigners;
+using FLink.Streaming.Api.Windowing.Evictors;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
-using System;
-using FLink.Streaming.Api.Windowing.Evictors;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
     /// A <see cref="WindowedStream{T,TK,TW}"/> represents a data stream where elements are grouped by key, and for each key, the stream of elements is split into windows based on a <see cref="WindowAssigner{T,TW}"/>
@@ -76,7 +76,7 @@ namespace FLink.Streaming.Api.DataStream
         /// </summary>
         /// <param name="trigger"></param>
         /// <returns></returns>
-        public WindowedStream<TElement, TKey, TWindow> Trigger(WindowTrigger<TElement,TWindow> trigger)
+        public WindowedStream<TElement, TKey, TWindow> Trigger(WindowTrigger<TElement, TWindow> trigger)
         {
             return this;
         }
@@ -93,13 +93,13 @@ namespace FLink.Streaming.Api.DataStream
 
         #region [ Reduce Transformations ]
 
-            /// <summary>
-            /// Applies a reduce function to the window. The window function is called for each evaluation of the window for each key individually. The output of the reduce function is interpreted as a regular non-windowed stream.
-            /// This window will try and incrementally aggregate data as much as the window policies permit. For example, tumbling time windows can aggregate the data, meaning that only one element per key is stored. Sliding time windows will aggregate on the granularity of the slide interval, so a few elements are stored per key (one per slide interval). Custom windows may not be able to incrementally aggregate, or may need to store extra values in an aggregation tree.
-            /// </summary>
-            /// <param name="function">The reduce function.</param>
-            /// <returns>The data stream that is the result of applying the reduce function to the window.</returns>
-            public SingleOutputStreamOperator<TElement> Reduce(IReduceFunction<TElement> function)
+        /// <summary>
+        /// Applies a reduce function to the window. The window function is called for each evaluation of the window for each key individually. The output of the reduce function is interpreted as a regular non-windowed stream.
+        /// This window will try and incrementally aggregate data as much as the window policies permit. For example, tumbling time windows can aggregate the data, meaning that only one element per key is stored. Sliding time windows will aggregate on the granularity of the slide interval, so a few elements are stored per key (one per slide interval). Custom windows may not be able to incrementally aggregate, or may need to store extra values in an aggregation tree.
+        /// </summary>
+        /// <param name="function">The reduce function.</param>
+        /// <returns>The data stream that is the result of applying the reduce function to the window.</returns>
+        public SingleOutputStreamOperator<TElement> Reduce(IReduceFunction<TElement> function)
         {
             return null;
         }
@@ -157,6 +157,27 @@ namespace FLink.Streaming.Api.DataStream
         /// <param name="windowFunction">The window function.</param>
         /// <returns>The data stream that is the result of applying the window function to the window.</returns>
         public SingleOutputStreamOperator<TResult> Aggregate<TAccumulator, TValue, TResult>(IAggregateFunction<TElement, TAccumulator, TValue> aggFunction, IWindowFunction<TValue, TResult, TKey, TWindow> windowFunction)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Applies an aggregation that sums every window of the data stream at the given position.
+        /// </summary>
+        /// <param name="positionToSum">The position in the tuple/array to sum</param>
+        /// <returns>The transformed DataStream.</returns>
+        public SingleOutputStreamOperator<TElement> Sum(int positionToSum)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Applies an aggregation that sums every window of the pojo data stream at the given field for every window.
+        /// A field expression is either the name of a public field or a getter method with parentheses of the stream's underlying type.
+        /// </summary>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public SingleOutputStreamOperator<TElement> Sum(string field)
         {
             return null;
         }

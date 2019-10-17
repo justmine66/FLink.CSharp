@@ -6,7 +6,7 @@ using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Operators;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
     /// A DataStream represents a stream of elements of the same type.

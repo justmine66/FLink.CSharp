@@ -1,10 +1,9 @@
-﻿using FLink.Core.Api.Common.State;
-using FLink.Core.Api.Common.TypeInfo;
-using FLink.Streaming.Api.Environment;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using FLink.Core.Api.Common.State;
+using FLink.Streaming.Api.Environment;
 
-namespace FLink.Streaming.Api.DataStream
+namespace FLink.Streaming.Api.DataStreams
 {
     public class BroadcastStream<T>
     {
