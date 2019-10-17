@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
-using FLink.Streaming.Api.DataStream;
+using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Graph;
 using FLink.Streaming.Api.Operators;
