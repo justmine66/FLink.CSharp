@@ -10,8 +10,8 @@ namespace FLink.Streaming.Api.Functions
     public interface IAssignerWithPeriodicWatermarks<in T> : ITimestampAssigner<T>
     {
         /// <summary>
-        /// Returns the current watermark. This method is periodically called by the system to retrieve the current watermark. if no watermark should be emitted, or the next watermark to emit.
+        /// Generate watermark. This method is periodically called by the system to retrieve the current watermark. if no watermark should be emitted, or the next watermark to emit.
         /// </summary>
-        Watermark CurrentWatermark { get; }
+        Watermark GetCurrentWatermark();
     }
 }

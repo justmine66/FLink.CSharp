@@ -1,5 +1,5 @@
-﻿using System;
-using FLink.Streaming.Runtime.StreamRecord;
+﻿using FLink.Streaming.Runtime.StreamRecord;
+using System;
 
 namespace FLink.Streaming.Api.Watermarks
 {
@@ -24,9 +24,9 @@ namespace FLink.Streaming.Api.Watermarks
             Timestamp = timestamp;
         }
 
-        public override bool Equals(object o)
+        public override bool Equals(object other)
         {
-            return Equals(o as Watermark);
+            return Equals(other as Watermark);
         }
 
         public bool Equals(Watermark other)
@@ -36,14 +36,8 @@ namespace FLink.Streaming.Api.Watermarks
             return Timestamp == other.Timestamp;
         }
 
-        public override int GetHashCode()
-        {
-            return (int)(Timestamp ^ (Timestamp >> 32));
-        }
+        public override int GetHashCode() => (int)(Timestamp ^ (Timestamp >> 32));
 
-        public override string ToString()
-        {
-            return "Watermark @ " + Timestamp;
-        }
+        public override string ToString() => $"Watermark({Timestamp})";
     }
 }
