@@ -27,7 +27,7 @@ namespace FLink.Streaming.Api.Environment
         // The time characteristic that is used if none other is set.
         private const TimeCharacteristic DefaultTimeCharacteristic = TimeCharacteristic.ProcessingTime;
 
-        // The default buffer timeout (max delay of records in the network stack).
+        // The default buffer timeout 100ms (max delay of records in the network stack).
         private const long DefaultNetworkBufferTimeout = 100L;
 
         // The environment of the context (local by default, cluster if invoked through command line).
@@ -41,12 +41,18 @@ namespace FLink.Streaming.Api.Environment
 
         private readonly List<StreamTransformation<object>> _transformations = new List<StreamTransformation<object>>();
 
-        private long _bufferTimeout = DefaultNetworkBufferTimeout;
-
         protected bool IsChainingEnabled = true;
 
         public TimeCharacteristic TimeCharacteristic;
 
+        /// <summary>
+        /// A maximum wait time for the buffers to fill up in the network stack. The default buffer timeout 100ms.
+        /// </summary>
+        public long BufferTimeout = DefaultNetworkBufferTimeout;
+
+        /// <summary>
+        /// Gets the parallelism with which operation are executed by default. Operations can individually override this value to use a specific parallelism.
+        /// </summary>
         public int Parallelism { get; } = Config.GetParallelism();
 
         public T Clean<T>(T t)
@@ -63,6 +69,11 @@ namespace FLink.Streaming.Api.Environment
             return Config;
         }
 
+        /// <summary>
+        /// Sets the parallelism for operations executed through this environment. Setting a parallelism of x here will cause all operators (such as map, batchReduce) to run with x parallel instances. This method overrides the default parallelism for this environment. The <see cref="LocalStreamEnvironment"/> uses by default a value equal to the number of hardware contexts(CPU cores / threads). 
+        /// </summary>
+        /// <param name="parallelism">The parallelism</param>
+        /// <returns>The configured <see cref="StreamExecutionEnvironment"/>.</returns>
         public StreamExecutionEnvironment SetParallelism(int parallelism)
         {
             Config.SetParallelism(parallelism);
@@ -91,30 +102,11 @@ namespace FLink.Streaming.Api.Environment
 
         internal static StreamExecutionEnvironment CreateStreamExecutionEnvironment()
         {
-            // because the streaming project depends on "flink-clients" (and not the other way around)
+            // because the streaming project depends on "FLink-clients" (and not the other way around)
             // we currently need to intercept the data set environment and create a dependent stream env.
             // this should be fixed once we rework the project dependencies
             return null;
         }
-
-        public JobExecutionResult Execute()
-        {
-            return Execute(DefaultJobName);
-        }
-
-        /// <summary>
-        /// Triggers the program execution. The environment will execute all parts of the program that have resulted in a "sink" operation.Sink operations are for example printing results or forwarding them to a message queue.
-        /// </summary>
-        /// <param name="jobName"></param>
-        /// <returns></returns>
-        public JobExecutionResult Execute(string jobName)
-        {
-            Preconditions.CheckNotNull(jobName, "Streaming Job name should not be null.");
-
-            return Execute(GetStreamGraph(jobName));
-        }
-
-        public abstract JobExecutionResult Execute(StreamGraph streamGraph);
 
         public StreamGraph GetStreamGraph(string jobName)
         {
@@ -125,6 +117,20 @@ namespace FLink.Streaming.Api.Environment
         {
             TimeCharacteristic = Preconditions.CheckNotNull(characteristic);
             GetConfig().SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the maximum time frequency (milliseconds) for the flushing of the output buffers. By default the output buffers flush frequently to provide low latency and to aid smooth developer experience. Setting the parameter can result in three logical modes:
+        /// 1. A positive integer triggers flushing periodically by that integer.
+        /// 2. 0 triggers flushing after every record thus minimizing latency. A buffer timeout of 0 should be avoided, because it can cause severe performance degradation.
+        /// 3. -1 triggers flushing only when the output buffer is full thus maximizing throughput. it will remove the timeout and buffers will only be flushed when they are full.
+        /// </summary>
+        /// <param name="timeoutMillis">The maximum time between two output flushes.</param>
+        /// <returns>The configured <see cref="StreamExecutionEnvironment"/>.</returns>
+        public StreamExecutionEnvironment SetBufferTimeout(long timeoutMillis)
+        {
+            BufferTimeout = timeoutMillis;
             return this;
         }
 
@@ -275,5 +281,21 @@ namespace FLink.Streaming.Api.Environment
         #endregion
 
         #endregion
+
+        public JobExecutionResult Execute() => Execute(DefaultJobName);
+
+        /// <summary>
+        /// Triggers the program execution. The environment will execute all parts of the program that have resulted in a "sink" operation.Sink operations are for example printing results or forwarding them to a message queue.
+        /// </summary>
+        /// <param name="jobName"></param>
+        /// <returns></returns>
+        public JobExecutionResult Execute(string jobName)
+        {
+            Preconditions.CheckNotNull(jobName, "Streaming Job name should not be null.");
+
+            return Execute(GetStreamGraph(jobName));
+        }
+
+        public abstract JobExecutionResult Execute(StreamGraph streamGraph);
     }
 }
