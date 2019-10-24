@@ -20,9 +20,9 @@ namespace FLink.Streaming.Api.Functions.Windowing
         /// </summary>
         /// <param name="key">The key for which this window is evaluated.</param>
         /// <param name="window">The window that is being evaluated.</param>
-        /// <param name="input">The elements in the window being evaluated.</param>
+        /// <param name="elements">The elements in the window being evaluated.</param>
         /// <param name="output">A collector for emitting elements.</param>
         /// <exception cref="System.Exception">The function may throw exceptions to fail the program and trigger recovery.</exception>
-        void Apply(TKey key, TWindow window, IEnumerable<TInput> input, ICollector<TOutput> output);
+        void Apply(TKey key, TWindow window, IEnumerable<TInput> elements, ICollector<TOutput> output);
     }
 }

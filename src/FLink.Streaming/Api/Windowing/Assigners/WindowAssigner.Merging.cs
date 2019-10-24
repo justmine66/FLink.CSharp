@@ -6,16 +6,16 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <summary>
     /// A <see cref="WindowAssigner{T,TW}"/> that can merge windows.
     /// </summary>
-    /// <typeparam name="T">The type of elements that this WindowAssigner can assign windows to.</typeparam>
-    /// <typeparam name="TW">The type of window that this assigner assigns.</typeparam>
-    public abstract class MergingWindowAssigner<T, TW> : WindowAssigner<T, TW> where TW : Window
+    /// <typeparam name="TElement">The type of elements that this WindowAssigner can assign windows to.</typeparam>
+    /// <typeparam name="TWindow">The type of window that this assigner assigns.</typeparam>
+    public abstract class MergingWindowAssigner<TElement, TWindow> : WindowAssigner<TElement, TWindow> where TWindow : Window
     {
         /// <summary>
         /// Determines which windows (if any) should be merged.
         /// </summary>
         /// <param name="windows">The window candidates.</param>
         /// <param name="callback">A callback that can be invoked to signal which windows should be merged.</param>
-        public abstract void MergeWindows(IEnumerable<TW> windows, IMergeWindowCallback<TW> callback);
+        public abstract void MergeWindows(IEnumerable<TWindow> windows, IMergeWindowCallback<TWindow> callback);
     }
 
     /// <summary>

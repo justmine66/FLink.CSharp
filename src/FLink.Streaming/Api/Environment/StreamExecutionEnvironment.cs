@@ -55,9 +55,15 @@ namespace FLink.Streaming.Api.Environment
         /// </summary>
         public int Parallelism { get; } = Config.GetParallelism();
 
-        public T Clean<T>(T t)
+        /// <summary>
+        /// Returns a "closure-cleaned" version of the given function. Cleans only if closure cleaning is not disabled in the <see cref="ExecutionConfig"/>.
+        /// </summary>
+        /// <typeparam name="TFunction"></typeparam>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        public TFunction Clean<TFunction>(TFunction function)
         {
-            return t;
+            return function;
         }
 
         /// <summary>

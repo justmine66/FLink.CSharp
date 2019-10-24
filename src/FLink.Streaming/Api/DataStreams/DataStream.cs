@@ -1,4 +1,5 @@
-﻿using FLink.Core.Api.Common.Functions;
+﻿using System;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
@@ -6,6 +7,10 @@ using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Functions.Sink;
 using FLink.Streaming.Api.Operators;
+using FLink.Streaming.Api.Windowing.Assigners;
+using FLink.Streaming.Api.Windowing.Evictors;
+using FLink.Streaming.Api.Windowing.Triggers;
+using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.DataStreams
 {
@@ -72,6 +77,65 @@ namespace FLink.Streaming.Api.DataStreams
         {
             return null;
         }
+
+        #region [ Global Window Utilities ]
+
+        /// <summary>
+        /// Windows this <see cref="DataStream{TElement}"/> into sliding time windows.
+        /// Note: This operation is inherently non-parallel since all elements have to pass through the same operator instance.
+        /// </summary>
+        /// <param name="size">The size of the window.</param>
+        /// <returns></returns>
+        public AllWindowedStream<TElement, TimeWindow> TimeWindowAll(TimeSpan size) =>
+            Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+                ? WindowAll(TumblingProcessingTimeWindowAssigner<TElement>.Of(size))
+                : WindowAll(TumblingEventTimeWindowAssigner<TElement>.Of(size));
+
+        /// <summary>
+        /// Windows this <see cref="DataStream{TElement}"/> into sliding time windows.
+        /// Note: This operation is inherently non-parallel since all elements have to pass through the same operator instance.
+        /// </summary>
+        /// <param name="size">The size of the window.</param>
+        /// <param name="slide">The slide parameter controls how frequently a sliding window is started.</param>
+        /// <returns></returns>
+        public AllWindowedStream<TElement, TimeWindow> TimeWindowAll(TimeSpan size, TimeSpan slide) =>
+            Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+                ? WindowAll(SlidingProcessingTimeWindowAssigner<TElement>.Of(size, slide))
+                : WindowAll(SlidingEventTimeWindowAssigner<TElement>.Of(size, slide));
+
+        /// <summary>
+        /// Windows this <see cref="DataStream{TElement}"/> into tumbling count windows.
+        /// Note: This operation is inherently non-parallel since all elements have to pass through the same operator instance.
+        /// </summary>
+        /// <param name="size">The size of the windows in number of elements.</param>
+        /// <returns></returns>
+        public AllWindowedStream<TElement, GlobalWindow> CountWindowAll(long size) =>
+            WindowAll(GlobalWindowAssigner<TElement>.Create())
+                .Trigger(PurgingWindowTrigger.Of(CountWindowTrigger.Of<TElement, GlobalWindow>(size)));
+
+        /// <summary>
+        /// Windows this <see cref="DataStream{TElement}"/> into sliding count windows.
+        /// Note: This operation is inherently non-parallel since all elements have to pass through the same operator instance.
+        /// </summary>
+        /// <param name="size">The size of the windows in number of elements.</param>
+        /// <param name="slide">The slide interval in number of elements.</param>
+        /// <returns></returns>
+        public AllWindowedStream<TElement, GlobalWindow> CountWindowAll(long size, long slide) =>
+            WindowAll(GlobalWindowAssigner<TElement>.Create())
+                .Evictor(CountWindowEvictor.Of<TElement, GlobalWindow>(size))
+                .Trigger(CountWindowTrigger.Of<TElement, GlobalWindow>(slide));
+
+        /// <summary>
+        /// Windows this data stream to a <see cref="AllWindowedStream{TElement,TWindow}"/>, which evaluates windows over a non key grouped stream. Elements are put into windows by a <see cref="WindowAssigner{TElement,TWindow}"/>. The grouping of elements is done by window.
+        /// Note: This operation is inherently non-parallel since all elements have to pass through the same operator instance.
+        /// </summary>
+        /// <typeparam name="TWindow"></typeparam>
+        /// <param name="assigner">The <see cref="WindowAssigner{TElement,TWindow}"/> that assigns elements to windows.</param>
+        /// <returns>The trigger windows data stream.</returns>
+        public AllWindowedStream<TElement, TWindow> WindowAll<TWindow>(WindowAssigner<TElement, TWindow> assigner)
+            where TWindow : Window => new AllWindowedStream<TElement, TWindow>(this, assigner);
+
+        #endregion
 
         /// <summary>
         /// Writes a DataStream to the standard output stream (stdout).

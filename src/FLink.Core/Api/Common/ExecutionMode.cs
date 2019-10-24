@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FLink.Core.Api.Common
+﻿namespace FLink.Core.Api.Common
 {
     /// <summary>
     /// The execution mode specifies how a batch program is executed in terms of data exchange: pipelining or batched.

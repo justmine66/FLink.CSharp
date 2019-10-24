@@ -15,11 +15,9 @@ namespace FLink.Streaming.Api.Windowing.Triggers
 
         public override WindowTriggerResult OnElement(TElement element, long timestamp, TimeWindow window, IWindowTriggerContext ctx)
         {
+            // if the watermark is already past the window fire immediately
             if (window.MaxTimestamp <= ctx.CurrentWatermark)
-            {
-                // if the watermark is already past the window fire immediately
                 return WindowTriggerResult.Fire;
-            }
 
             ctx.RegisterEventTimeTimer(window.MaxTimestamp);
             return WindowTriggerResult.Continue;
@@ -28,7 +26,8 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         public override WindowTriggerResult OnEventTime(long time, TimeWindow window, IWindowTriggerContext ctx) =>
             time == window.MaxTimestamp ? WindowTriggerResult.Fire : WindowTriggerResult.Continue;
 
-        public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, IWindowTriggerContext ctx) => WindowTriggerResult.Continue;
+        public override WindowTriggerResult OnProcessingTime(long time, TimeWindow window, IWindowTriggerContext ctx) =>
+            WindowTriggerResult.Continue;
 
         public override bool CanMerge => true;
 

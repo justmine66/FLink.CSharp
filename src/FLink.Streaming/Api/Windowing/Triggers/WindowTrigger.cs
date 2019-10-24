@@ -20,7 +20,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// <param name="timestamp">The timestamp of the element that arrived.</param>
         /// <param name="window">The window to which the element is being added.</param>
         /// <param name="ctx">A context object that can be used to register timer callbacks.</param>
-        /// <returns></returns>
+        /// <returns>the triggered result.</returns>
         public abstract WindowTriggerResult OnElement(TElement element, long timestamp, TWindow window, IWindowTriggerContext ctx);
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// <param name="time">The timestamp at which the timer fired.</param>
         /// <param name="window">The window for which the timer fired.</param>
         /// <param name="ctx">A context object that can be used to register timer callbacks.</param>
-        /// <returns></returns>
+        /// <returns>the triggered result.</returns>
         public abstract WindowTriggerResult OnProcessingTime(long time, TWindow window, IWindowTriggerContext ctx);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         /// <param name="time">The timestamp at which the timer fired.</param>
         /// <param name="window">The window for which the timer fired.</param>
         /// <param name="ctx">A context object that can be used to register timer callbacks.</param>
-        /// <returns></returns>
+        /// <returns>the triggered result.</returns>
         public abstract WindowTriggerResult OnEventTime(long time, TWindow window, IWindowTriggerContext ctx);
 
         /// <summary>
