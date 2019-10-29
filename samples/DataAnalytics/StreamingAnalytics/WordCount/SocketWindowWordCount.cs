@@ -6,6 +6,7 @@ using FLink.Streaming.Api.Environment;
 namespace WordCount
 {
     /// <summary>
+    /// 词频统计
     /// 一个从Socket流中统计单词出现次数的例子.
     /// </summary>
     public class SocketWindowWordCount
