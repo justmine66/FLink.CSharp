@@ -3,8 +3,5 @@
     /// <summary>
     /// The base interface for all user-defined functions.
     /// </summary>
-    public interface IFunction
-    {
-
-    }
+    public interface IFunction { }
 }
