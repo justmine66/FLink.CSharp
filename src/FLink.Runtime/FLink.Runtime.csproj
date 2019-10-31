@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Operators\" />
+    <Folder Include="State\Memory\" />
   </ItemGroup>
 
   <ItemGroup>

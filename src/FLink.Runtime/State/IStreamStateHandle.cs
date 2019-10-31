@@ -7,6 +7,9 @@ namespace FLink.Runtime.State
     /// </summary>
     public interface IStreamStateHandle
     {
+        /// <summary>
+        /// Returns an <see cref="FSDataInputStream"/> that can be used to read back the data that was previously written to the stream.
+        /// </summary>
         FSDataInputStream OpenInputStream();
     }
 }

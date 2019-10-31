@@ -12,7 +12,7 @@ namespace FLink.Runtime.State
         /// </summary>
         /// <param name="scope">The state's scope, whether it is exclusive or shared.</param>
         /// <returns>An output stream that writes state for the given checkpoint.</returns>
-        CheckpointStateOutputStream createCheckpointStateOutputStream(CheckpointedStateScope scope);
+        CheckpointStateOutputStream CreateCheckpointStateOutputStream(CheckpointedStateScope scope);
     }
 
     /// <summary>
