@@ -1,5 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.FS;
+using FLink.Metrics.Core;
+using FLink.Runtime.Execution;
+using FLink.Runtime.Query;
+using FLink.Runtime.State.TTL;
 
 namespace FLink.Runtime.State
 {
@@ -32,7 +39,52 @@ namespace FLink.Runtime.State
 
         #region [ Structure Backends ]
 
+        /// <summary>
+        /// Creates a new <see cref="AbstractKeyedStateBackend{TKey}"/> that is responsible for holding <b>keyed state</b> and checkpointing it.
+        /// Keyed State is state where each value is bound to a key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the keys by which the state is organized.</typeparam>
+        /// <param name="env">The environment of the task.</param>
+        /// <param name="jobId">The ID of the job that the task belongs to.</param>
+        /// <param name="operatorIdentifier">The identifier text of the operator.</param>
+        /// <param name="keySerializer">The key-serializer for the operator.</param>
+        /// <param name="numberOfKeyGroups">The number of key-groups aka max parallelism.</param>
+        /// <param name="keyGroupRange">Range of key-groups for which the to-be-created backend is responsible.</param>
+        /// <param name="kvStateRegistry">KvStateRegistry helper for this task.</param>
+        /// <param name="ttlTimeProvider">Provider for TTL logic to judge about state expiration.</param>
+        /// <param name="metricGroup">The parent metric group for all state backend metrics.</param>
+        /// <param name="stateHandles">The state handles for restore.</param>
+        /// <param name="cancelStreamRegistry">The registry to which created closeable objects will be registered during restore.</param>
+        /// <returns>The Keyed State Backend for the given job, operator, and key group range.</returns>
+        /// <exception cref="System.Exception">This method may forward all exceptions that occur while instantiating the backend.</exception>
+        AbstractKeyedStateBackend<TKey> CreateKeyedStateBackend<TKey>(
+            IEnvironment env,
+            JobId jobId,
+            string operatorIdentifier,
+            TypeSerializer<TKey> keySerializer,
+            int numberOfKeyGroups,
+            KeyGroupRange keyGroupRange,
+            TaskKvStateRegistry kvStateRegistry,
+            ITtlTimeProvider ttlTimeProvider,
+            IMetricGroup metricGroup,
+            IList<IKeyedStateHandle> stateHandles,
+            CloseableRegistry cancelStreamRegistry);
 
+        /// <summary>
+        /// Creates a new <see cref="IOperatorStateBackend"/> that can be used for storing operator state.
+        /// Operator state is state that is associated with parallel operator (or function) instances, rather than with keys.
+        /// </summary>
+        /// <param name="env">The runtime environment of the executing task.</param>
+        /// <param name="operatorIdentifier">The identifier of the operator whose state should be stored.</param>
+        /// <param name="stateHandles">The state handles for restore.</param>
+        /// <param name="cancelStreamRegistry">The registry to register streams to close if task canceled.</param>
+        /// <returns>The OperatorStateBackend for operator identified by the job and operator identifier.</returns>
+        /// <exception cref="System.Exception">This method may forward all exceptions that occur while instantiating the backend.</exception>
+        IOperatorStateBackend CreateOperatorStateBackend(
+            IEnvironment env,
+            string operatorIdentifier,
+            IList<IOperatorStateBackend> stateHandles,
+            CloseableRegistry cancelStreamRegistry);
 
         #endregion
     }
