@@ -2,12 +2,12 @@
 {
     public class FsPath
     {
-        public FsPath() { }
         public FsPath(string fullPath) => FullPath = fullPath;
         public FsPath(string scheme, string path)
         {
             Scheme = scheme;
             Path = path;
+            FullPath = $"{scheme}{path}";
         }
 
         public string Scheme { get; }

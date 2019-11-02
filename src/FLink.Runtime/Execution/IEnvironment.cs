@@ -1,4 +1,5 @@
-﻿using FLink.Core.Api.Common;
+﻿using System;
+using FLink.Core.Api.Common;
 
 namespace FLink.Runtime.Execution
 {
@@ -17,5 +18,10 @@ namespace FLink.Runtime.Execution
         /// the ID of the job from the original job graph
         /// </summary>
         JobId JobId { get; }
+
+        /// <summary>
+        /// Returns the user code class type
+        /// </summary>
+        Type UserClassType { get; }
     }
 }

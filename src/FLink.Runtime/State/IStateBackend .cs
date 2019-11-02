@@ -83,7 +83,7 @@ namespace FLink.Runtime.State
         IOperatorStateBackend CreateOperatorStateBackend(
             IEnvironment env,
             string operatorIdentifier,
-            IList<IOperatorStateBackend> stateHandles,
+            IList<IOperatorStateHandle> stateHandles,
             CloseableRegistry cancelStreamRegistry);
 
         #endregion

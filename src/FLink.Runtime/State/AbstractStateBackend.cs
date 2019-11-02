@@ -14,7 +14,7 @@ namespace FLink.Runtime.State
     /// An abstract base implementation of the <see cref="IStateObject"/> interface.
     /// This class has currently no contents and only kept to not break the prior class hierarchy for users.
     /// </summary>
-    public class AbstractStateBackend : IStateBackend
+    public abstract class AbstractStateBackend : IStateBackend
     {
         public ICompletedCheckpointStorageLocation ResolveCheckpoint(string externalPointer)
         {
@@ -26,18 +26,15 @@ namespace FLink.Runtime.State
             throw new NotImplementedException();
         }
 
-        public AbstractKeyedStateBackend<TKey> CreateKeyedStateBackend<TKey>(IEnvironment env, JobId jobId, string operatorIdentifier,
+        public abstract AbstractKeyedStateBackend<TKey> CreateKeyedStateBackend<TKey>(IEnvironment env, JobId jobId,
+            string operatorIdentifier,
             TypeSerializer<TKey> keySerializer, int numberOfKeyGroups, KeyGroupRange keyGroupRange,
-            TaskKvStateRegistry kvStateRegistry, ITtlTimeProvider ttlTimeProvider, IMetricGroup metricGroup, IList<IKeyedStateHandle> stateHandles,
-            CloseableRegistry cancelStreamRegistry)
-        {
-            throw new NotImplementedException();
-        }
+            TaskKvStateRegistry kvStateRegistry, ITtlTimeProvider ttlTimeProvider, IMetricGroup metricGroup,
+            IList<IKeyedStateHandle> stateHandles,
+            CloseableRegistry cancelStreamRegistry);
 
-        public IOperatorStateBackend CreateOperatorStateBackend(IEnvironment env, string operatorIdentifier, IList<IOperatorStateBackend> stateHandles,
-            CloseableRegistry cancelStreamRegistry)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract IOperatorStateBackend CreateOperatorStateBackend(IEnvironment env, string operatorIdentifier,
+            IList<IOperatorStateHandle> stateHandles,
+            CloseableRegistry cancelStreamRegistry);
     }
 }

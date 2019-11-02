@@ -13,6 +13,7 @@ namespace FLink.Core.Configurations
         public static readonly Description EmptyDescription = Description.Builder().Text("").Build();
 
         public string Key;
+        public T DefaultValue;
 
         /// <summary>
         /// Creates a new config option with fallback keys.

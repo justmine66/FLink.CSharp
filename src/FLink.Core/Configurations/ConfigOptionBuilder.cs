@@ -23,13 +23,18 @@ namespace FLink.Core.Configurations
                 _key = key;
             }
 
-            public ConfigOption<string> NoDefaultValue()
+            public ConfigOption<string> NoDefaultValue() => new ConfigOption<string>(_key, typeof(string),
+                ConfigOption<string>.EmptyDescription, null, false);
+
+            public ConfigOption<T> DefaultValue<T>(T value)
             {
-                return new ConfigOption<string>(
+                Preconditions.CheckNotNull(value);
+
+                return new ConfigOption<T>(
                     _key,
-                    typeof(string),
-                    ConfigOption<string>.EmptyDescription,
-                    null,
+                    typeof(T),
+                    ConfigOption<T>.EmptyDescription,
+                    value,
                     false);
             }
         }
