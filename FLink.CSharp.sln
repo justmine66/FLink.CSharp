@@ -45,6 +45,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Examples.Streaming", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Core.FunctionalTest", "tests\FunctionalTests\FLink.Core.FunctionalTest\FLink.Core.FunctionalTest.csproj", "{B1E60C77-944C-48BE-8822-318920B3971E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Runtime.FunctionalTest", "tests\FunctionalTests\FLink.Runtime.FunctionalTest\FLink.Runtime.FunctionalTest.csproj", "{6559C3F9-9F97-45AD-9105-9E7E94C2813B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{05533FE0-FF6D-4BD7-A44A-1385BFEAD311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Runtime.Test", "tests\Shared\FLink.Runtime.Test\FLink.Runtime.Test.csproj", "{4D61B0C5-B55E-4B0B-9C75-70362EA49B84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -103,6 +109,14 @@ Global
 		{B1E60C77-944C-48BE-8822-318920B3971E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1E60C77-944C-48BE-8822-318920B3971E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1E60C77-944C-48BE-8822-318920B3971E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6559C3F9-9F97-45AD-9105-9E7E94C2813B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6559C3F9-9F97-45AD-9105-9E7E94C2813B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6559C3F9-9F97-45AD-9105-9E7E94C2813B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6559C3F9-9F97-45AD-9105-9E7E94C2813B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D61B0C5-B55E-4B0B-9C75-70362EA49B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D61B0C5-B55E-4B0B-9C75-70362EA49B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D61B0C5-B55E-4B0B-9C75-70362EA49B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D61B0C5-B55E-4B0B-9C75-70362EA49B84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -126,6 +140,9 @@ Global
 		{4FEDB2DE-A38A-4260-AC99-A632AFED38E1} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
 		{4DB22F6F-8B45-4D6F-B1F1-C300178D3A5F} = {4E9AD229-2BB9-486F-8360-BAF8FE0930E9}
 		{B1E60C77-944C-48BE-8822-318920B3971E} = {4E9AD229-2BB9-486F-8360-BAF8FE0930E9}
+		{6559C3F9-9F97-45AD-9105-9E7E94C2813B} = {4E9AD229-2BB9-486F-8360-BAF8FE0930E9}
+		{05533FE0-FF6D-4BD7-A44A-1385BFEAD311} = {76716B86-AC7A-4422-8A06-F13B41F9EC9B}
+		{4D61B0C5-B55E-4B0B-9C75-70362EA49B84} = {05533FE0-FF6D-4BD7-A44A-1385BFEAD311}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}

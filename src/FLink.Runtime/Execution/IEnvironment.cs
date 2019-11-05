@@ -1,5 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common;
+using FLink.Runtime.Query;
+using FLink.Runtime.State.Internal;
 
 namespace FLink.Runtime.Execution
 {
@@ -23,5 +25,10 @@ namespace FLink.Runtime.Execution
         /// Returns the user code class type
         /// </summary>
         Type UserClassType { get; }
+
+        /// <summary>
+        /// Returns the registry for <see cref="IInternalKvState{TKey,TNamespace,TValue}"/> instances.
+        /// </summary>
+        TaskKvStateRegistry TaskKvStateRegistry { get; }
     }
 }

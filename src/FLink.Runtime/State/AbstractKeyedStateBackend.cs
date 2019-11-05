@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.IO;
@@ -6,7 +7,7 @@ using FLink.Runtime.Checkpoint;
 
 namespace FLink.Runtime.State
 {
-    public class AbstractKeyedStateBackend<TKey> : IKeyedStateBackend<TKey>, ISnapshotStrategy<SnapshotResult<IKeyedStateHandle>>, ICloseable, ICheckpointListener
+    public abstract class AbstractKeyedStateBackend<TKey> : IKeyedStateBackend<TKey>, ISnapshotStrategy<SnapshotResult<IKeyedStateHandle>>, ICloseable, ICheckpointListener
     {
         public TKey CurrentKey { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
@@ -14,6 +15,8 @@ namespace FLink.Runtime.State
         {
             throw new System.NotImplementedException();
         }
+
+        public abstract IEnumerable<TKey> GetKeys<TNamespace>(string state, TNamespace @namespace);
 
         public void Close()
         {
@@ -40,7 +43,7 @@ namespace FLink.Runtime.State
             throw new System.NotImplementedException();
         }
 
-        public TState GetPartitionedState<TNamespace, TState>(TNamespace @namespace, TypeSerializer<TNamespace> namespaceSerializer, StateDescriptor<TState, object> stateDescriptor) where TState : IState
+        public TState GetPartitionedState<TNamespace, TState, TValue>(TNamespace @namespace, TypeSerializer<TNamespace> namespaceSerializer, StateDescriptor<TState, TValue> stateDescriptor) where TState : IState
         {
             throw new System.NotImplementedException();
         }

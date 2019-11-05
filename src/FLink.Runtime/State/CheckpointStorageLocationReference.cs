@@ -45,7 +45,7 @@ namespace FLink.Runtime.State
 
         #region [ Default Location Reference ]
 
-        private static readonly CheckpointStorageLocationReference Default = new CheckpointStorageLocationReference();
+        public static readonly CheckpointStorageLocationReference Default = new CheckpointStorageLocationReference();
 
         #endregion
     }

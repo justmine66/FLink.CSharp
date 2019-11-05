@@ -12,11 +12,11 @@ namespace FLink.Streaming.Api.DataStreams
     /// <summary>
     /// A <see cref="KeyedStream{T,TKey}"/> represents a <see cref="DataStream{T}"/>.
     /// </summary>
-    /// <typeparam name="T">The type of the elements in the Keyed Stream.</typeparam>
+    /// <typeparam name="TElement">The type of the elements in the Keyed Stream.</typeparam>
     /// <typeparam name="TKey">The type of the key in the Keyed Stream.</typeparam>
-    public class KeyedStream<T, TKey> : DataStream<T>
+    public class KeyedStream<TElement, TKey> : DataStream<TElement>
     {
-        public KeyedStream(StreamExecutionEnvironment environment, Transformation<T> transformation) : base(environment,
+        public KeyedStream(StreamExecutionEnvironment environment, Transformation<TElement> transformation) : base(environment,
             transformation)
         {
         }
@@ -26,11 +26,11 @@ namespace FLink.Streaming.Api.DataStreams
         /// </summary>
         /// <param name="size">The size of the window.</param>
         /// <returns></returns>
-        public WindowedStream<T, TKey, TimeWindow> TimeWindow(TimeSpan size)
+        public WindowedStream<TElement, TKey, TimeWindow> TimeWindow(TimeSpan size)
         {
             return Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
-                ? Window(TumblingProcessingTimeWindowAssigner<T>.Of(size))
-                : Window(TumblingEventTimeWindowAssigner<T>.Of(size));
+                ? Window(TumblingProcessingTimeWindowAssigner<TElement>.Of(size))
+                : Window(TumblingEventTimeWindowAssigner<TElement>.Of(size));
         }
 
         /// <summary>
@@ -39,11 +39,11 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="size">The size of the window.</param>
         /// <param name="slide">The slide interval.</param>
         /// <returns></returns>
-        public WindowedStream<T, TKey, TimeWindow> TimeWindow(TimeSpan size, TimeSpan slide)
+        public WindowedStream<TElement, TKey, TimeWindow> TimeWindow(TimeSpan size, TimeSpan slide)
         {
             return Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
-                ? Window(SlidingProcessingTimeWindowAssigner<T>.Of(size, slide))
-                : Window(SlidingEventTimeWindowAssigner<T>.Of(size, slide));
+                ? Window(SlidingProcessingTimeWindowAssigner<TElement>.Of(size, slide))
+                : Window(SlidingEventTimeWindowAssigner<TElement>.Of(size, slide));
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// </summary>
         /// <param name="size">The size of the windows in number of elements.</param>
         /// <returns></returns>
-        public WindowedStream<T, TKey, GlobalWindow> CountWindow(long size)
+        public WindowedStream<TElement, TKey, GlobalWindow> CountWindow(long size)
         {
             return null;
         }
@@ -62,7 +62,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="size">The size of the windows in number of elements.</param>
         /// <param name="slide">The slide interval in number of elements.</param>
         /// <returns></returns>
-        public WindowedStream<T, TKey, GlobalWindow> CountWindow(long size, long slide)
+        public WindowedStream<TElement, TKey, GlobalWindow> CountWindow(long size, long slide)
         {
             return null;
         }
@@ -73,10 +73,10 @@ namespace FLink.Streaming.Api.DataStreams
         /// <typeparam name="TW"></typeparam>
         /// <param name="assigner">The WindowAssigner that assigns elements to windows.</param>
         /// <returns>The trigger windows data stream.</returns>
-        public WindowedStream<T, TKey, TW> Window<TW>(WindowAssigner<T, TW> assigner)
+        public WindowedStream<TElement, TKey, TW> Window<TW>(WindowAssigner<TElement, TW> assigner)
             where TW : Window
         {
-            return new WindowedStream<T, TKey, TW>(this, assigner);
+            return new WindowedStream<TElement, TKey, TW>(this, assigner);
         }
 
         #region [ Non-Windowed aggregation operations ]
@@ -86,7 +86,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// </summary>
         /// <param name="reducer">The <see cref="IReduceFunction{T}"/> that will be called for every element of the input values with the same key.</param>
         /// <returns>The transformed DataStream.</returns>
-        public SingleOutputStreamOperator<T> Reduce(IReduceFunction<T> reducer)
+        public SingleOutputStreamOperator<TElement> Reduce(IReduceFunction<TElement> reducer)
         {
             return null;
         }
@@ -101,13 +101,13 @@ namespace FLink.Streaming.Api.DataStreams
         /// <typeparam name="TR"></typeparam>
         /// <param name="keyedProcessFunction"></param>
         /// <returns></returns>
-        public SingleOutputStreamOperator<TR> Process<TR>(KeyedProcessFunction<TKey, T, TR> keyedProcessFunction)
+        public SingleOutputStreamOperator<TR> Process<TR>(KeyedProcessFunction<TKey, TElement, TR> keyedProcessFunction)
         {
             return null;
         }
 
         public SingleOutputStreamOperator<TR> Process<TR>(
-            KeyedProcessFunction<TKey, T, TR> keyedProcessFunction,
+            KeyedProcessFunction<TKey, TElement, TR> keyedProcessFunction,
             TypeInformation<TR> outputType)
         {
             return null;

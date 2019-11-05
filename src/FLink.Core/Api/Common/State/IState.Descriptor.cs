@@ -11,7 +11,7 @@ namespace FLink.Core.Api.Common.State
     /// A <see cref="StateDescriptor{TState,T}"/> is used for creating partitioned <see cref="IState"/> in stateful operations.
     /// </summary>
     [Serializable]
-    public abstract class StateDescriptor<TState, T> where TState : IState
+    public abstract class StateDescriptor<TState, TValue> where TState : IState
     {
         /// <summary>
         /// An enumeration of the types of supported states.
@@ -35,12 +35,12 @@ namespace FLink.Core.Api.Common.State
         /// <summary>
         /// The default value returned by the state when no other value is bound to a key.
         /// </summary>
-        public T DefaultValue;
+        public TValue DefaultValue;
 
         /// <summary>
         /// The serializer for the type. May be eagerly initialized in the constructor or lazily.
         /// </summary>
-        public TypeSerializer<T> Serializer;
+        public TypeSerializer<TValue> Serializer;
 
         /// <summary>
         /// Returns the queryable state name.
@@ -58,7 +58,7 @@ namespace FLink.Core.Api.Common.State
         /// <param name="name">The name of the <see cref="StateDescriptor{TState,T}"/>.</param>
         /// <param name="serializer">The type serializer for the values in the state.</param>
         /// <param name="defaultValue">The default value that will be set when requesting state without setting a value before.</param>
-        protected StateDescriptor(string name, TypeSerializer<T> serializer, T defaultValue = default)
+        protected StateDescriptor(string name, TypeSerializer<TValue> serializer, TValue defaultValue = default)
         {
             Name = CheckNotNull(name);
             Serializer = CheckNotNull(serializer, "serializer must not be null");

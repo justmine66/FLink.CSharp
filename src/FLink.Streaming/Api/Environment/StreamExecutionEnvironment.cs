@@ -5,6 +5,8 @@ using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
+using FLink.Runtime.State;
+using FLink.Streaming.Api.Checkpoint;
 using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Graph;
@@ -285,6 +287,28 @@ namespace FLink.Streaming.Api.Environment
         }
 
         #endregion
+
+        #endregion
+
+        #region [ State ]
+
+        /// <summary>
+        /// Gets the state backend that defines how to store and checkpoint state.
+        /// </summary>
+        public IStateBackend StateBackend;
+
+        /// <summary>
+        /// Sets the state backend that describes how to store and checkpoint operator state.
+        /// It defines both which data structures hold state during execution(for example hash tables, RockDB, or other data stores) as well as where checkpointed data will be persisted.
+        /// State managed by the state backend includes both keyed state that is accessible on <see cref="KeyedStream{TElement,TKey}"/>, as well as state maintained directly by the user code that implements <see cref="ICheckpointedFunction"/>
+        /// </summary>
+        /// <param name="backend"></param>
+        /// <returns>This StreamExecutionEnvironment itself, to allow chaining of function calls.</returns>
+        public StreamExecutionEnvironment SetStateBackend(IStateBackend backend)
+        {
+            StateBackend = Preconditions.CheckNotNull(backend);
+            return this;
+        }
 
         #endregion
 
