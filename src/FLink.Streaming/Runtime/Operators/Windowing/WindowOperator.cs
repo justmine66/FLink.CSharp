@@ -1,4 +1,7 @@
-﻿using FLink.Runtime.Checkpoint;
+﻿using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Util;
+using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Watermarks;
@@ -13,13 +16,15 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
     /// <summary>
     /// An operator that implements the logic for windowing based on a <see cref="WindowAssigner{T,TW}"/> and <see cref="WindowTrigger{T,TW}"/>.
     /// </summary>
-    /// <typeparam name="TK">The type of key.</typeparam>
-    /// <typeparam name="TIn">The type of the incoming elements.</typeparam>
-    /// <typeparam name="TAcc"></typeparam>
-    /// <typeparam name="TOut">The type of elements emitted by the <see cref="IInternalWindowFunction{TIn,TOut,TKey,TW}"/>.</typeparam>
-    /// <typeparam name="TW">The type of <see cref="Window"/> that the <see cref="WindowAssigner{T,TW}"/> assigns.</typeparam>
-    public class WindowOperator<TK, TIn, TAcc, TOut, TW> : AbstractUdfStreamOperator<TOut, IInternalWindowFunction<TAcc, TOut, TK, TW>>, IOneInputStreamOperator<TIn, TOut>, ITriggerable<TK, TW> where TW : Window
+    /// <typeparam name="TKey">The type of key.</typeparam>
+    /// <typeparam name="TInput">The type of the incoming elements.</typeparam>
+    /// <typeparam name="TAccumulator"></typeparam>
+    /// <typeparam name="TOutput">The type of elements emitted by the <see cref="IInternalWindowFunction{TIn,TOut,TKey,TW}"/>.</typeparam>
+    /// <typeparam name="TWindow">The type of <see cref="Window"/> that the <see cref="WindowAssigner{T,TW}"/> assigns.</typeparam>
+    public class WindowOperator<TKey, TInput, TAccumulator, TOutput, TWindow> : AbstractUdfStreamOperator<TOutput, IInternalWindowFunction<TAccumulator, TOutput, TKey, TWindow>>, IOneInputStreamOperator<TInput, TOutput>, ITriggerable<TKey, TWindow> where TWindow : Window
     {
+        public WindowAssigner<TInput, TWindow> WindowAssigner;
+
         public void Close()
         {
             throw new System.NotImplementedException();
@@ -55,7 +60,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             throw new System.NotImplementedException();
         }
 
-        public void ProcessElement(StreamRecord<TIn> element)
+        public void ProcessElement(StreamRecord<TInput> element)
         {
             throw new System.NotImplementedException();
         }
@@ -80,17 +85,17 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             throw new System.NotImplementedException();
         }
 
-        public void OnEventTime(IInternalTimer<TK, TW> timer)
+        public void OnEventTime(IInternalTimer<TKey, TWindow> timer)
         {
             throw new System.NotImplementedException();
         }
 
-        public void OnProcessingTime(IInternalTimer<TK, TW> timer)
+        public void OnProcessingTime(IInternalTimer<TKey, TWindow> timer)
         {
             throw new System.NotImplementedException();
         }
 
-        public WindowOperator(IInternalWindowFunction<TAcc, TOut, TK, TW> userFunction) : base(userFunction)
+        public WindowOperator(IInternalWindowFunction<TAccumulator, TOutput, TKey, TWindow> userFunction) : base(userFunction)
         {
         }
     }
