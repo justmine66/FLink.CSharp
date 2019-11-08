@@ -46,7 +46,7 @@ namespace FLink.Examples.Streaming.StateMachine
             public override void Open(Configuration parameters)
             {
                 // get access to the state object
-                _currentState = GetRuntimeContext().GetState(new ValueStateDescriptor<State>("state"));
+                _currentState = RuntimeContext.GetState(new ValueStateDescriptor<State>("state"));
             }
 
             public override void FlatMap(Event @event, ICollector<Alert> output)

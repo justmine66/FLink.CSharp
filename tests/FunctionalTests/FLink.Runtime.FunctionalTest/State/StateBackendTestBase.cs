@@ -115,7 +115,7 @@ namespace FLink.Runtime.FunctionalTest.State
                 for (var key = 0; key < namespace1ElementsNum; key++)
                 {
                     backend.CurrentKey = key;
-                    keyedState1.Update(key * 2);
+                    keyedState1.Value = key * 2;
                 }
 
                 var ns2 = "ns2";
@@ -125,7 +125,7 @@ namespace FLink.Runtime.FunctionalTest.State
                 for (var key = 0; key < namespace2ElementsNum; key++)
                 {
                     backend.CurrentKey = key;
-                    keyedState2.Update(key * 2);
+                    keyedState2.Value = key * 2;
                 }
 
                 // valid for namespace1

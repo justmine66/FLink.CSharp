@@ -10,11 +10,7 @@ namespace FLink.Core.Api.Common.Functions
     /// </summary>
     public abstract class AbstractRichFunction : IRichFunction
     {
-        [IgnoreDataMember]
-        private IRuntimeContext _runtimeContext;
-
-        public IRuntimeContext RuntimeContext { get; set; }
-
+        
         #region [ Default life cycle methods ]
 
         public virtual void Open(Configuration parameters) => throw new NotSupportedException();
@@ -25,16 +21,20 @@ namespace FLink.Core.Api.Common.Functions
 
         #region [ Runtime context access ]
 
-        public IRuntimeContext GetRuntimeContext()
+        [IgnoreDataMember]
+        private IRuntimeContext _runtimeContext;
+
+        [IgnoreDataMember]
+        public IRuntimeContext RuntimeContext
         {
-            if (_runtimeContext == null)
-                throw new IllegalStateException("The runtime context has not been initialized.");
-
-            return _runtimeContext;
+            get
+            {
+                if (_runtimeContext == null)
+                    throw new IllegalStateException("The runtime context has not been initialized.");
+                return _runtimeContext;
+            }
+            set => _runtimeContext = value;
         }
-
-        public void SetRuntimeContext(IRuntimeContext cxt) => _runtimeContext = cxt;
-
         #endregion
     }
 }

@@ -24,15 +24,9 @@ namespace FLink.Core.Api.Common.Functions
         void Close();
 
         /// <summary>
-        /// Gets the context that contains information about the UDF's runtime, such as the parallelism of the function, the sub task index of the function, or the name of the of the task that executes the function.
+        /// Gets and Sets(Called by the framework when creating a parallel instance of the function.) the context that contains information about the UDF's runtime, such as the parallelism of the function, the sub task index of the function, or the name of the of the task that executes the function.
         /// </summary>
         /// <returns>The UDF's runtime context.</returns>
-        IRuntimeContext GetRuntimeContext();
-
-        /// <summary>
-        /// Sets the function's runtime context. Called by the framework when creating a parallel instance of the function.
-        /// </summary>
-        /// <param name="cxt">The runtime context.</param>
-        void SetRuntimeContext(IRuntimeContext cxt);
+        IRuntimeContext RuntimeContext { get; set; }
     }
 }
