@@ -7,8 +7,5 @@ namespace FLink.Core.Api.Common.State
     /// </summary>
     /// <typeparam name="TInput">Type of the value added to the state.</typeparam>
     /// <typeparam name="TOutput">Type of the value extracted from the state.</typeparam>
-    public interface IAggregatingState<in TInput, out TOutput> : IMergingState<TInput, TOutput>
-    {
-
-    }
+    public interface IAggregatingState<in TInput, out TOutput> : IMergingState<TInput, TOutput> { }
 }

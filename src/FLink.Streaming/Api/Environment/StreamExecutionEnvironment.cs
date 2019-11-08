@@ -71,11 +71,7 @@ namespace FLink.Streaming.Api.Environment
         /// <summary>
         /// Gets the config object. 
         /// </summary>
-        /// <returns></returns>
-        public ExecutionConfig GetConfig()
-        {
-            return Config;
-        }
+        public ExecutionConfig GetConfig() => Config;
 
         /// <summary>
         /// Sets the parallelism for operations executed through this environment. Setting a parallelism of x here will cause all operators (such as map, batchReduce) to run with x parallel instances. This method overrides the default parallelism for this environment. The <see cref="LocalStreamEnvironment"/> uses by default a value equal to the number of hardware contexts(CPU cores / threads). 
@@ -297,6 +293,8 @@ namespace FLink.Streaming.Api.Environment
         /// </summary>
         public IStateBackend StateBackend;
 
+        public CheckpointConfig CheckpointCfg = new CheckpointConfig();
+
         /// <summary>
         /// Sets the state backend that describes how to store and checkpoint operator state.
         /// It defines both which data structures hold state during execution(for example hash tables, RockDB, or other data stores) as well as where checkpointed data will be persisted.
@@ -307,6 +305,32 @@ namespace FLink.Streaming.Api.Environment
         public StreamExecutionEnvironment SetStateBackend(IStateBackend backend)
         {
             StateBackend = Preconditions.CheckNotNull(backend);
+            return this;
+        }
+
+        /// <summary>
+        /// Enables checkpointing for the streaming job. The distributed state of the streaming dataflow will be periodically snapshotted.In case of a failure, the streaming will be restarted from the latest completed checkpoint. This method selects <see cref="CheckpointingMode.ExactlyOnce"/> guarantees.
+        /// The job draws checkpoints periodically, in the given interval. The state will be stored in the configured state backend.
+        /// </summary>
+        /// <param name="interval">Time interval between state checkpoints in milliseconds.</param>
+        /// <returns>This StreamExecutionEnvironment itself, to allow chaining of function calls.</returns>
+        public StreamExecutionEnvironment EnableCheckpointing(long interval)
+        {
+            CheckpointCfg.CheckpointInterval = interval;
+            return this;
+        }
+
+        /// <summary>
+        /// Enables checkpointing for the streaming job. The distributed state of the streaming dataflow will be periodically snapshotted.In case of a failure, the streaming will be restarted from the latest completed checkpoint. This method selects <see cref="CheckpointingMode.ExactlyOnce"/> guarantees.
+        /// The job draws checkpoints periodically, in the given interval. The state will be stored in the configured state backend.
+        /// </summary>
+        /// <param name="interval">Time interval between state checkpoints in milliseconds.</param>
+        /// <param name="mode">The checkpointing mode, selecting between "exactly once" and "at least once" guaranteed.</param>
+        /// <returns>This StreamExecutionEnvironment itself, to allow chaining of function calls.</returns>
+        public StreamExecutionEnvironment EnableCheckpointing(long interval, CheckpointingMode mode)
+        {
+            CheckpointCfg.CheckpointingMode = mode;
+            CheckpointCfg.CheckpointInterval = interval;
             return this;
         }
 

@@ -53,6 +53,17 @@ namespace FLink.Core.Api.Common.State
         public bool IsQueryable => !string.IsNullOrEmpty(QueryableStateName);
 
         /// <summary>
+        /// Create a new <see cref="StateDescriptor{TState,T}"/> with the given name and the given type information.
+        /// </summary>
+        /// <param name="name">The name of the <see cref="StateDescriptor{TState,TValue}"/>.</param>
+        /// <param name="defaultValue">The default value that will be set when requesting state without setting a value before.</param>
+        protected StateDescriptor(string name, TValue defaultValue = default)
+        {
+            Name = CheckNotNull(name, "name must not be null");
+            DefaultValue = defaultValue;
+        }
+
+        /// <summary>
         /// Create a new <see cref="StateDescriptor{TState,T}"/> with the given name and the given type serializer.
         /// </summary>
         /// <param name="name">The name of the <see cref="StateDescriptor{TState,T}"/>.</param>

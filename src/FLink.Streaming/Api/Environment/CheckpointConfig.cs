@@ -27,14 +27,14 @@ namespace FLink.Streaming.Api.Environment
         /// </summary>
         public static readonly int DefaultMaxConcurrentCheckpoints = 1;
 
-        private CheckpointingMode _checkPointingMode = DefaultMode;
+        private CheckpointingMode _checkpointingMode = DefaultMode;
         /// <summary>
         /// CheckPointing mode (exactly-once vs. at-least-once).
         /// </summary>
-        public CheckpointingMode CheckPointingMode
+        public CheckpointingMode CheckpointingMode
         {
-            get => _checkPointingMode;
-            set => _checkPointingMode = Assert.NotNull(value);
+            get => _checkpointingMode;
+            set => _checkpointingMode = Assert.NotNull(value);
         }
 
         private long _checkpointInterval = -1; // disabled

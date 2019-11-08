@@ -36,14 +36,14 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             var lastElementState = ctx.GetPartitionedState(_stateDesc);
             if (lastElementState.Value == null)
             {
-                lastElementState.Update(element);
+                lastElementState.Value = element;
                 return WindowTriggerResult.Continue;
             }
 
             if (DeltaFunction.GetDelta(lastElementState.Value, element) <= Threshold)
                 return WindowTriggerResult.Continue;
 
-            lastElementState.Update(element);
+            lastElementState.Value = element;
             return WindowTriggerResult.Fire;
         }
 

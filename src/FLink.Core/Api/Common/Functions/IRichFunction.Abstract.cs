@@ -17,9 +17,9 @@ namespace FLink.Core.Api.Common.Functions
 
         #region [ Default life cycle methods ]
 
-        public void Open(Configuration parameters) => throw new NotSupportedException();
+        public virtual void Open(Configuration parameters) => throw new NotSupportedException();
 
-        public void Close() => throw new NotSupportedException();
+        public virtual void Close() => throw new NotSupportedException();
 
         #endregion
 
