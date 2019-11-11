@@ -4,7 +4,7 @@ using FLink.Core.Memory;
 namespace FLink.Core.Api.Common.TypeUtils
 {
     /// <summary>
-    /// This interface describes the methods that are required for a data type to be handled by the FLink runtime.Specifically, this interface contains the serialization and copying methods.
+    /// This interface describes the methods that are required for a data type to be handled by the FLink runtime. Specifically, this interface contains the serialization and copying methods.
     /// </summary>
     /// <typeparam name="T">The data type that the serializer serializes.</typeparam>
     [Serializable]

@@ -1,6 +1,8 @@
-﻿namespace FLink.Core.Memory
+﻿using FLink.Core.IO;
+
+namespace FLink.Core.Memory
 {
-    public interface IDataInputView
+    public interface IDataInputView : IDataInput
     {
 
     }

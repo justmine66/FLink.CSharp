@@ -7,41 +7,22 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
         // Sharable instance of the IntSerializer.
         public static readonly IntSerializer Instance = new IntSerializer();
 
-        public override bool IsImmutableType { get; }
-        public override TypeSerializer<int> Duplicate()
-        {
-            throw new System.NotImplementedException();
-        }
+        public static readonly int Zero = 0;
 
-        public override int CreateInstance()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override bool IsImmutableType => true;
 
-        public override int Copy(int @from)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override int CreateInstance() => Zero;
 
-        public override int Copy(int @from, int reuse)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override int Copy(int @from) => @from;
 
-        public override int Length { get; }
-        public override void Serialize(int record, IDataOutputView target)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override int Copy(int @from, int reuse) => @from;
 
-        public override int Deserialize(IDataInputView source)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override int Length => 4;
 
-        public override int Deserialize(int reuse, IDataInputView source)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void Serialize(int record, IDataOutputView target) => target.WriteInt(record);
+
+        public override int Deserialize(IDataInputView source) => source.ReadInt();
+
+        public override int Deserialize(int reuse, IDataInputView source) => Deserialize(source);
     }
 }
