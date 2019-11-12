@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Api.Common.Functions;
 
-namespace FLink.Core.Api.CSharp
+namespace FLink.Core.Api.CSharp.Functions
 {
     /// <summary>
     /// The <see cref="IKeySelector{TInput,TKey}"/> allows to use deterministic objects for operations such as reduce, reduceGroup, join, coGroup, etc. If invoked multiple times on the same object, the returned key must be the same.

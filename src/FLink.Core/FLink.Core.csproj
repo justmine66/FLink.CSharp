@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Extensions\FLink.Extensions.CSharp\FLink.Extensions.CSharp.csproj" />
     <ProjectReference Include="..\Extensions\FLink.Extensions\FLink.Extensions.csproj" />
     <ProjectReference Include="..\FLink.Metrics\FLink.Metrics.csproj" />
   </ItemGroup>

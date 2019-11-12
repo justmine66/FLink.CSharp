@@ -1,7 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeUtils;
-using FLink.Core.Api.CSharp;
+using FLink.Core.Api.CSharp.Functions;
 
 namespace FLink.Streaming.Api.Graph
 {

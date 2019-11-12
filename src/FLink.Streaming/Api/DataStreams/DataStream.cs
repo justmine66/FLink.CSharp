@@ -1,8 +1,10 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
+using FLink.Extensions.CSharp;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Functions.Sink;
@@ -25,6 +27,11 @@ namespace FLink.Streaming.Api.DataStreams
 
         public Transformation<TElement> Transformation { get; }
 
+        /// <summary>
+        /// Create a new <see cref="DataStream{TElement}"/> in the given execution environment with partitioning set to forward by default.
+        /// </summary>
+        /// <param name="environment">The StreamExecutionEnvironment</param>
+        /// <param name="transformation"></param>
         public DataStream(StreamExecutionEnvironment environment, Transformation<TElement> transformation)
         {
             Environment = Preconditions.CheckNotNull(environment, "Execution Environment must not be null.");
@@ -37,6 +44,15 @@ namespace FLink.Streaming.Api.DataStreams
         public int Id => Transformation.Id;
 
         /// <summary>
+        /// Gets the parallelism for this operator.
+        /// </summary>
+        public int Parallelism => Transformation.Parallelism;
+
+        protected TFunction Clean<TFunction>(TFunction f) => Environment.Clean(f);
+
+        public TypeInformation<TElement> GetOutputType() => Transformation.GetOutputType();
+
+        /// <summary>
         /// Applies a FlatMap transformation on a <see cref="DataStream{T}"/>. The transformation calls a <see cref="IFlatMapFunction{TInput,TOutput}"/> for each element of the DataStream. Each FlatMapFunction call can return any number of elements including none. The user can also extend <see cref="IRichFunction"/> to gain access to other features provided by the  <see cref="IRichFunction"/> interface.
         /// </summary>
         /// <typeparam name="TOutput">The output type.</typeparam>
@@ -44,6 +60,8 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns>The transformed <see cref="DataStream{T}"/>.</returns>
         public SingleOutputStreamOperator<TOutput> FlatMap<TOutput>(IFlatMapFunction<TElement, TOutput> flatMapper)
         {
+            var outType = TypeExtractor.GetFlatMapReturnTypes(Clean(flatMapper), GetOutputType(), Utils.GetCallLocationName(), true);
+
             return null;
         }
 

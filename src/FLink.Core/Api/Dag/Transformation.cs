@@ -1,5 +1,8 @@
 ﻿using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.CSharp.TypeUtils;
+using FLink.Core.Exceptions;
 using FLink.Core.Util;
 
 namespace FLink.Core.Api.Dag
@@ -24,9 +27,14 @@ namespace FLink.Core.Api.Dag
 
         protected string Name;
 
-        protected TypeInformation<T> OutputType;
+        public TypeInformation<T> OutputType;
 
-        private int _parallelism;
+        /// <summary>
+        /// This is used to handle MissingTypeInfo. As long as the outputType has not been queried it can still be changed using setOutputType(). Afterwards an exception is thrown when trying to change the output type.
+        /// </summary>
+        protected bool TypeUsed;
+
+        public int Parallelism;
 
         private string _slotSharingGroup;
 
@@ -35,7 +43,7 @@ namespace FLink.Core.Api.Dag
             Id = GetNewNodeId();
             Name = Preconditions.CheckNotNull(name);
             OutputType = outputType;
-            _parallelism = parallelism;
+            Parallelism = parallelism;
             _slotSharingGroup = null;
         }
 
@@ -45,9 +53,35 @@ namespace FLink.Core.Api.Dag
                 parallelism > 0 || parallelism == ExecutionConfig.DefaultParallelism,
                 "The parallelism must be at least one, or ExecutionConfig.DefaultParallelism (use system default).");
 
-            _parallelism = parallelism;
+            Parallelism = parallelism;
         }
 
-        public int GetParallelism() => _parallelism;
+        public TypeInformation<T> GetOutputType()
+        {
+            if (OutputType is MissingTypeInfo typeInfo)
+                throw new InvalidTypesException(
+                    "The return type of function '"
+                    + typeInfo.FunctionName
+                    + "' could not be determined automatically, due to type erasure. "
+                    + "You can give type information hints by using the returns(...) "
+                    + "method on the result of the transformation call, or by letting "
+                    + "your function implement the 'ResultTypeQueryable' "
+                    + "interface.", typeInfo.TypeException);
+
+            TypeUsed = true;
+            return OutputType;
+        }
+
+        public void SetOutputType(TypeInformation<T> outputType)
+        {
+            if (TypeUsed)
+                throw new IllegalStateException(
+                    "TypeInformation cannot be filled in for the type after it has been used. "
+                    + "Please make sure that the type info hints are the first call after"
+                    + " the transformation function, "
+                    + "before any access to types or semantic properties, etc.");
+
+            OutputType = outputType;
+        }
     }
 }
