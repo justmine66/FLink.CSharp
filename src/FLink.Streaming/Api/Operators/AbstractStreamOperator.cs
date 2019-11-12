@@ -1,4 +1,7 @@
 ﻿using System;
+using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Exceptions;
 using FLink.Extensions.DependencyInjection;
 using FLink.Extensions.Logging;
 using FLink.Runtime.Checkpoint;
@@ -22,6 +25,14 @@ namespace FLink.Streaming.Api.Operators
         /// A sane default for most operators
         /// </summary>
         public ChainingStrategy ChainingStrategy = ChainingStrategy.Head;
+
+        /// <summary>
+        /// Keyed state store view on the keyed backend.
+        /// </summary>
+        public DefaultKeyedStateStore KeyedStateStore;
+
+        // Backend for keyed state. This might be empty if we're not on a keyed stream.
+        private readonly AbstractKeyedStateBackend<object> _keyedStateBackend;
 
         public virtual void NotifyCheckpointComplete(long checkpointId)
         {
@@ -71,5 +82,28 @@ namespace FLink.Streaming.Api.Operators
         {
             throw new NotImplementedException();
         }
+
+        protected TState GetPartitionedState<TState, TValue>(StateDescriptor<TState, TValue> stateDescriptor) where TState : IState =>
+            GetPartitionedState(VoidNamespace.Instance, VoidNamespaceSerializer.Instance, stateDescriptor);
+
+        protected TState GetPartitionedState<TState, TNamespace, TValue>(
+            TNamespace @namespace,
+            TypeSerializer<TNamespace> namespaceSerializer,
+            StateDescriptor<TState, TValue> stateDescriptor) where TState : IState
+        {
+            /*
+            TODO: NOTE: This method does a lot of work caching / retrieving states just to update the namespace.
+            This method should be removed for the sake of namespaces being lazily fetched from the keyed
+            state backend, or being set on the state directly.
+            */
+
+            if (KeyedStateStore == null)
+                throw new RuntimeException("Cannot create partitioned state. The keyed state " +
+                                           "backend has not been set. This indicates that the operator is not " +
+                                           "partitioned/keyed.");
+
+            return _keyedStateBackend.GetPartitionedState(@namespace, namespaceSerializer, stateDescriptor);
+        }
     }
 }
+

@@ -15,8 +15,8 @@ namespace FLink.Streaming.Api.Operators
     {
         private static readonly string StateName = "_op_state";
 
-        private TypeSerializer<TInput> _serializer;
-        private readonly IValueState<TInput> _values;
+        private readonly TypeSerializer<TInput> _serializer;
+        private IValueState<TInput> _values;
 
         public StreamGroupedReduce(IReduceFunction<TInput> userFunction, TypeSerializer<TInput> serializer)
             : base(userFunction) => _serializer = serializer;
@@ -25,25 +25,12 @@ namespace FLink.Streaming.Api.Operators
         {
             base.Open();
             var stateId = new ValueStateDescriptor<TInput>(StateName, _serializer);
-            values = getPartitionedState(stateId);
+            _values = GetPartitionedState(stateId);
         }
 
         public void ProcessElement(StreamRecord<TInput> element)
         {
-            var value = element.v
-            var currentValue = values.value();
-
-            if (currentValue != null)
-            {
-                IN reduced = userFunction.reduce(currentValue, value);
-                values.update(reduced);
-                output.collect(element.replace(reduced));
-            }
-            else
-            {
-                values.update(value);
-                output.collect(element.replace(value));
-            }
+            throw new System.NotImplementedException();
         }
 
         public void ProcessWatermark(Watermark mark)
