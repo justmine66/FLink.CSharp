@@ -1,16 +1,28 @@
 ﻿using System;
+using FLink.Extensions.DependencyInjection;
+using FLink.Extensions.Logging;
 using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 
 namespace FLink.Streaming.Api.Operators
 {
     /// <summary>
-    ///  Base class for all stream operators. Operators that contain a user function should extend the class
+    /// Base class for all stream operators. Operators that contain a user function should extend the class
     /// <see cref="AbstractUdfStreamOperator{TOut, TFunction}"/>instead(which is a specialized subclass of this class).
     /// </summary>
-    /// <typeparam name="TOut">The output type of the operator</typeparam>
-    public abstract class AbstractStreamOperator<TOut> : IStreamOperator<TOut>
+    /// <typeparam name="TOutput">The output type of the operator</typeparam>
+    public abstract class AbstractStreamOperator<TOutput> : IStreamOperator<TOutput>
     {
+        /// <summary>
+        /// The logger used by the operator class and its subclasses.
+        /// </summary>
+        public static ILogger Logger = ObjectContainer.Current.GetService<ILogger<AbstractStreamOperator<TOutput>>>();
+
+        /// <summary>
+        /// A sane default for most operators
+        /// </summary>
+        public ChainingStrategy ChainingStrategy = ChainingStrategy.Head;
+
         public virtual void NotifyCheckpointComplete(long checkpointId)
         {
             throw new NotImplementedException();

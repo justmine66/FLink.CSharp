@@ -9,7 +9,6 @@ namespace FLink.Streaming.Api.Operators
     {
         public AbstractUdfStreamOperator(TFunction userFunction)
         {
-             
         }
 
         public void SetOutputType(Type outTypeInfo, ExecutionConfig executionConfig)
