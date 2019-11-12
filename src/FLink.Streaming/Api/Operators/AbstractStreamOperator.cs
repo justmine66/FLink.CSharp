@@ -6,6 +6,9 @@ using FLink.Extensions.DependencyInjection;
 using FLink.Extensions.Logging;
 using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
+using FLink.Streaming.Api.Watermarks;
+using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Util;
 
 namespace FLink.Streaming.Api.Operators
 {
@@ -33,6 +36,12 @@ namespace FLink.Streaming.Api.Operators
 
         // Backend for keyed state. This might be empty if we're not on a keyed stream.
         private readonly AbstractKeyedStateBackend<object> _keyedStateBackend;
+
+        public IOutput<StreamRecord<TOutput>> Output;
+
+        public InternalTimeServiceManager<object> TimeServiceManager;
+
+        public LatencyStats LatencyStats;
 
         public virtual void NotifyCheckpointComplete(long checkpointId)
         {
@@ -103,6 +112,22 @@ namespace FLink.Streaming.Api.Operators
                                            "partitioned/keyed.");
 
             return _keyedStateBackend.GetPartitionedState(@namespace, namespaceSerializer, stateDescriptor);
+        }
+
+        public void ProcessWatermark(Watermark mark)
+        {
+            TimeServiceManager?.AdvanceWatermark(mark);
+            Output.EmitWatermark(mark);
+        }
+
+        public void ProcessLatencyMarker(LatencyMarker latencyMarker) => ReportOrForwardLatencyMarker(latencyMarker);
+
+        protected void ReportOrForwardLatencyMarker(LatencyMarker marker)
+        {
+            // all operators are tracking latencies
+            LatencyStats.ReportLatency(marker);
+            // everything except sinks forwards latency markers
+            Output.EmitLatencyMarker(marker);
         }
     }
 }
