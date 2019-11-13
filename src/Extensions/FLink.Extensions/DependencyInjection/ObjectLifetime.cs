@@ -10,7 +10,7 @@
         /// Specifies that a new instance of the service will be created for each scope.
         /// </summary>
         /// <remarks>
-        /// In ASP.NET Core applications a scope is created around each server request.
+        /// A scope is created defined by user.
         /// </remarks>
         Scoped,
         /// <summary>
