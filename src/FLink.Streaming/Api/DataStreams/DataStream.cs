@@ -1,5 +1,4 @@
-﻿using System;
-using FLink.Core.Api.Common.Functions;
+﻿using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.Functions;
@@ -17,6 +16,7 @@ using FLink.Streaming.Api.Windowing.Evictors;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using FLink.Streaming.Util.Keys;
+using System;
 
 namespace FLink.Streaming.Api.DataStreams
 {
@@ -27,8 +27,14 @@ namespace FLink.Streaming.Api.DataStreams
     /// <typeparam name="TElement">The type of the elements in this stream.</typeparam>
     public class DataStream<TElement>
     {
+        /// <summary>
+        /// The Execution Environment for <see cref="DataStream{TElement}"/>.
+        /// </summary>
         public StreamExecutionEnvironment Environment { get; }
 
+        /// <summary>
+        /// The Stream Transformation.
+        /// </summary>
         public Transformation<TElement> Transformation { get; }
 
         /// <summary>
