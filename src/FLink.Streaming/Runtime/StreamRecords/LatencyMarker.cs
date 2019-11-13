@@ -1,7 +1,7 @@
 ﻿using System;
 using FLink.Runtime.JobGraphs;
 
-namespace FLink.Streaming.Runtime.StreamRecord
+namespace FLink.Streaming.Runtime.StreamRecords
 {
     /// <summary>
     /// Special record type carrying a timestamp of its creation time at a source operator and the vertexId and subtask index of the operator.

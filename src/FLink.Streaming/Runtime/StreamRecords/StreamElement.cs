@@ -2,7 +2,7 @@
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Runtime.StreamStatuses;
 
-namespace FLink.Streaming.Runtime.StreamRecord
+namespace FLink.Streaming.Runtime.StreamRecords
 {
     /// <summary>
     /// An element in a data stream. Can be a record or a Watermark.

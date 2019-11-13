@@ -1,6 +1,7 @@
 ﻿using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 using System;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Api.Operators
 {
@@ -20,7 +21,7 @@ namespace FLink.Streaming.Api.Operators
         void Open();
 
         /// <summary>
-        /// This method is called after all records have been added to the operators via the methods <see cref="IOneInputStreamOperator{TInput, TOutput}.ProcessElement(Runtime.StreamRecord.StreamRecord{TInput})"/> or <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}.ProcessElement1(Runtime.StreamRecord.StreamRecord{TInput1})"/> and <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}.ProcessElement2(Runtime.StreamRecord.StreamRecord{TInput2}))"/>.
+        /// This method is called after all records have been added to the operators via the methods <see cref="IOneInputStreamOperator{TInput, TOutput}.ProcessElement(StreamRecord{TInput})"/> or <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}.ProcessElement1(StreamRecord{TInput1})"/> and <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}.ProcessElement2(StreamRecord{TInput2}))"/>.
         /// </summary>
         /// <remarks>
         /// The method is expected to flush all remaining buffered data. Exceptions during this flushing of buffered should be propagated, in order to cause the operation to be recognized as failed, because the last data items are not processed properly.

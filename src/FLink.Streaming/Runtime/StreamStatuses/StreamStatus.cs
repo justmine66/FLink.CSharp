@@ -1,6 +1,6 @@
 ﻿using System;
 using FLink.Core.Exceptions;
-using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Runtime.StreamStatuses
 {

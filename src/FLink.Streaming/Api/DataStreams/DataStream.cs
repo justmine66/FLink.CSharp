@@ -9,6 +9,7 @@ using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Functions.Sink;
 using FLink.Streaming.Api.Operators;
+using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Evictors;
 using FLink.Streaming.Api.Windowing.Triggers;
@@ -62,7 +63,7 @@ namespace FLink.Streaming.Api.DataStreams
         {
             var outType = TypeExtractor.GetFlatMapReturnTypes(Clean(flatMapper), GetOutputType(), Utils.GetCallLocationName(), true);
 
-            return null;
+            return Transform("Flat Map", outType, new StreamFlatMap<TElement, TOutput>(Clean(flatMapper)));
         }
 
         /// <summary>
@@ -94,6 +95,27 @@ namespace FLink.Streaming.Api.DataStreams
         public KeyedStream<TElement, object> KeyBy(params int[] fields)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Method for passing user defined operators along with the type information that will transform the DataStream.
+        /// </summary>
+        /// <typeparam name="TOutput">type of the return stream</typeparam>
+        /// <param name="operatorName">name of the operator, for logging purposes</param>
+        /// <param name="outTypeInfo">the output type of the operator</param>
+        /// <param name="operator">the object containing the transformation logic</param>
+        /// <returns>type of the return stream</returns>
+        public SingleOutputStreamOperator<TOutput> Transform<TOutput>(
+            string operatorName, 
+            TypeInformation<TOutput> outTypeInfo, 
+            IOneInputStreamOperator<TElement, TOutput> @operator)
+        {
+            var resultTransform = new OneInputTransformation<TElement, TOutput>(Transformation, operatorName, @operator, outTypeInfo, Environment.Parallelism);
+            var returnStream = new SingleOutputStreamOperator<TOutput>(Environment, resultTransform);
+
+            Environment.AddOperator(resultTransform);
+
+            return returnStream;
         }
 
         #region [ Global Window Utilities ]

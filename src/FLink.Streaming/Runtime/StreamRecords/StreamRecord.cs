@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FLink.Streaming.Runtime.StreamRecord
+namespace FLink.Streaming.Runtime.StreamRecords
 {
     /// <summary>
     /// One value in a data stream. This stores the value and an optional associated timestamp.
@@ -48,6 +48,8 @@ namespace FLink.Streaming.Runtime.StreamRecord
 
             return this;
         }
+
+        public void EraseTimestamp() => HasTimestamp = false;
 
         public StreamRecord<T> Replace(T value, long timestamp)
         {

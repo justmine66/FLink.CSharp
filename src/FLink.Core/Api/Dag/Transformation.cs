@@ -11,8 +11,8 @@ namespace FLink.Core.Api.Dag
     /// A <see cref="Transformation{T}"/> represents the operation that creates a DataStream.
     /// Every DataStream has an underlying <see cref="Transformation{T}"/> that is the origin of said DataStream.
     /// </summary>
-    /// <typeparam name="T">The type of the elements that result from this <see cref="Transformation{T}"/></typeparam>
-    public abstract class Transformation<T>
+    /// <typeparam name="TElement">The type of the elements that result from this <see cref="Transformation{TElement}"/></typeparam>
+    public abstract class Transformation<TElement>
     {
         // This is used to assign a unique ID to every Transformation
         public static int IdCounter;
@@ -27,18 +27,18 @@ namespace FLink.Core.Api.Dag
 
         protected string Name;
 
-        public TypeInformation<T> OutputType;
+        public TypeInformation<TElement> OutputType;
 
         /// <summary>
         /// This is used to handle MissingTypeInfo. As long as the outputType has not been queried it can still be changed using setOutputType(). Afterwards an exception is thrown when trying to change the output type.
         /// </summary>
         protected bool TypeUsed;
 
-        public int Parallelism;
+        public int Parallelism { get; private set; }
 
         private string _slotSharingGroup;
 
-        protected Transformation(string name, TypeInformation<T> outputType, int parallelism)
+        protected Transformation(string name, TypeInformation<TElement> outputType, int parallelism)
         {
             Id = GetNewNodeId();
             Name = Preconditions.CheckNotNull(name);
@@ -56,7 +56,7 @@ namespace FLink.Core.Api.Dag
             Parallelism = parallelism;
         }
 
-        public TypeInformation<T> GetOutputType()
+        public TypeInformation<TElement> GetOutputType()
         {
             if (OutputType is MissingTypeInfo typeInfo)
                 throw new InvalidTypesException(
@@ -72,7 +72,7 @@ namespace FLink.Core.Api.Dag
             return OutputType;
         }
 
-        public void SetOutputType(TypeInformation<T> outputType)
+        public void SetOutputType(TypeInformation<TElement> outputType)
         {
             if (TypeUsed)
                 throw new IllegalStateException(

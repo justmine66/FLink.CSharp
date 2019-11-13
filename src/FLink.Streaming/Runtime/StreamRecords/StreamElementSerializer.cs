@@ -8,7 +8,7 @@ using FLink.Runtime.JobGraphs;
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Runtime.StreamStatuses;
 
-namespace FLink.Streaming.Runtime.StreamRecord
+namespace FLink.Streaming.Runtime.StreamRecords
 {
     /// <summary>
     /// Serializer for <see cref="StreamRecord{T}"/>, <see cref="Watermark"/>, <see cref="LatencyMarker"/>, and <see cref="StreamStatus"/>.

@@ -1,6 +1,6 @@
 ﻿using FLink.Metrics.Core;
 using FLink.Runtime.JobGraphs;
-using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Util
 {

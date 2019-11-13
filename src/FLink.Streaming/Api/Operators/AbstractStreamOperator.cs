@@ -7,7 +7,7 @@ using FLink.Extensions.Logging;
 using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Watermarks;
-using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Runtime.StreamRecords;
 using FLink.Streaming.Util;
 
 namespace FLink.Streaming.Api.Operators

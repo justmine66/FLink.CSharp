@@ -1,5 +1,5 @@
-﻿using FLink.Streaming.Runtime.StreamRecord;
-using System;
+﻿using System;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Api.Watermarks
 {

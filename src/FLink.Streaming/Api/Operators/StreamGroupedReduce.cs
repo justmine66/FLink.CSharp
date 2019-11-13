@@ -2,7 +2,7 @@
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Streaming.Api.DataStreams;
-using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Api.Operators
 {

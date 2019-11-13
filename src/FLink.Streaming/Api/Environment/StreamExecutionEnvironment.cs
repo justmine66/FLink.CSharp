@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Dag;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Runtime.State;
@@ -56,6 +57,8 @@ namespace FLink.Streaming.Api.Environment
         /// Gets the parallelism with which operation are executed by default. Operations can individually override this value to use a specific parallelism.
         /// </summary>
         public int Parallelism { get; } = Config.GetParallelism();
+
+        public List<Transformation<dynamic>> Transformations = new List<Transformation<dynamic>>();
 
         /// <summary>
         /// Returns a "closure-cleaned" version of the given function. Cleans only if closure cleaning is not disabled in the <see cref="ExecutionConfig"/>.
@@ -335,6 +338,20 @@ namespace FLink.Streaming.Api.Environment
         }
 
         #endregion
+
+        /// <summary>
+        /// Adds an operator to the list of operators that should be executed when calling <see cref="Execute()"/>.
+        /// When calling <see cref="Execute()"/> only the operators that where previously added to the list are executed.
+        /// This is not meant to be used by users. The API methods that create operators must call this method.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="transformation"></param>
+        internal void AddOperator<T>(Transformation<T> transformation)
+        {
+            Preconditions.CheckNotNull(transformation, "transformation must not be null.");
+
+            Transformations.Add(transformation as Transformation<dynamic>);
+        }
 
         public JobExecutionResult Execute() => Execute(DefaultJobName);
 

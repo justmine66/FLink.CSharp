@@ -9,7 +9,7 @@ using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using FLink.Streaming.Runtime.Operators.Windowing.Functions;
-using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Runtime.Operators.Windowing
 {

@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Util;
 using FLink.Streaming.Api.Watermarks;
-using FLink.Streaming.Runtime.StreamRecord;
+using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Api.Operators
 {
