@@ -1,5 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Api.Common.TypeUtils.Base;
+using FLink.Core.Util;
 
 namespace FLink.Core.Api.Common.TypeInfo
 {
@@ -9,11 +11,26 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// <typeparam name="T"></typeparam>
     public class BasicTypeInfo<T> : TypeInformation<T>, IAtomicType<T>
     {
+        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[]{}, StringSerializer.Instance, StringComparator.Instance);
+
         public override bool IsBasicType => true;
         public override bool IsTupleType => false;
         public override int Arity => 1;
         public override int TotalFields => 1;
         public override Type TypeClass { get; }
+
+        private readonly Type _clazz;
+        private readonly Type[] _possibleCastTargetTypes;
+        private readonly TypeSerializer<T> _serializer;
+        private readonly TypeComparator<T> _comparatorClass;
+
+        protected BasicTypeInfo(Type clazz, Type[] possibleCastTargetTypes, TypeSerializer<T> serializer, TypeComparator<T> comparatorClass)
+        {
+            _clazz = Preconditions.CheckNotNull(clazz);
+            _possibleCastTargetTypes = Preconditions.CheckNotNull(possibleCastTargetTypes);
+            _serializer = Preconditions.CheckNotNull(serializer);
+            _comparatorClass = comparatorClass;
+        }
 
         public override TypeSerializer<T> CreateSerializer(ExecutionConfig config)
         {

@@ -1,24 +1,77 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeInfo;
-using FLink.Core.Api.Dag;
-using FLink.Streaming.Api.Environment;
+using FLink.Core.Api.CSharp.Functions;
+using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Streaming.Api.Functions;
+using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Windows;
+using FLink.Streaming.Runtime.Partitioners;
 
 namespace FLink.Streaming.Api.DataStreams
 {
     /// <summary>
-    /// A <see cref="KeyedStream{T,TKey}"/> represents a <see cref="DataStream{T}"/>.
+    /// A <see cref="KeyedStream{TElement,TKey}"/> represents a <see cref="DataStream{TElement}"/>.
     /// </summary>
     /// <typeparam name="TElement">The type of the elements in the Keyed Stream.</typeparam>
     /// <typeparam name="TKey">The type of the key in the Keyed Stream.</typeparam>
     public class KeyedStream<TElement, TKey> : DataStream<TElement>
     {
-        public KeyedStream(StreamExecutionEnvironment environment, Transformation<TElement> transformation) : base(environment,
-            transformation)
+        /// <summary>
+        /// The key selector that can get the key by which the stream if partitioned from the elements.
+        /// </summary>
+        public IKeySelector<TElement, TKey> KeySelector { get; }
+
+        /// <summary>
+        /// The type of the key by which the stream is partitioned.
+        /// </summary>
+        public TypeInformation<TKey> KeyType { get; }
+
+        /// <summary>
+        /// Creates a new <see cref="KeyedStream{TElement,TKey}"/> using the given <see cref="IKeySelector{TObject,TKey}"/> to partition operator state by key.
+        /// </summary>
+        /// <param name="stream">Base stream of data</param>
+        /// <param name="selector">Function for determining state partitions</param>
+        public KeyedStream(DataStream<TElement> stream, IKeySelector<TElement, TKey> selector)
+            : this(stream, selector, TypeExtractor.GetKeySelectorTypes(selector, stream.Type))
         {
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="KeyedStream{TElement,TKey}"/> using the given <see cref="IKeySelector{TObject,TKey}"/> and <see cref="TypeInformation{TType}"/> to partition operator state by key, where the partitioning is defined by a <see cref="PartitionTransformation{TElement}"/>.
+        /// </summary>
+        /// <param name="stream">Base stream of data</param>
+        /// <param name="selector">Function for determining state partitions</param>
+        /// <param name="keyType">Defines the type of the extracted keys</param>
+        public KeyedStream(DataStream<TElement> stream, IKeySelector<TElement, TKey> selector, TypeInformation<TKey> keyType)
+            : this(
+                stream,
+                new PartitionTransformation<TElement>(
+                    stream.Transformation,
+                    new KeyGroupStreamPartitioner<TElement, TKey>(selector, StreamGraphGenerator.DefaultLowerBoundMaxParallelism)),
+                selector,
+                keyType)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="KeyedStream{TElement,TKey}"/> using the given <see cref="IKeySelector{TObject,TKey}"/> and <see cref="TypeInformation{TType}"/> to partition operator state by key, where the partitioning is defined by a <see cref="PartitionTransformation{TElement}"/>.
+        /// </summary>
+        /// <param name="stream">Base stream of data</param>
+        /// <param name="transformation">Function that determines how the keys are distributed to downstream operator(s)</param>
+        /// <param name="selector">Function to extract keys from the base stream</param>
+        /// <param name="keyType">Defines the type of the extracted keys</param>
+        internal KeyedStream(
+            DataStream<TElement> stream,
+            PartitionTransformation<TElement> transformation,
+            IKeySelector<TElement, TKey> selector,
+            TypeInformation<TKey> keyType) 
+            : base(stream.Environment, transformation)
+        {
+            KeySelector = Clean(selector);
+            KeyType = ValidateKeyType(keyType);
         }
 
         /// <summary>
@@ -111,6 +164,16 @@ namespace FLink.Streaming.Api.DataStreams
             TypeInformation<TR> outputType)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Validates that a given type of element (as encoded by the provided <see cref="TypeInformation{TType}"/>) can be used as a key in the <see cref="DataStream{TElement}.KeyBy{selector}"/> operation.  
+        /// </summary>
+        /// <param name="keyType"></param>
+        /// <returns></returns>
+        private TypeInformation<TKey> ValidateKeyType(TypeInformation<TKey> keyType)
+        {
+            return keyType;
         }
     }
 }

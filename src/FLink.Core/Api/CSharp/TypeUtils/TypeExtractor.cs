@@ -39,5 +39,10 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         {
             return null;
         }
+
+        public static TypeInformation<TKey> GetKeySelectorTypes<TElement, TKey>(Functions.IKeySelector<TElement, TKey> keySelector, TypeInformation<TElement> type)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

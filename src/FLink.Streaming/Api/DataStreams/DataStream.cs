@@ -1,6 +1,8 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
+using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
@@ -14,6 +16,7 @@ using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Evictors;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
+using FLink.Streaming.Util.Keys;
 
 namespace FLink.Streaming.Api.DataStreams
 {
@@ -51,7 +54,7 @@ namespace FLink.Streaming.Api.DataStreams
 
         protected TFunction Clean<TFunction>(TFunction f) => Environment.Clean(f);
 
-        public TypeInformation<TElement> GetOutputType() => Transformation.GetOutputType();
+        public TypeInformation<TElement> Type => Transformation.GetOutputType();
 
         /// <summary>
         /// Applies a FlatMap transformation on a <see cref="DataStream{T}"/>. The transformation calls a <see cref="IFlatMapFunction{TInput,TOutput}"/> for each element of the DataStream. Each FlatMapFunction call can return any number of elements including none. The user can also extend <see cref="IRichFunction"/> to gain access to other features provided by the  <see cref="IRichFunction"/> interface.
@@ -61,7 +64,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns>The transformed <see cref="DataStream{T}"/>.</returns>
         public SingleOutputStreamOperator<TOutput> FlatMap<TOutput>(IFlatMapFunction<TElement, TOutput> flatMapper)
         {
-            var outType = TypeExtractor.GetFlatMapReturnTypes(Clean(flatMapper), GetOutputType(), Utils.GetCallLocationName(), true);
+            var outType = TypeExtractor.GetFlatMapReturnTypes(Clean(flatMapper), Type, Utils.GetCallLocationName(), true);
 
             return Transform("Flat Map", outType, new StreamFlatMap<TElement, TOutput>(Clean(flatMapper)));
         }
@@ -82,17 +85,54 @@ namespace FLink.Streaming.Api.DataStreams
         /// </summary>
         /// <param name="fields">One or more field expressions on which the state of the <see cref="DataStream{T}"/> operators will be partitioned.</param>
         /// <returns>The <see cref="DataStream{T}"/> with partitioned state (i.e. KeyedStream)</returns>
-        public KeyedStream<TElement, object> KeyBy(params string[] fields)
-        {
-            return null;
-        }
+        public KeyedStream<TElement, string> KeyBy(params string[] fields) =>
+            KeyBy<string>(new Keys<TElement>.ExpressionKeys<TElement>(fields, Type));
 
         /// <summary>
         /// Partitions the operator state of a <see cref="DataStream{TElement}"/> by the given key positions.
         /// </summary>
         /// <param name="fields">The position of the fields on which the <see cref="DataStream{TElement}"/> will be grouped.</param>
         /// <returns>The <see cref="DataStream{TElement}"/> with partitioned state (i.e. <see cref="KeyedStream{T,TKey}"/>)</returns>
-        public KeyedStream<TElement, object> KeyBy(params int[] fields)
+        public KeyedStream<TElement, int> KeyBy(params int[] fields)
+        {
+            if (Type is BasicArrayTypeInfo<TElement[], TElement> ||
+                Type is PrimitiveArrayTypeInfo<TElement>)
+            {
+                return KeyBy(KeySelectorUtil.GetSelectorForArray<TElement, int>(fields, Type));
+            }
+
+            return KeyBy<int>(new Keys<TElement>.ExpressionKeys<TElement>(fields, Type));
+        }
+
+        /// <summary>
+        /// It creates a new <see cref="KeyedStream{TElement,TKey}"/> that uses the provided key for partitioning its operator states.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="selector">The KeySelector to be used for extracting the key for partitioning</param>
+        /// <returns>The <see cref="DataStream{TElement}"/> with partitioned state (i.e. KeyedStream)</returns>
+        public KeyedStream<TElement, TKey> KeyBy<TKey>(IKeySelector<TElement, TKey> selector)
+        {
+            Preconditions.CheckNotNull(selector);
+
+            return new KeyedStream<TElement, TKey>(this, Clean(selector));
+        }
+
+        /// <summary>
+        /// It creates a new <see cref="KeyedStream{TElement,TKey}"/> that uses the provided key with explicit type information for partitioning its operator states.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="selector">The KeySelector to be used for extracting the key for partitioning.</param>
+        /// <param name="keyType">The type information describing the key type.</param>
+        /// <returns>The <see cref="DataStream{TElement}"/> with partitioned state (i.e. KeyedStream)</returns>
+        public KeyedStream<TElement, TKey> KeyBy<TKey>(IKeySelector<TElement, TKey> selector, TypeInformation<TKey> keyType)
+        {
+            Preconditions.CheckNotNull(selector);
+            Preconditions.CheckNotNull(keyType);
+
+            return new KeyedStream<TElement, TKey>(this, Clean(selector), keyType);
+        }
+
+        private KeyedStream<TElement, TKey> KeyBy<TKey>(Keys<TElement> keys)
         {
             return null;
         }
@@ -106,8 +146,8 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="operator">the object containing the transformation logic</param>
         /// <returns>type of the return stream</returns>
         public SingleOutputStreamOperator<TOutput> Transform<TOutput>(
-            string operatorName, 
-            TypeInformation<TOutput> outTypeInfo, 
+            string operatorName,
+            TypeInformation<TOutput> outTypeInfo,
             IOneInputStreamOperator<TElement, TOutput> @operator)
         {
             var resultTransform = new OneInputTransformation<TElement, TOutput>(Transformation, operatorName, @operator, outTypeInfo, Environment.Parallelism);

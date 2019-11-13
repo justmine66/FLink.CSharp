@@ -91,7 +91,7 @@ namespace HotProducts
         }
     }
 
-    public class TopNHotProducts : KeyedProcessFunction<object, ProductClickCount, string>
+    public class TopNHotProducts : KeyedProcessFunction<string, ProductClickCount, string>
     {
         private static int _topSize;
 
