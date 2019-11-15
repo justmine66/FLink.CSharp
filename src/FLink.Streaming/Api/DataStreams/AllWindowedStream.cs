@@ -31,7 +31,7 @@ namespace FLink.Streaming.Api.DataStreams
         public AllWindowedStream(DataStream<TElement> input, WindowAssigner<TElement, TWindow> windowAssigner)
         {
             _assigner = windowAssigner;
-            _trigger = windowAssigner.GetDefaultTrigger(input.Environment);
+            _trigger = windowAssigner.GetDefaultTrigger(input.ExecutionEnvironment);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace FLink.Streaming.Api.DataStreams
         {
             Preconditions.CheckNotNull(outputTag, "Side output tag must not be null.");
 
-            _lateDataOutputTag = _input.Environment.Clean(outputTag);
+            _lateDataOutputTag = _input.ExecutionEnvironment.Clean(outputTag);
             return this;
         }
 

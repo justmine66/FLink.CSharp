@@ -1,4 +1,5 @@
-﻿using FLink.Core.Api.Common.Functions;
+﻿using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.Functions;
@@ -30,12 +31,14 @@ namespace FLink.Streaming.Api.DataStreams
         /// <summary>
         /// The Execution Environment for <see cref="DataStream{TElement}"/>.
         /// </summary>
-        public StreamExecutionEnvironment Environment { get; }
+        public StreamExecutionEnvironment ExecutionEnvironment { get; }
 
         /// <summary>
         /// The Stream Transformation.
         /// </summary>
         public Transformation<TElement> Transformation { get; }
+
+        public ExecutionConfig ExecutionConfig => ExecutionEnvironment.ExecutionConfig;
 
         /// <summary>
         /// Create a new <see cref="DataStream{TElement}"/> in the given execution environment with partitioning set to forward by default.
@@ -44,7 +47,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="transformation"></param>
         public DataStream(StreamExecutionEnvironment environment, Transformation<TElement> transformation)
         {
-            Environment = Preconditions.CheckNotNull(environment, "Execution Environment must not be null.");
+            ExecutionEnvironment = Preconditions.CheckNotNull(environment, "Execution Environment must not be null.");
             Transformation = Preconditions.CheckNotNull(transformation, "Stream Transformation must not be null.");
         }
 
@@ -58,7 +61,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// </summary>
         public int Parallelism => Transformation.Parallelism;
 
-        protected TFunction Clean<TFunction>(TFunction f) => Environment.Clean(f);
+        protected TFunction Clean<TFunction>(TFunction f) => ExecutionEnvironment.Clean(f);
 
         public TypeInformation<TElement> Type => Transformation.GetOutputType();
 
@@ -138,10 +141,8 @@ namespace FLink.Streaming.Api.DataStreams
             return new KeyedStream<TElement, TKey>(this, Clean(selector), keyType);
         }
 
-        private KeyedStream<TElement, TKey> KeyBy<TKey>(Keys<TElement> keys)
-        {
-            return null;
-        }
+        private KeyedStream<TElement, TKey> KeyBy<TKey>(Keys<TElement> keys) => new KeyedStream<TElement, TKey>(this, Clean(KeySelectorUtil.GetSelectorForKeys<TElement, TKey>(keys,
+                Type, ExecutionConfig)));
 
         /// <summary>
         /// Method for passing user defined operators along with the type information that will transform the DataStream.
@@ -156,10 +157,10 @@ namespace FLink.Streaming.Api.DataStreams
             TypeInformation<TOutput> outTypeInfo,
             IOneInputStreamOperator<TElement, TOutput> @operator)
         {
-            var resultTransform = new OneInputTransformation<TElement, TOutput>(Transformation, operatorName, @operator, outTypeInfo, Environment.Parallelism);
-            var returnStream = new SingleOutputStreamOperator<TOutput>(Environment, resultTransform);
+            var resultTransform = new OneInputTransformation<TElement, TOutput>(Transformation, operatorName, @operator, outTypeInfo, ExecutionEnvironment.Parallelism);
+            var returnStream = new SingleOutputStreamOperator<TOutput>(ExecutionEnvironment, resultTransform);
 
-            Environment.AddOperator(resultTransform);
+            ExecutionEnvironment.AddOperator(resultTransform);
 
             return returnStream;
         }
@@ -173,7 +174,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="size">The size of the window.</param>
         /// <returns></returns>
         public AllWindowedStream<TElement, TimeWindow> TimeWindowAll(TimeSpan size) =>
-            Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+            ExecutionEnvironment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? WindowAll(TumblingProcessingTimeWindowAssigner<TElement>.Of(size))
                 : WindowAll(TumblingEventTimeWindowAssigner<TElement>.Of(size));
 
@@ -185,7 +186,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="slide">The slide parameter controls how frequently a sliding window is started.</param>
         /// <returns></returns>
         public AllWindowedStream<TElement, TimeWindow> TimeWindowAll(TimeSpan size, TimeSpan slide) =>
-            Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+            ExecutionEnvironment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? WindowAll(SlidingProcessingTimeWindowAssigner<TElement>.Of(size, slide))
                 : WindowAll(SlidingEventTimeWindowAssigner<TElement>.Of(size, slide));
 

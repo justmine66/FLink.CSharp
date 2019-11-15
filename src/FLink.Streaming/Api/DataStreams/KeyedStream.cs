@@ -68,7 +68,7 @@ namespace FLink.Streaming.Api.DataStreams
             PartitionTransformation<TElement> transformation,
             IKeySelector<TElement, TKey> selector,
             TypeInformation<TKey> keyType) 
-            : base(stream.Environment, transformation)
+            : base(stream.ExecutionEnvironment, transformation)
         {
             KeySelector = Clean(selector);
             KeyType = ValidateKeyType(keyType);
@@ -81,7 +81,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns></returns>
         public WindowedStream<TElement, TKey, TimeWindow> TimeWindow(TimeSpan size)
         {
-            return Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+            return ExecutionEnvironment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? Window(TumblingProcessingTimeWindowAssigner<TElement>.Of(size))
                 : Window(TumblingEventTimeWindowAssigner<TElement>.Of(size));
         }
@@ -94,7 +94,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns></returns>
         public WindowedStream<TElement, TKey, TimeWindow> TimeWindow(TimeSpan size, TimeSpan slide)
         {
-            return Environment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+            return ExecutionEnvironment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? Window(SlidingProcessingTimeWindowAssigner<TElement>.Of(size, slide))
                 : Window(SlidingEventTimeWindowAssigner<TElement>.Of(size, slide));
         }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
+using System;
 
 namespace FLink.Streaming.Util.Keys
 {
@@ -11,6 +13,11 @@ namespace FLink.Streaming.Util.Keys
     public class KeySelectorUtil
     {
         public static ArrayKeySelector<TX, TKey> GetSelectorForArray<TX, TKey>(int[] positions, TypeInformation<TX> typeInfo)
+        {
+            return null;
+        }
+
+        public static IKeySelector<TObject, TKey> GetSelectorForKeys<TObject, TKey>(Keys<TObject> keys, TypeInformation<TObject> typeInfo, ExecutionConfig executionConfig)
         {
             return null;
         }

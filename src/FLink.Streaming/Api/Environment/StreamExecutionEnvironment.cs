@@ -74,7 +74,7 @@ namespace FLink.Streaming.Api.Environment
         /// <summary>
         /// Gets the config object. 
         /// </summary>
-        public ExecutionConfig GetConfig() => Config;
+        public ExecutionConfig ExecutionConfig => Config;
 
         /// <summary>
         /// Sets the parallelism for operations executed through this environment. Setting a parallelism of x here will cause all operators (such as map, batchReduce) to run with x parallel instances. This method overrides the default parallelism for this environment. The <see cref="LocalStreamEnvironment"/> uses by default a value equal to the number of hardware contexts(CPU cores / threads). 
@@ -123,7 +123,7 @@ namespace FLink.Streaming.Api.Environment
         public StreamExecutionEnvironment SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
         {
             TimeCharacteristic = Preconditions.CheckNotNull(characteristic);
-            GetConfig().SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
+            ExecutionConfig.SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
             return this;
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Util;
 
@@ -43,6 +44,11 @@ namespace FLink.Core.Api.Common.State
         public TypeSerializer<TValue> Serializer;
 
         /// <summary>
+        /// The type information describing the value type. Only used to if the serializer is created lazily.
+        /// </summary>
+        public TypeInformation<TValue> TypeInfo;
+
+        /// <summary>
         /// Returns the queryable state name.
         /// </summary>
         public string QueryableStateName;
@@ -73,6 +79,19 @@ namespace FLink.Core.Api.Common.State
         {
             Name = CheckNotNull(name);
             Serializer = CheckNotNull(serializer, "serializer must not be null");
+            DefaultValue = defaultValue;
+        }
+
+        /// <summary>
+        /// Create a new <see cref="StateDescriptor{TState,T}"/> with the given name and the given type information.
+        /// </summary>
+        /// <param name="name">The name of the <see cref="StateDescriptor{TState, TValue}"/>.</param>
+        /// <param name="typeInfo">The type information for the values in the state.</param>
+        /// <param name="defaultValue">The default value that will be set when requesting state without setting a value before.</param>
+        protected StateDescriptor(string name, TypeInformation<TValue> typeInfo, TValue defaultValue = default)
+        {
+            Name = CheckNotNull(name, "name must not be null");
+            TypeInfo = CheckNotNull(typeInfo, "type information must not be null");
             DefaultValue = defaultValue;
         }
     }

@@ -1,11 +1,15 @@
-﻿using System;
-using FLink.Core.Api.Common.Functions;
+﻿using FLink.Core.Api.Common.Functions;
+using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Functions.Windowing;
+using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Evictors;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
+using System;
 
 namespace FLink.Streaming.Api.DataStreams
 {
@@ -21,17 +25,19 @@ namespace FLink.Streaming.Api.DataStreams
         // The keyed data stream that is windowed by this stream.
         private readonly KeyedStream<TElement, TKey> _input;
         // The window assigner.
-        private readonly WindowAssigner<TElement, TWindow> _windowAssigner;
+        private readonly WindowAssigner<TElement, TWindow> _assigner;
         // The trigger that is used for window evaluation/emission.
         private WindowTrigger<TElement, TWindow> _trigger;
+        // The evictor that is used for evicting elements before window evaluation.
+        private IWindowEvictor<TElement, TWindow> _evictor;
         // The user-specified allowed lateness.
         private long _allowedLateness = 0L;
 
         public WindowedStream(KeyedStream<TElement, TKey> input, WindowAssigner<TElement, TWindow> windowAssigner)
         {
             _input = input;
-            _windowAssigner = windowAssigner;
-            _trigger = windowAssigner.GetDefaultTrigger(input.Environment);
+            _assigner = windowAssigner;
+            _trigger = windowAssigner.GetDefaultTrigger(input.ExecutionEnvironment);
         }
 
         /// <summary>
@@ -101,7 +107,15 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns>The data stream that is the result of applying the reduce function to the window.</returns>
         public SingleOutputStreamOperator<TElement> Reduce(IReduceFunction<TElement> function)
         {
-            return null;
+            if (function is IRichFunction)
+            {
+                throw new InvalidOperationException("ReduceFunction of reduce can not be a RichFunction. " +
+                    "Please use reduce(ReduceFunction, WindowFunction) instead.");
+            }
+
+            //clean the closure
+            function = _input.ExecutionEnvironment.Clean(function);
+            return Reduce(function, new PassThroughWindowFunction<TKey, TWindow, TElement>());
         }
 
         /// <summary>
@@ -114,7 +128,52 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns>The data stream that is the result of applying the window function to the window.</returns>
         public SingleOutputStreamOperator<TOutput> Reduce<TOutput>(IReduceFunction<TElement> reduceFunction, IWindowFunction<TElement, TOutput, TKey, TWindow> function)
         {
-            return null;
+            var inType = _input.Type;
+            var resultType = getWindowFunctionReturnType(function, inType);
+
+            return Reduce(reduceFunction, function, resultType);
+        }
+
+        /// <summary>
+        /// Applies the given window function to each window. The window function is called for each evaluation of the window for each key individually. The output of the window function is interpreted as a regular non-windowed stream.
+        /// Arriving data is incrementally aggregated using the given reducer.
+        /// </summary>
+        /// <typeparam name="TOutput"></typeparam>
+        /// <param name="reduceFunction">The reduce function that is used for incremental aggregation.</param>
+        /// <param name="function">The window function.</param>
+        /// <param name="resultType">Type information for the result type of the window function.</param>
+        /// <returns>The data stream that is the result of applying the window function to the window.</returns>
+        public SingleOutputStreamOperator<TOutput> Reduce<TOutput>(
+            IReduceFunction<TElement> reduceFunction,
+            IWindowFunction<TElement, TOutput, TKey, TWindow> function,
+            TypeInformation<TOutput> resultType)
+        {
+            if (reduceFunction is IRichFunction)
+            {
+                throw new InvalidOperationException("ReduceFunction of reduce can not be a RichFunction.");
+            }
+
+            var env = _input.ExecutionEnvironment;
+            var config = env.ExecutionConfig;
+
+            function = env.Clean(function);
+            reduceFunction = env.Clean(reduceFunction);
+
+            var operatorName = GenerateOperatorName(_assigner, _trigger, _evictor, reduceFunction, function);
+            var keySelector = _input.KeySelector;
+
+            IOneInputStreamOperator<TElement, TOutput> @operator = default;
+
+            if (_evictor != null)
+            {
+
+            }
+            else
+            {
+                var stateDesc = new ReducingStateDescriptor<TElement>("window-contents", reduceFunction, _input.Type.CreateSerializer(config));
+            }
+
+            return _input.Transform(operatorName, resultType, @operator);
         }
 
         /// <summary>
@@ -183,5 +242,39 @@ namespace FLink.Streaming.Api.DataStreams
         }
 
         #endregion
+
+        private static TypeInformation<OUT> getWindowFunctionReturnType<IN, OUT, KEY, TW>(
+            IWindowFunction<IN, OUT, KEY, TW> function,
+            TypeInformation<IN> inType) where TW : Window
+            => TypeExtractor.GetUnaryOperatorReturnType<IN, OUT>(
+                function,
+                typeof(IWindowFunction<IN, OUT, KEY, TW>),
+                0,
+                1,
+                new int[] { 3, 0 },
+                inType,
+                null,
+                false);
+
+        private static String GenerateOperatorName<TE, TW>(
+            WindowAssigner<TE, TW> assigner,
+            WindowTrigger<TE, TW> trigger,
+            IWindowEvictor<TE, TW> evictor,
+            IFunction function1,
+            IFunction function2) where TW : Window
+        {
+            return "Window(" +
+                assigner + ", " +
+                trigger.GetType().Name + ", " +
+                (evictor == null ? "" : (evictor.GetType().Name + ", ")) +
+                GenerateFunctionName(function1) +
+                (function2 == null ? "" : (", " + GenerateFunctionName(function2))) +
+                ")";
+        }
+
+        private static String GenerateFunctionName(IFunction function)
+        {
+            return function.GetType().Name;
+        }
     }
 }

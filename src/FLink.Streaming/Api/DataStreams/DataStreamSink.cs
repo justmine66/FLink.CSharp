@@ -11,7 +11,7 @@ namespace FLink.Streaming.Api.DataStreams
     {
         public DataStreamSink(DataStream<T> inputStream, StreamSink<T> @operator)
         {
-            Transformation = new SinkTransformation<T>(inputStream.Transformation, "Unnamed", @operator, inputStream.Environment.Parallelism);
+            Transformation = new SinkTransformation<T>(inputStream.Transformation, "Unnamed", @operator, inputStream.ExecutionEnvironment.Parallelism);
         }
 
         public SinkTransformation<T> Transformation { get; }
