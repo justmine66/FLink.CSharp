@@ -21,21 +21,18 @@ namespace FLink.Streaming.Api.Functions.Sink
     {
 
         /// <summary>
-        /// Returns the current processing time.
+        /// Gets the current processing time.
         /// </summary>
-        /// <returns></returns>
-        long CurrentProcessingTime();
+        long CurrentProcessingTime { get; }
 
         /// <summary>
-        /// Returns the current event-time watermark.
+        /// Gets the current event-time watermark.
         /// </summary>
-        /// <returns></returns>
-        long CurrentWatermark();
+        long CurrentWatermark { get; }
 
         /// <summary>
-        /// Returns the timestamp of the current input record or {@code null} if the element does not have an assigned timestamp.
+        /// Gets the timestamp of the current input record or {@code null} if the element does not have an assigned timestamp.
         /// </summary>
-        /// <returns></returns>
-        long Timestamp();
+        long Timestamp { get; }
     }
 }

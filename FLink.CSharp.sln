@@ -51,7 +51,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{05533F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Runtime.Test", "tests\Shared\FLink.Runtime.Test\FLink.Runtime.Test.csproj", "{4D61B0C5-B55E-4B0B-9C75-70362EA49B84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Extensions.CSharp", "src\Extensions\FLink.Extensions.CSharp\FLink.Extensions.CSharp.csproj", "{52FF1884-91F5-4783-9B6C-FACCC290E48C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions.CSharp", "src\Extensions\FLink.Extensions.CSharp\FLink.Extensions.CSharp.csproj", "{52FF1884-91F5-4783-9B6C-FACCC290E48C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Connectors", "Connectors", "{9DFA4D3E-FEFC-4708-A31F-657F9C775ED8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Connector.Kafka011", "src\Connectors\FLink.Connector.Kafka011\FLink.Connector.Kafka011.csproj", "{A50ADA1D-3EBE-488E-ACC3-60F797196357}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +127,10 @@ Global
 		{52FF1884-91F5-4783-9B6C-FACCC290E48C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52FF1884-91F5-4783-9B6C-FACCC290E48C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52FF1884-91F5-4783-9B6C-FACCC290E48C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +158,8 @@ Global
 		{05533FE0-FF6D-4BD7-A44A-1385BFEAD311} = {76716B86-AC7A-4422-8A06-F13B41F9EC9B}
 		{4D61B0C5-B55E-4B0B-9C75-70362EA49B84} = {05533FE0-FF6D-4BD7-A44A-1385BFEAD311}
 		{52FF1884-91F5-4783-9B6C-FACCC290E48C} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
+		{9DFA4D3E-FEFC-4708-A31F-657F9C775ED8} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+		{A50ADA1D-3EBE-488E-ACC3-60F797196357} = {9DFA4D3E-FEFC-4708-A31F-657F9C775ED8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}
