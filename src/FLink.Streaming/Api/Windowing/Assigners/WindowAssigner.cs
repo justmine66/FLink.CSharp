@@ -13,9 +13,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <typeparam name="TElement">The type of elements that this WindowAssigner can assign windows to.</typeparam>
     /// <typeparam name="TWindow">The type of <see cref="Window"/> that this assigner assigns.</typeparam>
     public abstract class WindowAssigner<TElement, TWindow> where TWindow : Window
-    {   
+    {
         /// <summary>       
-        /// Returns a Collection of windows that should be assigned to the element.
+        /// Gets a Collection of windows that should be assigned to the element.
         /// </summary>
         /// <param name="element">The element to which windows should be assigned.</param>
         /// <param name="timestamp">The timestamp of the element.</param>
@@ -23,19 +23,19 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         public abstract IEnumerable<TWindow> AssignWindows(TElement element, long timestamp, WindowAssignerContext context);
 
         /// <summary>
-        /// Returns the default trigger associated with this WindowAssigner.
+        /// Gets the default trigger associated with this WindowAssigner.
         /// </summary>
         /// <param name="env"></param>
         public abstract WindowTrigger<TElement, TWindow> GetDefaultTrigger(StreamExecutionEnvironment env);
 
         /// <summary>
-        /// Returns a <see cref="TypeSerializer{T}"/> for serializing windows that are assigned by this <see cref="WindowAssigner{TElement,TWindow}"/>.
+        /// Gets a <see cref="TypeSerializer{T}"/> for serializing windows that are assigned by this <see cref="WindowAssigner{TElement,TWindow}"/>.
         /// </summary>
         /// <param name="executionConfig"></param>
         public abstract TypeSerializer<TWindow> GetWindowSerializer(ExecutionConfig executionConfig);
 
         /// <summary>
-        /// Returns true if elements are assigned to windows based on event time, false otherwise.
+        /// Gets true if elements are assigned to windows based on event time, false otherwise.
         /// </summary>
         public abstract bool IsEventTime { get; }
 
@@ -45,7 +45,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         public abstract class WindowAssignerContext
         {
             /// <summary>
-            /// Returns the current processing time.
+            /// Gets the current processing time.
             /// </summary>
             /// <returns></returns>
             public abstract long CurrentProcessingTime { get; }
