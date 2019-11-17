@@ -1,7 +1,6 @@
-﻿using System;
+﻿using FLink.Core.Configurations;
+using System;
 using System.Runtime.Serialization;
-using FLink.Core.Configurations;
-using FLink.Core.Exceptions;
 
 namespace FLink.Core.Api.Common.Functions
 {
@@ -22,19 +21,8 @@ namespace FLink.Core.Api.Common.Functions
         #region [ Runtime context access ]
 
         [IgnoreDataMember]
-        private IRuntimeContext _runtimeContext;
+        public IRuntimeContext RuntimeContext { get; set; }
 
-        [IgnoreDataMember]
-        public IRuntimeContext RuntimeContext
-        {
-            get
-            {
-                if (_runtimeContext == null)
-                    throw new IllegalStateException("The runtime context has not been initialized.");
-                return _runtimeContext;
-            }
-            set => _runtimeContext = value;
-        }
         #endregion
     }
 }

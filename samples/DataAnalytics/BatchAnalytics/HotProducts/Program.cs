@@ -100,6 +100,11 @@ namespace HotProducts
             _topSize = topSize;
         }
 
+        public override void OnTimer(long timestamp, OnTimerContext ctx, ICollector<string> output)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void ProcessElement(ProductClickCount value, Context ctx, ICollector<string> output)
         {
             throw new NotImplementedException();
