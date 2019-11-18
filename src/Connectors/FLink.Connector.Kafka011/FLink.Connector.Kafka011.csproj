@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\tests\FunctionalTests\FLink.Examples.Streaming\FLink.Examples.Streaming.csproj" />
+    <ProjectReference Include="..\..\FLink.Streaming\FLink.Streaming.csproj" />
   </ItemGroup>
 
 </Project>

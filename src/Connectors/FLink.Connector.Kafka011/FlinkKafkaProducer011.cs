@@ -2,17 +2,17 @@
 {
     /// <summary>
     /// Flink Sink to produce data into a Kafka topic.
-    /// This producer is compatible with Kafka 0.11.x. By default producer will use <see cref="Semantic.AT_LEAST_ONCE"/> semantic.
+    /// This producer is compatible with Kafka 0.11.x. By default producer will use <see cref="Semantic.AtLeastOnce"/> semantic.
     /// </summary>
-    /// <typeparam name="IN"></typeparam>
-    public class FlinkKafkaProducer011<IN>
+    /// <typeparam name="TInput"></typeparam>
+    public class FLinkKafkaProducer011<TInput>
     {
         /// <summary>
         /// Semantics that can be chosen.
         /// </summary>
         public enum Semantic
         {
-            EXACTLY_ONCE, AT_LEAST_ONCE, NONE
+            ExactlyOnce, AtLeastOnce, None
         }
     }
 }
