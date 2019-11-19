@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
+using FLink.Extensions.CSharp;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Checkpoint;
 using FLink.Streaming.Api.DataStreams;
@@ -35,6 +37,8 @@ namespace FLink.Streaming.Api.Environment
 
         // The environment of the context (local by default, cluster if invoked through command line).
         private static IStreamExecutionEnvironmentFactory _contextEnvironmentFactory;
+        // The ThreadLocal used to store IStreamExecutionEnvironmentFactory.
+        private static readonly ThreadLocal<IStreamExecutionEnvironmentFactory> _threadLocalContextEnvironmentFactory = new ThreadLocal<IStreamExecutionEnvironmentFactory>();
 
         // The default parallelism used when creating a local environment.
         private static int _defaultLocalParallelism = System.Environment.ProcessorCount;
@@ -94,7 +98,10 @@ namespace FLink.Streaming.Api.Environment
         /// <returns>The execution environment of the context in which the program is</returns>
         public static StreamExecutionEnvironment GetExecutionEnvironment()
         {
-            return null;
+            var factory = Utils.ResolveFactory(_threadLocalContextEnvironmentFactory, _contextEnvironmentFactory);
+            var environment = factory.CreateExecutionEnvironment() ?? CreateStreamExecutionEnvironment();
+
+            return environment;
         }
 
         /// <summary>
@@ -107,11 +114,14 @@ namespace FLink.Streaming.Api.Environment
             return null;
         }
 
-        internal static StreamExecutionEnvironment CreateStreamExecutionEnvironment()
+        private static StreamExecutionEnvironment CreateStreamExecutionEnvironment()
         {
             // because the streaming project depends on "FLink-clients" (and not the other way around)
             // we currently need to intercept the data set environment and create a dependent stream env.
             // this should be fixed once we rework the project dependencies
+
+            var env = ExecutionEnvironment.GetExecutionEnvironment();
+
             return null;
         }
 

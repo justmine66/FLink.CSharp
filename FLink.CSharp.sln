@@ -55,7 +55,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Extensions.CSharp", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Connectors", "Connectors", "{9DFA4D3E-FEFC-4708-A31F-657F9C775ED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Connector.Kafka011", "src\Connectors\FLink.Connector.Kafka011\FLink.Connector.Kafka011.csproj", "{A50ADA1D-3EBE-488E-ACC3-60F797196357}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Connector.Kafka011", "src\Connectors\FLink.Connector.Kafka011\FLink.Connector.Kafka011.csproj", "{A50ADA1D-3EBE-488E-ACC3-60F797196357}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FLink.Clients", "src\FLink.Clients\FLink.Clients.csproj", "{97C7B79E-47D0-4BC9-95D8-D52AFB208415}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +133,10 @@ Global
 		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A50ADA1D-3EBE-488E-ACC3-60F797196357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C7B79E-47D0-4BC9-95D8-D52AFB208415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C7B79E-47D0-4BC9-95D8-D52AFB208415}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C7B79E-47D0-4BC9-95D8-D52AFB208415}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C7B79E-47D0-4BC9-95D8-D52AFB208415}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,6 +166,7 @@ Global
 		{52FF1884-91F5-4783-9B6C-FACCC290E48C} = {5CA17579-1FD5-41FC-8497-8019C88E9EE6}
 		{9DFA4D3E-FEFC-4708-A31F-657F9C775ED8} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
 		{A50ADA1D-3EBE-488E-ACC3-60F797196357} = {9DFA4D3E-FEFC-4708-A31F-657F9C775ED8}
+		{97C7B79E-47D0-4BC9-95D8-D52AFB208415} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}
