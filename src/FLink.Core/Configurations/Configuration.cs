@@ -8,5 +8,10 @@ namespace FLink.Core.Configurations
         {
             throw new NotImplementedException();
         }
+
+        public int GetInt(ConfigOption<int> option)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

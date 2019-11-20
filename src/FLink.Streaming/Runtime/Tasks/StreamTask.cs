@@ -1,4 +1,6 @@
-﻿using FLink.Runtime.JobGraphs.Tasks;
+﻿using System;
+using FLink.Runtime.Execution;
+using FLink.Runtime.JobGraphs.Tasks;
 using FLink.Streaming.Api.Operators;
 
 namespace FLink.Streaming.Runtime.Tasks
@@ -9,8 +11,16 @@ namespace FLink.Streaming.Runtime.Tasks
     /// </summary>
     /// <typeparam name="TOutput"></typeparam>
     /// <typeparam name="TOperator"></typeparam>
-    public abstract class StreamTask<TOutput, TOperator> where TOperator : AbstractInvokable, IStreamOperator<TOutput>, IAsyncExceptionHandler
+    public abstract class StreamTask<TOutput, TOperator> : AbstractInvokable, IAsyncExceptionHandler 
+        where TOperator : IStreamOperator<TOutput>
     {
+        protected StreamTask(IEnvironment environment) : base(environment)
+        {
+        }
 
+        public void HandleAsyncException(string message, Exception exception)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

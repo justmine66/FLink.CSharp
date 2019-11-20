@@ -43,6 +43,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing.Functions
         long CurrentWatermark { get; }
 
         IKeyedStateStore WindowState { get; }
+
         IKeyedStateStore GlobalState { get; }
 
         void Output<T>(OutputTag<T> outputTag, T value);

@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Exceptions;
@@ -8,6 +9,7 @@ using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Runtime.StreamRecords;
+using FLink.Streaming.Runtime.Tasks;
 using FLink.Streaming.Util;
 
 namespace FLink.Streaming.Api.Operators
@@ -32,16 +34,20 @@ namespace FLink.Streaming.Api.Operators
         /// <summary>
         /// Keyed state store view on the keyed backend.
         /// </summary>
-        public DefaultKeyedStateStore KeyedStateStore;
+        public DefaultKeyedStateStore<object> KeyedStateStore;
 
         // Backend for keyed state. This might be empty if we're not on a keyed stream.
-        private readonly AbstractKeyedStateBackend<object> _keyedStateBackend;
+        public AbstractKeyedStateBackend<object> KeyedStateBackend;
 
         public IOutput<StreamRecord<TOutput>> Output;
 
         public InternalTimeServiceManager<object> TimeServiceManager;
 
         public LatencyStats LatencyStats;
+
+        public StreamTask<TOutput, IStreamOperator<TOutput>> Container;
+
+        public ExecutionConfig ExecutionConfig => Container.ExecutionConfig;
 
         public virtual void NotifyCheckpointComplete(long checkpointId)
         {
@@ -111,7 +117,7 @@ namespace FLink.Streaming.Api.Operators
                                            "backend has not been set. This indicates that the operator is not " +
                                            "partitioned/keyed.");
 
-            return _keyedStateBackend.GetPartitionedState(@namespace, namespaceSerializer, stateDescriptor);
+            return KeyedStateBackend.GetPartitionedState(@namespace, namespaceSerializer, stateDescriptor);
         }
 
         public void ProcessWatermark(Watermark mark)
@@ -130,5 +136,7 @@ namespace FLink.Streaming.Api.Operators
             Output.EmitLatencyMarker(marker);
         }
     }
+
+
 }
 

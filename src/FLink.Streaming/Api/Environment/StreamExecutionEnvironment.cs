@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using FLink.Clients.Program;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
+using FLink.Core.Configurations;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Extensions.CSharp;
@@ -93,7 +95,7 @@ namespace FLink.Streaming.Api.Environment
 
         /// <summary>
         /// Creates an execution environment that represents the context in which the program is currently executed.
-        /// If the program is invoked standalone, this method returns a local execution environment, as returned by <see cref="CreateLocalEnvironment"/>
+        /// If the program is invoked standalone, this method returns a local execution environment, as returned by <see cref="CreateLocalEnvironment()"/>
         /// </summary>
         /// <returns>The execution environment of the context in which the program is</returns>
         public static StreamExecutionEnvironment GetExecutionEnvironment()
@@ -109,9 +111,27 @@ namespace FLink.Streaming.Api.Environment
         /// The local execution environment will run the program in a multi-threaded fashion in the same CLR as the  environment was created in. The default parallelism of the local environment is the number of hardware contexts(CPU cores / threads), unless it was specified differently by  <see cref="StreamExecutionEnvironment.SetParallelism"/>.
         /// </summary>
         /// <returns>A local execution environment.</returns>
-        public static LocalStreamEnvironment CreateLocalEnvironment()
+        public static LocalStreamEnvironment CreateLocalEnvironment() => CreateLocalEnvironment(_defaultLocalParallelism);
+
+        /// <summary>
+        /// Creates a <see cref="LocalStreamEnvironment"/>. The local execution environment will run the program in a multi-threaded fashion in the same CLR as the environment was created in. It will use the parallelism specified in the parameter.
+        /// </summary>
+        /// <param name="parallelism">The parallelism for the local environment.</param>
+        /// <returns>A local execution environment with the specified parallelism.</returns>
+        public static LocalStreamEnvironment CreateLocalEnvironment(int parallelism) => CreateLocalEnvironment(parallelism, new Configuration());
+
+        /// <summary>
+        /// Creates a <see cref="LocalStreamEnvironment"/>. The local execution environment will run the program in a multi-threaded fashion in the same CLR as the environment was created in. It will use the parallelism specified in the parameter.
+        /// </summary>
+        /// <param name="parallelism">The parallelism for the local environment.</param>
+        /// <param name="configuration">Pass a custom configuration into the cluster</param>
+        /// <returns>A local execution environment with the specified parallelism.</returns>
+        public static LocalStreamEnvironment CreateLocalEnvironment(int parallelism, Configuration configuration)
         {
-            return null;
+            var currentEnvironment = new LocalStreamEnvironment(configuration);
+            currentEnvironment.SetParallelism(parallelism);
+
+            return currentEnvironment;
         }
 
         private static StreamExecutionEnvironment CreateStreamExecutionEnvironment()
@@ -122,7 +142,16 @@ namespace FLink.Streaming.Api.Environment
 
             var env = ExecutionEnvironment.GetExecutionEnvironment();
 
-            return null;
+            switch (env)
+            {
+                case ContextEnvironment environment:
+                    return new StreamContextEnvironment(environment);
+                case OptimizerPlanEnvironment _:
+                case PreviewPlanEnvironment _:
+                    return new StreamPlanEnvironment(env);
+                default:
+                    return CreateLocalEnvironment();
+            }
         }
 
         public StreamGraph GetStreamGraph(string jobName)

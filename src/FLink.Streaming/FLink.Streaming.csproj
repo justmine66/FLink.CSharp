@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Extensions\FLink.Extensions\FLink.Extensions.csproj" />
+    <ProjectReference Include="..\FLink.Clients\FLink.Clients.csproj" />
     <ProjectReference Include="..\FLink.Core\FLink.Core.csproj" />
     <ProjectReference Include="..\FLink.Optimizer\FLink.Optimizer.csproj" />
     <ProjectReference Include="..\FLink.Runtime\FLink.Runtime.csproj" />

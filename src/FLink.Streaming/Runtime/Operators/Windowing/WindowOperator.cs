@@ -1,9 +1,14 @@
-﻿using FLink.Core.Api.Common.State;
+﻿using System;
+using System.Collections.Generic;
+using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.CSharp.Functions;
+using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
+using FLink.Streaming.Api.Functions.Windowing;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Api.Windowing.Assigners;
@@ -37,6 +42,22 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
 
         public IInternalTimerService<TWindow> InternalTimerService;
 
+        public TimestampedCollector<TOutput> TimestampedCollector;
+
+        public WindowContext ProcessContext;
+
+        public Context TriggerContext = new Context(default, default);
+
+        /// <summary>
+        /// For serializing the key in checkpoints.
+        /// </summary>
+        public TypeSerializer<TKey> KeySerializer;
+
+        /// <summary>
+        /// For serializing the window in checkpoints.
+        /// </summary>
+        public TypeSerializer<TWindow> WindowSerializer;
+
         public WindowOperator(
             WindowAssigner<TInput, TWindow> windowAssigner,
             TypeSerializer<TWindow> windowSerializer,
@@ -49,7 +70,6 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             OutputTag<TInput> lateDataOutputTag)
             : base(windowFunction)
         {
-
         }
 
         public void Close()
@@ -151,6 +171,186 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             else return window.MaxTimestamp;
         }
 
+        /// <summary>
+        /// Emits the contents of the given window using the <see cref="IInternalWindowFunction{TInput,TOutput,TKey,TWindow}"/>.
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="contents"></param>
+        private void EmitWindowContents(TWindow window, TAccumulator contents)
+        {
+            TimestampedCollector.SetAbsoluteTimestamp(window.MaxTimestamp);
+            ProcessContext.Window = window;
+            UserFunction.Process(TriggerContext.Key, TriggerContext.Window, ProcessContext, contents,
+                TimestampedCollector);
+        }
+
         #endregion
+
+        /// <summary>
+        /// Base class for per-window <see cref="IKeyedStateStore"/>.
+        /// Used to allow per-window state access for <see cref="ProcessWindowFunction{TInput,TOutput,TKey,TWindow}"/>
+        /// </summary>
+        public abstract class AbstractPerWindowStateStore : DefaultKeyedStateStore<TKey>
+        {
+            /// <summary>
+            /// we have this in the base class even though it's not used in MergingKeyStore so that we can always set it and ignore what actual implementation we have.
+            /// </summary>
+            public TWindow Window;
+
+            public TypeSerializer<TWindow> WindowSerializer;
+
+            protected AbstractPerWindowStateStore(IKeyedStateBackend<TKey> keyedStateBackend, ExecutionConfig executionConfig)
+                : base(keyedStateBackend, executionConfig) { }
+        }
+
+        /// <summary>
+        /// Special <see cref="AbstractPerWindowStateStore"/> that doesn't allow access to per-window state.
+        /// </summary>
+        public class MergingWindowStateStore : AbstractPerWindowStateStore
+        {
+            public MergingWindowStateStore(IKeyedStateBackend<TKey> keyedStateBackend, ExecutionConfig executionConfig)
+                : base(keyedStateBackend, executionConfig) { }
+
+            public override IValueState<TValue> GetState<TValue>(ValueStateDescriptor<TValue> stateProperties)
+            {
+                throw new InvalidOperationException("Per-window state is not allowed when using merging windows.");
+            }
+
+            public override IListState<TValue> GetListState<TValue>(ListStateDescriptor<TValue> stateProperties)
+            {
+                throw new InvalidOperationException("Per-window state is not allowed when using merging windows.");
+            }
+
+            public override IReducingState<TValue> GetReducingState<TValue>(ReducingStateDescriptor<TValue> stateProperties)
+            {
+                throw new InvalidOperationException("Per-window state is not allowed when using merging windows.");
+            }
+
+            public override IMapState<TKey1, TValue> GetMapState<TKey1, TValue>(MapStateDescriptor<TKey1, TValue> stateProperties)
+            {
+                throw new InvalidOperationException("Per-window state is not allowed when using merging windows.");
+            }
+
+            public override IAggregatingState<TInput1, TOutput1> GetAggregatingState<TInput1, TAccumulator1, TOutput1>(AggregatingStateDescriptor<TInput1, TAccumulator1, TOutput1> stateProperties)
+            {
+                throw new InvalidOperationException("Per-window state is not allowed when using merging windows.");
+            }
+        }
+
+        /// <summary>
+        /// Regular per-window state store for use with <see cref="ProcessWindowFunction{TInput,TOutput,TKey,TWindow}"/>.
+        /// </summary>
+        public class PerWindowStateStore : AbstractPerWindowStateStore
+        {
+            public PerWindowStateStore(IKeyedStateBackend<TKey> keyedStateBackend, ExecutionConfig executionConfig)
+                : base(keyedStateBackend, executionConfig)
+            {
+            }
+
+            protected override TState GetPartitionedState<TState, TValue>(StateDescriptor<TState, TValue> stateDescriptor)
+            {
+                return KeyedStateBackend.GetPartitionedState(Window, WindowSerializer, stateDescriptor);
+            }
+        }
+
+        /// <summary>
+        /// A utility class for handling <see cref="ProcessWindowFunction{TInput,TOutput,TKey,TWindow}"/> invocations.
+        /// </summary>
+        public class WindowContext : IInternalWindowContext
+        {
+            public TWindow Window;
+
+            public AbstractPerWindowStateStore WindowStateStore;
+
+            private readonly IInternalTimerService<TWindow> _internalTimerService;
+
+            private readonly IOutput<StreamRecord<TOutput>> _output;
+
+            private readonly WindowOperator<TKey, TInput, TAccumulator, TOutput, TWindow> _windowOperator;
+
+            public WindowContext(TWindow window,
+                WindowAssigner<TInput, TWindow> windowAssigner,
+                AbstractKeyedStateBackend<TKey> keyedStateBackend,
+                ExecutionConfig executionConfig,
+                IInternalTimerService<TWindow> internalTimerService,
+                IOutput<StreamRecord<TOutput>> output,
+                WindowOperator<TKey, TInput, TAccumulator, TOutput, TWindow> windowOperator)
+            {
+                Window = window;
+                _internalTimerService = internalTimerService;
+                _output = output;
+                _windowOperator = windowOperator;
+                WindowStateStore = windowAssigner is MergingWindowAssigner<TInput, TWindow>
+                    ? (AbstractPerWindowStateStore)new MergingWindowStateStore(keyedStateBackend, executionConfig)
+                    : new PerWindowStateStore(keyedStateBackend, executionConfig);
+            }
+
+            public long CurrentProcessingTime => _internalTimerService.CurrentProcessingTime;
+            public long CurrentWatermark => _internalTimerService.CurrentWatermark;
+
+            public IKeyedStateStore WindowState
+            {
+                get
+                {
+                    WindowStateStore.Window = Window;
+                    return WindowStateStore;
+                }
+            }
+
+            public IKeyedStateStore GlobalState => _windowOperator.KeyedStateStore;
+
+            public void Output<T>(OutputTag<T> outputTag, T value)
+            {
+                if (outputTag == null)
+                    throw new IllegalArgumentException("OutputTag must not be null.");
+
+                _output.Collect(outputTag, new StreamRecord<T>(value, Window.MaxTimestamp));
+            }
+
+            public override string ToString() => "WindowContext{Window = " + Window + "}";
+        }
+
+        public class Context : IWindowTriggerContext
+        {
+            public TKey Key;
+            public TWindow Window;
+
+            public IList<TWindow> MergedWindows;
+
+            public Context(TKey key, TWindow window)
+            {
+                Key = key;
+                Window = window;
+            }
+
+            public long CurrentProcessingTime => throw new NotImplementedException();
+
+            public long CurrentWatermark => throw new NotImplementedException();
+
+            public void DeleteEventTimeTimer(long time)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void DeleteProcessingTimeTimer(long time)
+            {
+                throw new NotImplementedException();
+            }
+
+            public TState GetPartitionedState<TState, TValue>(StateDescriptor<TState, TValue> stateDescriptor) where TState : IState
+            {
+                throw new NotImplementedException();
+            }
+
+            public void RegisterEventTimeTimer(long time)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void RegisterProcessingTimeTimer(long time)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace FLink.Streaming.Api.Operators
     /// Basic interface for stream operators. Implementers would implement one of <see cref="Operators.IOneInputStreamOperator{TInput, TOutput}"/> or <see cref="Operators.TwoInputStreamOperator{TInput1, TInput2, TOutput}"/> to create operators that process elements.
     /// </summary>
     /// <remarks>
-    /// The class <see cref="Operators.AbstractStreamOperator"/> offers default implementation for the lifecycle and properties methods.
+    /// The class <see cref="AbstractStreamOperator{TOutput}"/> offers default implementation for the lifecycle and properties methods.
     /// Methods of <see cref="IStreamOperator{TOutput}"/> are guaranteed not to be called concurrently. Also, if using the timer service, timer callbacks are also guaranteed not to be called concurrently with methods on <see cref="IStreamOperator{TOutput}"/>.
     /// </remarks>
     /// <typeparam name="TOutput">The output type of the operator</typeparam>
