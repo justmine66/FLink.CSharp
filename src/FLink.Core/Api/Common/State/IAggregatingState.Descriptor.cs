@@ -13,7 +13,7 @@ namespace FLink.Core.Api.Common.State
     /// <typeparam name="TOutput">The type of the values that are returned from the state.</typeparam>
     public class AggregatingStateDescriptor<TInput, TAccumulator, TOutput> : StateDescriptor<IAggregatingState<TInput, TOutput>, TAccumulator>
     {
-        public AggregatingStateDescriptor(string name, TypeSerializer<TAccumulator> serializer, TAccumulator defaultValue = default) 
+        public AggregatingStateDescriptor(string name, TypeSerializer<TAccumulator> serializer, TAccumulator defaultValue = default)
             : base(name, serializer, defaultValue)
         {
         }

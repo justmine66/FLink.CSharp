@@ -53,7 +53,7 @@ namespace FLink.Core.Util
             var bts = new byte[hex.Length / 2];
             for (var i = 0; i < bts.Length; i++)
             {
-                bts[i] = (byte) int.Parse(hex.Substring(2 * i, 2 * i + 2));
+                bts[i] = (byte)int.Parse(hex.Substring(2 * i, 2 * i + 2));
             }
 
             return bts;
@@ -73,7 +73,7 @@ namespace FLink.Core.Util
             var data = new char[len];
             for (var i = 0; i < data.Length; i++)
             {
-                data[i] = (char) (rnd.Next(0x7fff) + 1);
+                data[i] = (char)(rnd.Next(0x7fff) + 1);
             }
 
             return string.Create(data.Length, data, (chars, buf) =>
@@ -100,7 +100,7 @@ namespace FLink.Core.Util
 
             for (var i = 0; i < data.Length; i++)
             {
-                data[i] = (char) (rnd.Next(diff) + minValue);
+                data[i] = (char)(rnd.Next(diff) + minValue);
             }
 
             return string.Create(data.Length, data, (chars, buf) =>

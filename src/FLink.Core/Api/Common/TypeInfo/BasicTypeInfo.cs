@@ -11,7 +11,7 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// <typeparam name="T"></typeparam>
     public class BasicTypeInfo<T> : TypeInformation<T>, IAtomicType<T>
     {
-        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[]{}, StringSerializer.Instance, StringComparator.Instance);
+        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[] { }, StringSerializer.Instance, StringComparator.Instance);
 
         public override bool IsBasicType => true;
         public override bool IsTupleType => false;

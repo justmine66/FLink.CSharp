@@ -24,6 +24,6 @@
         /// <summary>
         /// 行为发生的时间戳，单位秒
         /// </summary>
-        public long Timestamp { get; set; }       
+        public long Timestamp { get; set; }
     }
 }

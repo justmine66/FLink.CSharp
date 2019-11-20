@@ -10,7 +10,7 @@ namespace FLink.Core.Api.Common.State
     /// <typeparam name="TValue">The type of the values that can be added to the map state.</typeparam>
     public class MapStateDescriptor<TKey, TValue> : StateDescriptor<IMapState<TKey, TValue>, Dictionary<TKey, TValue>>
     {
-        public MapStateDescriptor(string name, TypeSerializer<Dictionary<TKey, TValue>> serializer, Dictionary<TKey, TValue> defaultValue = default) 
+        public MapStateDescriptor(string name, TypeSerializer<Dictionary<TKey, TValue>> serializer, Dictionary<TKey, TValue> defaultValue = default)
             : base(name, serializer, defaultValue)
         {
         }

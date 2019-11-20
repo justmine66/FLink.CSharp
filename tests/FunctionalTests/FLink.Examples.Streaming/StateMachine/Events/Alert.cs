@@ -54,6 +54,6 @@ namespace FLink.Examples.Streaming.StateMachine.Events
             }
         }
 
-        public override string ToString()=> "ALERT " + Event.FormatAddress(Address) + " : " + State.Name + " -> " + Transition.GetName();
+        public override string ToString() => "ALERT " + Event.FormatAddress(Address) + " : " + State.Name + " -> " + Transition.GetName();
     }
 }

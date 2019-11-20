@@ -13,7 +13,7 @@ namespace FLink.Streaming.Api.Transformations
         protected PhysicalTransformation(
             string name,
             TypeInformation<T> outputType,
-            int parallelism) 
+            int parallelism)
             : base(name, outputType, parallelism)
         {
         }

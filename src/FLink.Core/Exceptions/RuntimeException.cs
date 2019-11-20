@@ -8,12 +8,12 @@ namespace FLink.Core.Exceptions
         {
         }
 
-        public RuntimeException(string message) 
+        public RuntimeException(string message)
             : base(message)
         {
         }
 
-        public RuntimeException(string message, Exception innerException) 
+        public RuntimeException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

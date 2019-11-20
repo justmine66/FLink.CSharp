@@ -1,4 +1,5 @@
-﻿using FLink.Core.Api.Common.Functions;
+﻿using System;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.TypeUtils;
@@ -9,7 +10,6 @@ using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Evictors;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
-using System;
 
 namespace FLink.Streaming.Api.DataStreams
 {

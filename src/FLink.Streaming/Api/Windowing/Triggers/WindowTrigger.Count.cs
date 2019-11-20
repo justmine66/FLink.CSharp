@@ -26,7 +26,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
             var count = ctx.GetPartitionedState(_stateDesc);
             count.Add(1L);
 
-            if (count.Get() < Limit) 
+            if (count.Get() < Limit)
                 return WindowTriggerResult.Continue;
 
             count.Clear();

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using FLink.Extensions.DependencyInjection;
 using FLink.Extensions.Logging;
 using FLink.Extensions.Transport.DotNetty;

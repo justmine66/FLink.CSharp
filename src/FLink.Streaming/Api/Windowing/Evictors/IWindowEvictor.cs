@@ -1,7 +1,7 @@
-﻿using FLink.Streaming.Api.Windowing.Triggers;
+﻿using System.Collections.Generic;
+using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 using FLink.Streaming.Runtime.Operators.Windowing;
-using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Evictors
 {

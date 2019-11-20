@@ -1,5 +1,5 @@
-﻿using FLink.Streaming.Api.Watermarks;
-using System;
+﻿using System;
+using FLink.Streaming.Api.Watermarks;
 
 namespace FLink.Streaming.Api.Functions.Timestamps
 {

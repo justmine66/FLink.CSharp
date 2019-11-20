@@ -1,6 +1,6 @@
-﻿using FLink.Runtime.Checkpoint;
+﻿using System;
+using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
-using System;
 using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Api.Operators

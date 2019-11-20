@@ -10,7 +10,11 @@ namespace FLink.Core.Api.Common.State
     /// <typeparam name="TValue">The type of the values that can be added to the list state.</typeparam>
     public class ListStateDescriptor<TValue> : StateDescriptor<IListState<TValue>, IList<TValue>>
     {
-        public ListStateDescriptor(string name, TypeSerializer<IList<TValue>> serializer, IList<TValue> defaultValue = default) : base(name, serializer, defaultValue)
+        public ListStateDescriptor(string name, IList<TValue> defaultValue = default)
+            : base(name, defaultValue) { }
+
+        public ListStateDescriptor(string name, TypeSerializer<IList<TValue>> serializer, IList<TValue> defaultValue = default)
+            : base(name, serializer, defaultValue)
         {
         }
     }

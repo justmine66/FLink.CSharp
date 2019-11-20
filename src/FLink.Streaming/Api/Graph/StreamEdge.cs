@@ -49,7 +49,7 @@ namespace FLink.Streaming.Api.Graph
         public ShuffleMode ShuffleMode;
 
         public StreamEdge(StreamNode sourceVertex, StreamNode targetVertex, int typeNumber,
-            List<string> selectedNames, StreamPartitioner<object> outputPartitioner, OutputTag<object> outputTag) 
+            List<string> selectedNames, StreamPartitioner<object> outputPartitioner, OutputTag<object> outputTag)
             : this(sourceVertex,
                 targetVertex,
                 typeNumber,

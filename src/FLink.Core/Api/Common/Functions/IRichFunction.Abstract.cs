@@ -1,6 +1,6 @@
-﻿using FLink.Core.Configurations;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
+using FLink.Core.Configurations;
 
 namespace FLink.Core.Api.Common.Functions
 {
@@ -9,7 +9,7 @@ namespace FLink.Core.Api.Common.Functions
     /// </summary>
     public abstract class AbstractRichFunction : IRichFunction
     {
-        
+
         #region [ Default life cycle methods ]
 
         public virtual void Open(Configuration parameters) => throw new NotSupportedException();

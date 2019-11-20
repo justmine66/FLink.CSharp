@@ -113,14 +113,14 @@ namespace FLink.Runtime.State.Memory
         #region [ Override Methods ]
 
         public override AbstractKeyedStateBackend<TKey> CreateKeyedStateBackend<TKey>(
-            IEnvironment env, JobId jobId, 
+            IEnvironment env, JobId jobId,
             string operatorIdentifier,
-            TypeSerializer<TKey> keySerializer, 
-            int numberOfKeyGroups, 
+            TypeSerializer<TKey> keySerializer,
+            int numberOfKeyGroups,
             KeyGroupRange keyGroupRange,
-            TaskKvStateRegistry kvStateRegistry, 
-            ITtlTimeProvider ttlTimeProvider, 
-            IMetricGroup metricGroup, 
+            TaskKvStateRegistry kvStateRegistry,
+            ITtlTimeProvider ttlTimeProvider,
+            IMetricGroup metricGroup,
             IList<IKeyedStateHandle> stateHandles,
             CloseableRegistry cancelStreamRegistry)
         {
@@ -128,8 +128,8 @@ namespace FLink.Runtime.State.Memory
         }
 
         public override IOperatorStateBackend CreateOperatorStateBackend(
-            IEnvironment env, 
-            string operatorIdentifier, 
+            IEnvironment env,
+            string operatorIdentifier,
             IList<IOperatorStateHandle> stateHandles,
             CloseableRegistry cancelStreamRegistry) => new DefaultOperatorStateBackendBuilder(
             env.UserClassType,

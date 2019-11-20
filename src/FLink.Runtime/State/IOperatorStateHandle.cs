@@ -5,7 +5,7 @@
     /// </summary>
     public interface IOperatorStateHandle : IStreamStateHandle
     {
-        
+
     }
 
     /// <summary>

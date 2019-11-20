@@ -8,7 +8,7 @@ namespace FLink.Streaming.Api.Operators
         public StreamSource(TSrc sourceFunction)
             : base(sourceFunction)
         {
-             
+
         }
     }
 }

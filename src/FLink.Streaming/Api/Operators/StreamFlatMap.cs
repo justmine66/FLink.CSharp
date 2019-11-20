@@ -13,7 +13,7 @@ namespace FLink.Streaming.Api.Operators
         private TimestampedCollector<TOutput> _collector;
 
         public StreamFlatMap(IFlatMapFunction<TInput, TOutput> userFunction)
-            : base(userFunction) 
+            : base(userFunction)
             => ChainingStrategy = ChainingStrategy.Always;
 
         public override void Open()

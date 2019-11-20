@@ -2,7 +2,7 @@
 
 namespace FLink.Runtime.Checkpoint
 {
-    public class TaskStateSnapshot: ICompositeStateHandle
+    public class TaskStateSnapshot : ICompositeStateHandle
     {
         public void DiscardState()
         {

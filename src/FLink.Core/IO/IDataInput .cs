@@ -2,32 +2,32 @@
 {
     public interface IDataInput
     {
-        void ReadFully(byte[] bytes) ;
+        void ReadFully(byte[] bytes);
 
-        void ReadFully(byte[] bytes, int off, int len) ;
+        void ReadFully(byte[] bytes, int off, int len);
 
-        int SkipBytes(int n) ;
+        int SkipBytes(int n);
 
-        bool ReadBool() ;
+        bool ReadBool();
 
-        byte ReadByte() ;
+        byte ReadByte();
 
-        int ReadUnsignedByte() ;
+        int ReadUnsignedByte();
 
-        short ReadShort() ;
+        short ReadShort();
 
-        int ReadUnsignedShort() ;
+        int ReadUnsignedShort();
 
-        char ReadChar() ;
+        char ReadChar();
 
-        int ReadInt() ;
+        int ReadInt();
 
-        long ReadLong() ;
+        long ReadLong();
 
-        float ReadFloat() ;
+        float ReadFloat();
 
-        double ReadDouble() ;
+        double ReadDouble();
 
-        string ReadLine() ;
+        string ReadLine();
     }
 }

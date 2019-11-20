@@ -6,7 +6,7 @@ namespace FLink.Core.Memory
     {
         public DataInputViewStreamWrapper(Stream input)
         {
-            
+
         }
 
         public void ReadFully(byte[] bytes)

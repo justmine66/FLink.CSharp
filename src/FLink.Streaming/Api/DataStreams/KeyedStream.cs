@@ -67,7 +67,7 @@ namespace FLink.Streaming.Api.DataStreams
             DataStream<TElement> stream,
             PartitionTransformation<TElement> transformation,
             IKeySelector<TElement, TKey> selector,
-            TypeInformation<TKey> keyType) 
+            TypeInformation<TKey> keyType)
             : base(stream.ExecutionEnvironment, transformation)
         {
             KeySelector = Clean(selector);

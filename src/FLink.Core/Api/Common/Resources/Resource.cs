@@ -9,7 +9,7 @@ namespace FLink.Core.Api.Common.Resources
     {
         public enum ResourceAggregateType
         {
-            AggregateTypeSum, 
+            AggregateTypeSum,
             AggregateTypeMax
         }
 

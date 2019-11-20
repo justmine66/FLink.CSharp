@@ -1,6 +1,5 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
-using FLink.Core.Configurations;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Functions.Sink;
 using FLink.Streaming.Api.Functions.Source;

@@ -3,7 +3,7 @@ using FLink.Core.Util;
 
 namespace FLink.Core.FS
 {
-    public class CloseableRegistry: AbstractCloseableRegistry<ICloseable, object>
+    public class CloseableRegistry : AbstractCloseableRegistry<ICloseable, object>
     {
 
     }

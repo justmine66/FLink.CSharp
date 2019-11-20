@@ -8,12 +8,12 @@ namespace FLink.Core.Exceptions
         {
         }
 
-        public FLinkException(string message) 
+        public FLinkException(string message)
             : base(message)
         {
         }
 
-        public FLinkException(string message, Exception innerException) 
+        public FLinkException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

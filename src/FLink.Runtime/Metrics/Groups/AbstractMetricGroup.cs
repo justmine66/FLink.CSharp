@@ -13,7 +13,7 @@ namespace FLink.Runtime.Metrics.Groups
     /// An AbstractMetricGroup can be {@link #close() closed}. the group de-register all metrics from any metrics reporter and any internal maps. Note that even closed metrics groups return Counters, Gauges, etc to the code, to prevent exceptions in the monitored code. These metrics simply do not get reported any more, when created on a closed group.
     /// </summary>
     /// <typeparam name="TParent">The type of the parent MetricGroup</typeparam>
-    public abstract class AbstractMetricGroup<TParent> : IMetricGroup 
+    public abstract class AbstractMetricGroup<TParent> : IMetricGroup
     {
         /// <summary>
         /// The parent group containing this group.

@@ -36,9 +36,9 @@ namespace FLink.Streaming.Api.Environment
         private const long DefaultNetworkBufferTimeout = 100L;
 
         // The environment of the context (local by default, cluster if invoked through command line).
-        private static IStreamExecutionEnvironmentFactory _contextEnvironmentFactory;
+        private static readonly IStreamExecutionEnvironmentFactory ContextEnvironmentFactory;
         // The ThreadLocal used to store IStreamExecutionEnvironmentFactory.
-        private static readonly ThreadLocal<IStreamExecutionEnvironmentFactory> _threadLocalContextEnvironmentFactory = new ThreadLocal<IStreamExecutionEnvironmentFactory>();
+        private static readonly ThreadLocal<IStreamExecutionEnvironmentFactory> ThreadLocalContextEnvironmentFactory = new ThreadLocal<IStreamExecutionEnvironmentFactory>();
 
         // The default parallelism used when creating a local environment.
         private static int _defaultLocalParallelism = System.Environment.ProcessorCount;
@@ -98,7 +98,7 @@ namespace FLink.Streaming.Api.Environment
         /// <returns>The execution environment of the context in which the program is</returns>
         public static StreamExecutionEnvironment GetExecutionEnvironment()
         {
-            var factory = Utils.ResolveFactory(_threadLocalContextEnvironmentFactory, _contextEnvironmentFactory);
+            var factory = Utils.ResolveFactory(ThreadLocalContextEnvironmentFactory, ContextEnvironmentFactory);
             var environment = factory.CreateExecutionEnvironment() ?? CreateStreamExecutionEnvironment();
 
             return environment;

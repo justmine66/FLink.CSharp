@@ -6,7 +6,7 @@ namespace FLink.Core.Memory
     {
         public DataOutputViewStreamWrapper(Stream input)
         {
-            
+
         }
 
         public void Write(int b)

@@ -1,9 +1,9 @@
-﻿using FLink.Streaming.Api.Environment;
-using FLink.Streaming.Api.Windowing.Triggers;
-using FLink.Streaming.Api.Windowing.Windows;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Windowing.Triggers;
+using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {

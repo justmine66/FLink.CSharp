@@ -49,7 +49,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <typeparam name="T"></typeparam>
         /// <param name="sessionWindowTimeGapExtractor">The extractor to use to extract the time gap from the input elements.</param>
         /// <returns>The policy.</returns>
-        public static DynamicEventTimeSessionWindowAssigner<T> WithDynamicGap<T>(ISessionWindowTimeGapExtractor<T> sessionWindowTimeGapExtractor)=> new DynamicEventTimeSessionWindowAssigner<T>(sessionWindowTimeGapExtractor);
+        public static DynamicEventTimeSessionWindowAssigner<T> WithDynamicGap<T>(ISessionWindowTimeGapExtractor<T> sessionWindowTimeGapExtractor) => new DynamicEventTimeSessionWindowAssigner<T>(sessionWindowTimeGapExtractor);
 
         public override string ToString() => "DynamicEventTimeSessionWindowAssigner()";
     }

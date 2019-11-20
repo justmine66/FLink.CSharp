@@ -1,5 +1,4 @@
-﻿using System;
-using FLink.Streaming.Api.Windowing.Windows;
+﻿using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Triggers
 {

@@ -24,9 +24,9 @@ namespace FLink.Streaming.Api.Functions
         /// Called when a timer set using <see cref="ITimerService"/> fires.
         /// </summary>
         /// <param name="timestamp">The timestamp of the firing timer.</param>
-        /// <param name="ctx">Allows querying the timestamp, the <see cref="TimeDomain"/>, and the key of the firing timer and getting a <see cref="TimeDomain"/> for registering timers and querying the time. The context is only valid during the invocation of this method, do not store it.</param>
+        /// <param name="context">Allows querying the timestamp, the <see cref="TimeDomain"/>, and the key of the firing timer and getting a <see cref="TimeDomain"/> for registering timers and querying the time. The context is only valid during the invocation of this method, do not store it.</param>
         /// <param name="output">The collector for returning result values.</param>
-        public abstract void OnTimer(long timestamp, OnTimerContext ctx, ICollector<TOutput> output);
+        public abstract void OnTimer(long timestamp, OnTimerContext context, ICollector<TOutput> output);
 
         public abstract class Context
         {

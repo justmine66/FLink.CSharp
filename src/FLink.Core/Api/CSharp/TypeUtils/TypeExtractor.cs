@@ -15,14 +15,14 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         public static TypeInformation<TOut> GetFlatMapReturnTypes<TIn, TOut>(
             IFlatMapFunction<TIn, TOut> flatMapInterface,
             TypeInformation<TIn> inType,
-            string functionName, 
-            bool allowMissing) 
+            string functionName,
+            bool allowMissing)
             => GetUnaryOperatorReturnType<TIn, TOut>(
                 flatMapInterface,
                 typeof(IFlatMapFunction<TIn, TOut>),
                 0,
                 1,
-                new int[] {1, 0},
+                new int[] { 1, 0 },
                 inType,
                 functionName,
                 allowMissing);

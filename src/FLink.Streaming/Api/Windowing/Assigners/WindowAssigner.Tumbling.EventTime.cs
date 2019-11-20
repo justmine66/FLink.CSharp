@@ -1,11 +1,11 @@
-﻿using FLink.Core.Api.Common;
+﻿using System;
+using System.Collections.Generic;
+using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Exceptions;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
-using System;
-using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
@@ -67,8 +67,8 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <param name="offset">The offset which window start would be shifted by.</param>
         /// <returns>The time policy.</returns>
         public static TumblingEventTimeWindowAssigner<TElement> Of(TimeSpan size, TimeSpan offset) =>
-            new TumblingEventTimeWindowAssigner<TElement>((long) size.TotalMilliseconds,
-                (long) offset.TotalMilliseconds);
+            new TumblingEventTimeWindowAssigner<TElement>((long)size.TotalMilliseconds,
+                (long)offset.TotalMilliseconds);
 
         public override TypeSerializer<TimeWindow> GetWindowSerializer(ExecutionConfig executionConfig)
         {

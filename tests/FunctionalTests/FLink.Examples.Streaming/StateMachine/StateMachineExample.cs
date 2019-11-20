@@ -50,7 +50,7 @@ namespace FLink.Examples.Streaming.StateMachine
             }
 
             public override void FlatMap(Event @event, ICollector<Alert> output)
-            {   
+            {
                 // get the current state for the key (source address)
                 // if no state exists, yet, the state must be the state machine's initial state
                 var state = _currentState.Value ?? State.Initial;

@@ -34,7 +34,7 @@ namespace FLink.Streaming.Runtime.StreamRecords
         /// </summary>
         /// <returns>This element as a Watermark.</returns>
         /// <exception cref="InvalidCastException">Thrown, if this element is actually not a Watermark.</exception>
-        public Watermark AsWatermark()=> (Watermark)this;
+        public Watermark AsWatermark() => (Watermark)this;
 
         /// <summary>
         /// Casts this element into a StreamRecord.

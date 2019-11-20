@@ -8,12 +8,12 @@ namespace FLink.Core.Exceptions
         {
         }
 
-        public IllegalStateException(string message) 
+        public IllegalStateException(string message)
             : base(message)
         {
         }
 
-        public IllegalStateException(string message, Exception innerException) 
+        public IllegalStateException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

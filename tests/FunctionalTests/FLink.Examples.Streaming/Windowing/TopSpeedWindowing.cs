@@ -30,7 +30,7 @@ namespace FLink.Examples.Streaming.Windowing
                 .KeyBy("Id")
                 .Window(GlobalWindowAssigner<CarDatum>.Create())
                 .Evictor(TimeWindowEvictor.Of<CarDatum, GlobalWindow>(TimeSpan.FromSeconds(10)))
-                .Trigger(DeltaWindowTrigger.Of<CarDatum, GlobalWindow>(50,new CarDeltaFunctor(), null))
+                .Trigger(DeltaWindowTrigger.Of<CarDatum, GlobalWindow>(50, new CarDeltaFunctor(), null))
                 .MaxBy(1);
 
             transformation.Print();

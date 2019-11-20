@@ -24,7 +24,7 @@ namespace FLink.Streaming.Api.Functions.Sink
         // Specifies the maximum time a transaction should remain open.
         private long transactionTimeout = long.MaxValue;
 
-        protected  IListState<IState> State { get; }
+        protected IListState<IState> State { get; }
 
         public void InitializeState(IFunctionInitializationContext context)
         {
@@ -41,7 +41,7 @@ namespace FLink.Streaming.Api.Functions.Sink
             throw new System.NotImplementedException();
         }
 
-        protected abstract void Invoke(TTransaction transaction, TInput value, TContext context)  ;
+        protected abstract void Invoke(TTransaction transaction, TInput value, TContext context);
 
         /// <summary>
         /// Starts a new transaction.

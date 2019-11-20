@@ -3,7 +3,7 @@
     /// <summary>
     /// Singleton placeholder class for state without a namespace.
     /// </summary>
-    public class VoidNamespace 
+    public class VoidNamespace
     {
         /// <summary>
         /// The singleton instance

@@ -9,13 +9,13 @@ namespace FLink.Streaming.Api.Operators
     /// A stream operator that extracts timestamps from stream elements and generates periodic watermarks.
     /// </summary>
     /// <typeparam name="T">The type of the input elements</typeparam>
-    public class TimestampsAndPeriodicWatermarksOperator<T>: AbstractUdfStreamOperator<T, IAssignerWithPeriodicWatermarks<T>>, IOneInputStreamOperator<T, T>, IProcessingTimeCallback
+    public class TimestampsAndPeriodicWatermarksOperator<T> : AbstractUdfStreamOperator<T, IAssignerWithPeriodicWatermarks<T>>, IOneInputStreamOperator<T, T>, IProcessingTimeCallback
     {
-        public TimestampsAndPeriodicWatermarksOperator(IAssignerWithPeriodicWatermarks<T> userFunction) 
+        public TimestampsAndPeriodicWatermarksOperator(IAssignerWithPeriodicWatermarks<T> userFunction)
             : base(userFunction)
         {
         }
-       
+
         public void ProcessElement(StreamRecord<T> element)
         {
             throw new System.NotImplementedException();

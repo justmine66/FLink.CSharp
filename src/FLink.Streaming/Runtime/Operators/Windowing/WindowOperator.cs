@@ -1,5 +1,4 @@
-﻿using FLink.Core.Api.Common.Accumulators;
-using FLink.Core.Api.Common.State;
+﻿using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Util;
@@ -47,7 +46,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             IInternalWindowFunction<TAccumulator, TOutput, TKey, TWindow> windowFunction,
             WindowTrigger<TInput, TWindow> trigger,
             long allowedLateness,
-            OutputTag<TInput> lateDataOutputTag) 
+            OutputTag<TInput> lateDataOutputTag)
             : base(windowFunction)
         {
 

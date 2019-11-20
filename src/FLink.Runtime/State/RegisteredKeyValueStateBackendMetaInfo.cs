@@ -2,7 +2,7 @@
 
 namespace FLink.Runtime.State
 {
-    public class RegisteredKeyValueStateBackendMetaInfo<N, S>: RegisteredStateMetaInfoBase
+    public class RegisteredKeyValueStateBackendMetaInfo<N, S> : RegisteredStateMetaInfoBase
     {
         public RegisteredKeyValueStateBackendMetaInfo(string name) : base(name)
         {

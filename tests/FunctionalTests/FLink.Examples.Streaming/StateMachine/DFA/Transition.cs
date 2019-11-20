@@ -63,6 +63,6 @@ namespace FLink.Examples.Streaming.StateMachine.DFA
             }
         }
 
-        public override string ToString()=> "--[" + EventType.GetName() + "]--> " + TargetState.Name + " (" + Probability + ')';
+        public override string ToString() => "--[" + EventType.GetName() + "]--> " + TargetState.Name + " (" + Probability + ')';
     }
 }
