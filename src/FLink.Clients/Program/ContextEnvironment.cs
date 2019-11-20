@@ -1,4 +1,4 @@
-﻿using FLink.Extensions.CSharp;
+﻿using FLink.CSharp;
 
 namespace FLink.Clients.Program
 {

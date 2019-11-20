@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace FLink.Extensions.CSharp
+namespace FLink.CSharp
 {
     public class Utils
     {

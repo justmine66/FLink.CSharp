@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Api.Common;
 using FLink.Core.Configurations;
-using FLink.Extensions.CSharp;
+using FLink.CSharp;
 using FLink.Streaming.Api.Graph;
 
 namespace FLink.Streaming.Api.Environment

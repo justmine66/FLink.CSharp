@@ -9,7 +9,7 @@ using FLink.Core.Api.Dag;
 using FLink.Core.Configurations;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
-using FLink.Extensions.CSharp;
+using FLink.CSharp;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Checkpoint;
 using FLink.Streaming.Api.DataStreams;
@@ -101,7 +101,7 @@ namespace FLink.Streaming.Api.Environment
         public static StreamExecutionEnvironment GetExecutionEnvironment()
         {
             var factory = Utils.ResolveFactory(ThreadLocalContextEnvironmentFactory, ContextEnvironmentFactory);
-            var environment = factory.CreateExecutionEnvironment() ?? CreateStreamExecutionEnvironment();
+            var environment = factory?.CreateExecutionEnvironment() ?? CreateStreamExecutionEnvironment();
 
             return environment;
         }

@@ -1,4 +1,4 @@
-﻿namespace FLink.Extensions.CSharp
+﻿namespace FLink.CSharp
 {
     /// <summary>
     /// Factory class for execution environments.
