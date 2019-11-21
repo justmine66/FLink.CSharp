@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.State;
+using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Configurations;
 using FLink.Core.Util;
 using FLink.Streaming.Api;
@@ -23,9 +25,14 @@ namespace HotProducts
     {
         static void Main(string[] args)
         {
+            // 创建 execution environment
             var env = StreamExecutionEnvironment.GetExecutionEnvironment()
+                // 告诉系统按照 EventTime 处理
                 .SetStreamTimeCharacteristic(TimeCharacteristic.EventTime)
+                // 为了打印到控制台的结果不乱序，我们配置全局的并发为1，改变并发对结果正确性没有影响
                 .SetParallelism(1);
+
+            var file = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "UserBehavior.csv");
 
             var stream = env.ReadCsvFile<UserBehavior>("")// 创建数据源，得到UserBehavior类型的DataStream
                     .AssignTimestampsAndWatermarks(new UserBehaviorAscendingTimestampExtractor())// 抽取出时间和生成watermark

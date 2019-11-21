@@ -18,7 +18,7 @@ namespace FLink.CSharp
 
         // The default parallelism used by local environments.
         private static int _defaultLocalParallelism = Environment.ProcessorCount;
-        private static string DefaultName = "Flink CSharp Job at " + DateTimeOffset.Now;
+        private static readonly string DefaultName = "Flink CSharp Job at " + DateTimeOffset.Now;
 
         public static ExecutionEnvironment GetExecutionEnvironment()
         {

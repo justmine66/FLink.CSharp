@@ -9,4 +9,10 @@
     <ProjectReference Include="..\..\..\..\src\FLink.Streaming\FLink.Streaming.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\UserBehavior.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
