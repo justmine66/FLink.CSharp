@@ -44,5 +44,14 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         {
             throw new NotImplementedException();
         }
+
+        #region [ Create type information ]
+
+        public static TypeInformation<T> CreateTypeInfo<T>()
+        {
+            return TypeInformation.Of<T>();
+        }
+
+        #endregion
     }
 }

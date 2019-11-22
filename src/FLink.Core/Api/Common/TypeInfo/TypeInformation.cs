@@ -48,6 +48,14 @@ namespace FLink.Core.Api.Common.TypeInfo
         public abstract override string ToString();
         public abstract override bool Equals(object obj);
         public abstract override int GetHashCode();
+    }
+
+    public static class TypeInformation
+    {
+        public static TypeInformation<T> Of<T>()
+        {
+            return null;
+        }
 
         public static TypeInformation<T> Of<T>(Type typeClass)
         {

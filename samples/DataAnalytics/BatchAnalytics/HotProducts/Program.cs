@@ -33,6 +33,7 @@ namespace HotProducts
                 .SetParallelism(1);
 
             var file = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "UserBehavior.csv");
+            var pojoType = TypeExtractor.CreateTypeInfo<UserBehavior>() as PojoTypeInfo<UserBehavior>;
 
             var stream = env.ReadCsvFile<UserBehavior>("")// 创建数据源，得到UserBehavior类型的DataStream
                     .AssignTimestampsAndWatermarks(new UserBehaviorAscendingTimestampExtractor())// 抽取出时间和生成watermark
