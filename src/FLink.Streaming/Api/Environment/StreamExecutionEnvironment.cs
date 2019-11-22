@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using FLink.Clients.Program;
 using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Configurations;
 using FLink.Core.Exceptions;
+using FLink.Core.IO;
 using FLink.Core.Util;
 using FLink.CSharp;
 using FLink.Runtime.State;
@@ -322,6 +326,58 @@ namespace FLink.Streaming.Api.Environment
 
             var sourceOperator = new StreamSource<TOut, ISourceFunction<TOut>>(function);
             return new DataStreamSource<TOut>(this, typeInfo, sourceOperator, isParallel, sourceName);
+        }
+
+        /// <summary>
+        /// Generic method to create an input data stream with <see cref="IInputFormat{TRecord,TInputSplit}"/>.
+        /// Since all data streams need specific information about their types, this method needs to determine the type of the data produced by the input format. It will attempt to determine the data type by reflection, unless the input format implements <see cref="IResultTypeQueryable{T}"/>.
+        /// </summary>
+        /// <typeparam name="TOutput">The type of the returned data stream</typeparam>
+        /// <param name="inputFormat">The input format used to create the data stream</param>
+        /// <returns>The data stream that represents the data created by the input format</returns>
+        public DataStreamSource<TOutput> CreateInput<TOutput>(IInputFormat<TOutput, IInputSplit> inputFormat)
+        {
+            return CreateInput(inputFormat, TypeExtractor.GetInputFormatTypes(inputFormat));
+        }
+
+        /// <summary>
+        /// Generic method to create an input data stream with <see cref="IInputFormat{TRecord,TInputSplit}"/>.
+        /// Since all data streams need specific information about their types, this method needs to determine the type of the data produced by the input format. It will attempt to determine the data type by reflection, unless the input format implements <see cref="IResultTypeQueryable{T}"/>.
+        /// </summary>
+        /// <typeparam name="TOutput">The type of the returned data stream</typeparam>
+        /// <param name="inputFormat">The input format used to create the data stream</param>
+        /// <param name="typeInfo">The information about the type of the output type</param>
+        /// <returns>The data stream that represents the data created by the input format</returns>
+        public DataStreamSource<TOutput> CreateInput<TOutput>(IInputFormat<TOutput, IInputSplit> inputFormat, TypeInformation<TOutput> typeInfo)
+        {
+            switch (inputFormat)
+            {
+                case FileInputFormat<TOutput> format:
+                    return CreateFileInput(format, typeInfo, "Custom File source", FileProcessingMode.ProcessOnce, -1);
+                default:
+                    return CreateInput(inputFormat, typeInfo, "Custom Source");
+            }
+        }
+
+        private DataStreamSource<TOutput> CreateInput<TOutput>(IInputFormat<TOutput, IInputSplit> inputFormat,
+        TypeInformation<TOutput> typeInfo, string sourceName)
+        {
+            var function = new InputFormatSourceFunction<TOutput>(inputFormat, typeInfo);
+            return AddSource(function, sourceName, typeInfo);
+        }
+
+        private DataStreamSource<OUT> CreateFileInput<OUT>(FileInputFormat<OUT> inputFormat,
+            TypeInformation<OUT> typeInfo,
+            String sourceName,
+            FileProcessingMode monitoringMode,
+            long interval)
+        {
+            Preconditions.CheckNotNull(inputFormat, "Unspecified file input format.");
+            Preconditions.CheckNotNull(typeInfo, "Unspecified output type information.");
+            Preconditions.CheckNotNull(sourceName, "Unspecified name for the source.");
+            Preconditions.CheckNotNull(monitoringMode, "Unspecified monitoring mode.");
+
+            return null;
         }
 
         #endregion

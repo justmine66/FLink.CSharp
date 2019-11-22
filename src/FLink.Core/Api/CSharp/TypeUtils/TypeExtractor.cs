@@ -1,6 +1,8 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
+using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.IO;
 
 namespace FLink.Core.Api.CSharp.TypeUtils
 {
@@ -41,6 +43,12 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         }
 
         public static TypeInformation<TKey> GetKeySelectorTypes<TElement, TKey>(Functions.IKeySelector<TElement, TKey> keySelector, TypeInformation<TElement> type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static TypeInformation<TInput> GetInputFormatTypes<TInput, TInputSplit>(IInputFormat<TInput, TInputSplit> inputFormatInterface)
+            where TInputSplit : IInputSplit
         {
             throw new NotImplementedException();
         }

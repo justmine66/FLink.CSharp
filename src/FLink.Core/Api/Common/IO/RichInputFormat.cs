@@ -2,6 +2,7 @@
 using FLink.Core.Api.Common.IO.Statistics;
 using FLink.Core.Configurations;
 using FLink.Core.IO;
+using System.IO;
 
 namespace FLink.Core.Api.Common.IO
 {
@@ -9,7 +10,7 @@ namespace FLink.Core.Api.Common.IO
     /// An abstract stub implementation for Rich input formats.
     /// Rich formats have access to their runtime execution context via <see cref="RuntimeContext"/>.
     /// </summary>
-    public abstract class RichInputFormat<OT, T>: IInputFormat<OT, T> where T : IInputSplit
+    public abstract class RichInputFormat<TRecord, T>: IInputFormat<TRecord, T> where T : IInputSplit
     {
         public IRuntimeContext RuntimeContext { get; set; }
 
@@ -25,8 +26,27 @@ namespace FLink.Core.Api.Common.IO
 
         public abstract bool ReachedEnd { get; }
 
-        public abstract OT NextRecord(OT reuse);
+        public abstract TRecord NextRecord(TRecord reuse);
 
         public abstract void Close();
+
+        /// <summary>
+        /// Opens this InputFormat instance. This method is called once per parallel instance.
+        /// Resources should be allocated in this method. (e.g. database connections, cache, etc.)
+        /// </summary>
+        /// <exception cref="IOException">in case allocating the resources failed.</exception>
+        public virtual void OpenInputFormat()
+        {
+            //do nothing here, just for subclasses
+        }
+
+        /// <summary>
+        /// Closes this InputFormat instance. This method is called once per parallel instance.
+        /// </summary>
+        /// <exception cref="IOException">in case closing the resources failed.</exception>
+        public virtual void CloseInputFormat()
+        {
+            //do nothing here, just for subclasses
+        }
     }
 }
