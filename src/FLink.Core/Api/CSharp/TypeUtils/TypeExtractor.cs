@@ -60,6 +60,11 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             return TypeInformation.Of<T>();
         }
 
+        public static TypeInformation<TOutput> CreateTypeInfo<TInput1, TInput2, TOutput>(Type baseClass, Type clazz, int returnParamPos, TypeInformation<TInput1> in1Type, TypeInformation<TInput2> in2Type)
+        {
+            return null;
+        }
+
         #endregion
     }
 }

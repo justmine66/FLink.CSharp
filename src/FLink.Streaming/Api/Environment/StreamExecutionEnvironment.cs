@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using FLink.Clients.Program;
 using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.TypeUtils;
@@ -320,6 +321,21 @@ namespace FLink.Streaming.Api.Environment
         /// <returns>the data stream constructed</returns>
         public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName, TypeInformation<TOut> typeInfo)
         {
+            if (function is IResultTypeQueryable<TOut> queryable)
+                typeInfo = queryable.ProducedType;
+
+            if (typeInfo == null)
+            {
+                try
+                {
+                    typeInfo = TypeExtractor.CreateTypeInfo<object, object, TOut>(typeof(ISourceFunction<>), function.GetType(), 0, null, null);
+                }
+                catch (InvalidTypesException e)
+                {
+                    typeInfo = new MissingTypeInfo(sourceName, e) as TypeInformation<TOut>;
+                }
+            }
+
             var isParallel = function is IParallelSourceFunction<TOut>;
 
             Clean(function);
