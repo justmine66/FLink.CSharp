@@ -1,8 +1,8 @@
 ﻿using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
 using FLink.Streaming.Api.Watermarks;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Api.Functions.Timestamps
 {
@@ -62,7 +62,7 @@ namespace FLink.Streaming.Api.Functions.Timestamps
         public class LoggingMonotonyViolationHandler : IMonotonyViolationHandler
         {
             private readonly ILogger _logger =
-                ObjectContainer.Current.GetService<ILogger<LoggingMonotonyViolationHandler>>();
+                ServiceLocator.GetService<ILogger<LoggingMonotonyViolationHandler>>();
 
             public void HandleViolation(long elementTimestamp, long lastTimestamp)
             {

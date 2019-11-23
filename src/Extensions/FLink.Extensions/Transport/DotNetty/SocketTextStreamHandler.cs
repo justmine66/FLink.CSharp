@@ -1,9 +1,9 @@
-﻿using System;
-using System.Text;
-using DotNetty.Buffers;
+﻿using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using System;
+using System.Text;
 using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Extensions.Transport.DotNetty
 {
@@ -17,7 +17,7 @@ namespace FLink.Extensions.Transport.DotNetty
         public SocketTextStreamHandler(Action<string> onRead, Action onReadComplete = null)
         {
             _initialMessage = Unpooled.Buffer(256);
-            _logger = ObjectContainer.Current.GetService<ILogger<SocketTextStreamHandler>>();
+            _logger = ServiceLocator.GetService<ILogger<SocketTextStreamHandler>>();
             _onRead = onRead;
             _onReadComplete = onReadComplete;
         }

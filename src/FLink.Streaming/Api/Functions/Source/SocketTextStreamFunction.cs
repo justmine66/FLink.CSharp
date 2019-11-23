@@ -1,7 +1,7 @@
-﻿using System.Threading;
+﻿using FLink.Extensions.Transport.DotNetty;
+using System.Threading;
 using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
-using FLink.Extensions.Transport.DotNetty;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Api.Functions.Source
 {
@@ -30,7 +30,7 @@ namespace FLink.Streaming.Api.Functions.Source
             : this(host, port, delimiter, maxNumRetries, DefaultConnectionRetrySleep)
         {
             _socket = new SocketClient(host, port);
-            _logger = ObjectContainer.Current.GetService<ILogger<SocketTextStreamFunction>>();
+            _logger = ServiceLocator.GetService<ILogger<SocketTextStreamFunction>>();
         }
 
         public SocketTextStreamFunction(string host, int port, string delimiter, int maxNumRetries, int delayBetweenRetries)

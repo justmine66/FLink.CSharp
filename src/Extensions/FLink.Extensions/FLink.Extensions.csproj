@@ -7,6 +7,7 @@
   <ItemGroup>
     <PackageReference Include="DotNetty.Codecs" Version="0.6.0" />
     <PackageReference Include="DotNetty.Transport" Version="0.6.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.0.1" />
   </ItemGroup>
 
 </Project>

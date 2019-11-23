@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using FLink.Core.Api.Common;
+﻿using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.State;
 using FLink.Core.FS;
-using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
 using FLink.Runtime.Checkpoint;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FLink.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Runtime.State
 {
@@ -14,7 +14,7 @@ namespace FLink.Runtime.State
     /// </summary>
     public class DefaultOperatorStateBackend : IOperatorStateBackend
     {
-        private static readonly ILogger Logger = ObjectContainer.Current.GetService<ILogger<DefaultOperatorStateBackend>>();
+        private static readonly ILogger Logger = ServiceLocator.GetService<ILogger<DefaultOperatorStateBackend>>();
 
         /// <summary>
         /// The default namespace for state in cases where no state name is provided

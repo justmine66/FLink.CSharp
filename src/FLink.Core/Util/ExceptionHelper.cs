@@ -1,12 +1,12 @@
 ﻿using System;
 using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Core.Util
 {
     public class ExceptionHelper
     {
-        private static readonly ILogger Logger = ObjectContainer.Current.GetService<ILogger<ExceptionHelper>>();
+        private static readonly ILogger Logger = ServiceLocator.GetService<ILogger<ExceptionHelper>>();
 
         public static void Eat(string name, Action action)
         {

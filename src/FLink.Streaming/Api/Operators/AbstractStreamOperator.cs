@@ -1,16 +1,16 @@
-﻿using System;
-using FLink.Core.Api.Common;
+﻿using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Exceptions;
 using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
 using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Runtime.StreamRecords;
 using FLink.Streaming.Runtime.Tasks;
 using FLink.Streaming.Util;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace FLink.Streaming.Api.Operators
 {
@@ -24,7 +24,7 @@ namespace FLink.Streaming.Api.Operators
         /// <summary>
         /// The logger used by the operator class and its subclasses.
         /// </summary>
-        public static ILogger Logger = ObjectContainer.Current.GetService<ILogger<AbstractStreamOperator<TOutput>>>();
+        public static ILogger Logger = ServiceLocator.GetService<ILogger<AbstractStreamOperator<TOutput>>>();
 
         /// <summary>
         /// A sane default for most operators

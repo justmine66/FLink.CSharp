@@ -1,7 +1,9 @@
-﻿using System;
-using FLink.Core.Api.Common.Functions;
+﻿using FLink.Core.Api.Common.Functions;
 using FLink.Core.Util;
+using FLink.Extensions.DependencyInjection;
 using FLink.Streaming.Api.Environment;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace WordCount
 {
@@ -11,8 +13,18 @@ namespace WordCount
     /// </summary>
     public class SocketWindowWordCount
     {
+        public static void Init()
+        {
+            var services = new ServiceCollection()
+                .AddLogging()
+                .BuildServiceProvider();
+
+            ServiceLocator.Services = services;
+        }
         public static void Run()
         {
+            Init();
+
             // get the execution environment
             var env = StreamExecutionEnvironment.GetExecutionEnvironment();
 

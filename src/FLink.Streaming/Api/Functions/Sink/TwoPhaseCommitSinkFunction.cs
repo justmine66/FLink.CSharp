@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using FLink.Core.Api.Common.State;
-using FLink.Extensions.DependencyInjection;
-using FLink.Extensions.Logging;
+﻿using FLink.Core.Api.Common.State;
 using FLink.Extensions.Time;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Checkpoint;
+using System;
+using System.Collections.Generic;
+using FLink.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Api.Functions.Sink
 {
@@ -18,7 +18,7 @@ namespace FLink.Streaming.Api.Functions.Sink
     /// <typeparam name="TContext">Context that will be shared across all invocations for the given <see cref="TwoPhaseCommitSinkFunction{IN, TXN, CONTEXT}"/> instance. Context is created once</typeparam>
     public abstract class TwoPhaseCommitSinkFunction<TInput, TTransaction, TContext> : RichSinkFunction<TInput>, ICheckpointedFunction, ICheckpointListener
     {
-        private static readonly ILogger Logger = ObjectContainer.Current.GetService<ILogger<TwoPhaseCommitSinkFunction<TInput, TTransaction, TContext>>>();
+        private static readonly ILogger Logger = ServiceLocator.GetService<ILogger<TwoPhaseCommitSinkFunction<TInput, TTransaction, TContext>>>();
 
         private TransactionHolder<TTransaction> currentTransactionHolder;
         // Specifies the maximum time a transaction should remain open.
