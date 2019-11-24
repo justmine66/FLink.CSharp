@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using FLink.Core.Exceptions;
 
 namespace FLink.Core.Util

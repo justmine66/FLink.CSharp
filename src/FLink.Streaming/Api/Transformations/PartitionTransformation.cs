@@ -1,4 +1,5 @@
-﻿using FLink.Core.Api.Dag;
+﻿using System.Collections.Generic;
+using FLink.Core.Api.Dag;
 using FLink.Streaming.Runtime.Partitioners;
 
 namespace FLink.Streaming.Api.Transformations
@@ -51,5 +52,7 @@ namespace FLink.Streaming.Api.Transformations
             Partitioner = partitioner;
             ShuffleMode = shuffleMode;
         }
+
+        public override IList<Transformation<TElement>> TransitivePredecessors { get; }
     }
 }

@@ -1,14 +1,14 @@
-﻿using FLink.Core.Api.Common.Operators;
-
-namespace FLink.Core.Api.Common.Resources
+﻿namespace FLink.Core.Api.Common.Resources
 {
     public class GPUResource : Resource
     {
-        public GPUResource(double value) : this(value, ResourceAggregateType.AggregateTypeSum) { }
+        public const string DefaultName = "GPU";
 
-        private GPUResource(double value, ResourceAggregateType type)
-            : base(ResourceSpec.GpuName, value, type) { }
+        public GPUResource(decimal value) 
+            : base(DefaultName, value)
+        {
+        }
 
-        public override Resource Create(double value, ResourceAggregateType type) => new GPUResource(value, type);
+        public override Resource Create(decimal value) => new GPUResource(value);
     }
 }

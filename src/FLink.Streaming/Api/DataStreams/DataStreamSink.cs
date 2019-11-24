@@ -23,7 +23,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns>The sink with set parallelism.</returns>
         public DataStreamSink<T> SetParallelism(int parallelism)
         {
-            Transformation.SetParallelism(parallelism);
+            Transformation.Parallelism = parallelism;
             return this;
         }
     }

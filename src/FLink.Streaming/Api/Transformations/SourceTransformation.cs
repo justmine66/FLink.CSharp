@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Streaming.Api.Functions.Source;
@@ -34,5 +35,7 @@ namespace FLink.Streaming.Api.Transformations
         {
             throw new NotImplementedException();
         }
+
+        public override IList<Transformation<T>> TransitivePredecessors { get; }
     }
 }

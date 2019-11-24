@@ -23,7 +23,7 @@ namespace FLink.Streaming.Api.DataStreams
             Preconditions.CheckArgument(CanBeParallel || parallelism == 1,
                 "The parallelism of non parallel operator must be 1.");
 
-            Transformation.SetParallelism(parallelism);
+            Transformation.Parallelism = parallelism;
 
             return this;
         }
