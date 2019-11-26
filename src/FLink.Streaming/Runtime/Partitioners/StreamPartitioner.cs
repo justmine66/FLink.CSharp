@@ -1,5 +1,5 @@
 ﻿using FLink.Runtime.IO.Network.Api.Writer;
-using FLink.Runtime.Plugable;
+using FLink.Runtime.Pluggable;
 using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Runtime.Partitioners

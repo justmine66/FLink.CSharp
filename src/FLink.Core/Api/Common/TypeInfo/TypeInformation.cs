@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using FLink.Core.Api.Common.TypeUtils;
 
 namespace FLink.Core.Api.Common.TypeInfo
@@ -37,6 +38,23 @@ namespace FLink.Core.Api.Common.TypeInfo
         /// Gets the class of the type represented by this type information.
         /// </summary>
         public abstract Type TypeClass { get; }
+
+        /// <summary>
+        /// Optional method for giving Flink's type extraction system information about the mapping of a generic type parameter to the type information of a subtype. This information is necessary in cases where type information should be deduced from an input type.
+        /// </summary>
+        public Dictionary<string, TypeInformation<object>> GenericParameters => new Dictionary<string, TypeInformation<object>>();
+
+        /// <summary>
+        /// True, if the type can be used as a key, false otherwise.
+        /// Checks whether this type can be used as a key. As a bare minimum, types have to be hashable and comparable to be keys.
+        /// </summary>
+        public abstract bool IsKeyType { get; }
+
+        /// <summary>
+        /// Checks whether this type can be used as a key for sorting.
+        /// The order produced by sorting this type must be meaningful.
+        /// </summary>
+        public abstract bool IsSortKeyType { get; }
 
         /// <summary>
         /// Creates a serializer for the type. The serializer may use the ExecutionConfig for parameterization.

@@ -27,6 +27,8 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         public override int Arity => throw new InvalidOperationException("The missing type information cannot be used as a type information.");
         public override int TotalFields => throw new InvalidOperationException("The missing type information cannot be used as a type information.");
         public override Type TypeClass => throw new InvalidOperationException("The missing type information cannot be used as a type information.");
+        public override bool IsKeyType { get; }
+        public override bool IsSortKeyType { get; }
         public override TypeSerializer<InvalidTypesException> CreateSerializer(ExecutionConfig config) => throw new InvalidOperationException("The missing type information cannot be used as a type information.");
 
         public override string ToString() => GetType().Name + "<" + FunctionName + ", " + TypeException.Message + ">";

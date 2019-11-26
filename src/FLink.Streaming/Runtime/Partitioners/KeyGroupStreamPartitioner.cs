@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Util;
-using FLink.Runtime.Plugable;
+using FLink.Runtime.Pluggable;
 using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Runtime.Partitioners

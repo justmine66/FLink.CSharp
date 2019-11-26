@@ -3,7 +3,7 @@ using FLink.Core.Exceptions;
 using FLink.Core.IO;
 using FLink.Core.Memory;
 
-namespace FLink.Runtime.Plugable
+namespace FLink.Runtime.Pluggable
 {
     /// <summary>
     /// The serialization delegate exposes an arbitrary element as a <see cref="IIOReadableWritable"/> for serialization, with the help of a type serializer.
