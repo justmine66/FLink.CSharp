@@ -5,6 +5,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
 {
     public sealed class LongComparator : BasicTypeComparator<long>
     {
+        public const byte Size = sizeof(long);
+
         public static LongComparator Instance = new LongComparator();
 
         public LongComparator(bool @ascending = false)
@@ -21,8 +23,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
         }
 
         public override bool SupportsNormalizedKey => true;
-        public override int NormalizeKeyLength => sizeof(long);
-        public override bool IsNormalizedKeyPrefixOnly(int keyBytes) => keyBytes < sizeof(long);
+        public override int NormalizeKeyLength => Size;
+        public override bool IsNormalizedKeyPrefixOnly(int keyBytes) => keyBytes < Size;
 
         public override void PutNormalizedKey(long record, MemorySegment target, int offset, int numBytes)
         {

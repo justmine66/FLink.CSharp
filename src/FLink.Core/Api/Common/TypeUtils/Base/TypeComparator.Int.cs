@@ -4,6 +4,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
 {
     public sealed class IntComparator : BasicTypeComparator<int>
     {
+        public const byte Size = sizeof(int);
+
         public static IntComparator Instance = new IntComparator();
 
         public IntComparator(bool @ascending = false)
@@ -20,8 +22,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
         }
 
         public override bool SupportsNormalizedKey => true;
-        public override int NormalizeKeyLength => 4;
-        public override bool IsNormalizedKeyPrefixOnly(int keyBytes) => keyBytes < 4;
+        public override int NormalizeKeyLength => Size;
+        public override bool IsNormalizedKeyPrefixOnly(int keyBytes) => keyBytes < Size;
 
         public override void PutNormalizedKey(int record, MemorySegment target, int offset, int numBytes)
         {

@@ -5,6 +5,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
 {
     public sealed class ByteComparator : BasicTypeComparator<byte>
     {
+        public const byte Size = sizeof(byte);
+
         public static ByteComparator Instance = new ByteComparator();
 
         public override int CompareSerialized(IDataInputView firstSource, IDataInputView secondSource)
@@ -16,8 +18,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
         }
 
         public override bool SupportsNormalizedKey => true;
-        public override int NormalizeKeyLength => 1;
-        public override bool IsNormalizedKeyPrefixOnly(int keyBytes) => keyBytes < 1;
+        public override int NormalizeKeyLength => Size;
+        public override bool IsNormalizedKeyPrefixOnly(int keyBytes) => keyBytes < Size;
 
         public override void PutNormalizedKey(byte record, MemorySegment target, int offset, int numBytes)
         {

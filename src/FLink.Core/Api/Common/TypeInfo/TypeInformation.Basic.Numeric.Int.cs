@@ -18,7 +18,11 @@ namespace FLink.Core.Api.Common.TypeInfo
             typeof(char)
         };
 
-        public IntTypeInfo(Type clazz, Type[] possibleCastTargetTypes, TypeSerializer<T> serializer, TypeComparator<T> comparatorClass)
+        public IntTypeInfo(
+            Type clazz, 
+            Type[] possibleCastTargetTypes, 
+            TypeSerializer<T> serializer, 
+            TypeComparator<T> comparatorClass)
             : base(clazz, possibleCastTargetTypes, serializer, comparatorClass)
         {
             Preconditions.CheckArgument(IntTypes.Contains(clazz), $"The given class {clazz.Name} is not a numerical type");
