@@ -24,7 +24,6 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         public override int Arity { get; }
         public override int TotalFields { get; }
         public override Type TypeClass { get; }
-        public override bool IsSortKeyType => false;
         public override TypeSerializer<T> CreateSerializer(ExecutionConfig config)
         {
             throw new NotImplementedException();

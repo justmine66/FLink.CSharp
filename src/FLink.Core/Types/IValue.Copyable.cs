@@ -11,8 +11,7 @@ namespace FLink.Core.Types
         /// <summary>
         /// Gets the length of the data type when it is serialized, in bytes.
         /// </summary>
-        /// <returns>The length of the data type, or -d, if variable length.</returns>
-        int GetBinaryLength();
+        int BinaryLength { get; }
 
         /// <summary>
         /// Performs a deep copy of this object into the <param name="target"></param> instance.

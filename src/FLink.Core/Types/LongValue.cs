@@ -25,6 +25,8 @@ namespace FLink.Core.Types
             throw new System.NotImplementedException();
         }
 
+        public int BinaryLength { get; }
+
         public void CopyTo(LongValue target)
         {
             throw new System.NotImplementedException();

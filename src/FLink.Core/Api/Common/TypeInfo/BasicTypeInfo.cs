@@ -11,24 +11,24 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// <typeparam name="T"></typeparam>
     public class BasicTypeInfo<T> : TypeInformation<T>, IAtomicType<T>
     {
-        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[] { }, StringSerializer.Instance, StringComparator.Instance);
-
         public override bool IsBasicType => true;
         public override bool IsTupleType => false;
         public override int Arity => 1;
         public override int TotalFields => 1;
         public override Type TypeClass { get; }
-        public override bool IsKeyType { get; }
-        public override bool IsSortKeyType { get; }
+        public override bool IsKeyType => true;
 
-        private readonly Type _clazz;
         private readonly Type[] _possibleCastTargetTypes;
         private readonly TypeSerializer<T> _serializer;
         private readonly TypeComparator<T> _comparatorClass;
 
-        protected BasicTypeInfo(Type clazz, Type[] possibleCastTargetTypes, TypeSerializer<T> serializer, TypeComparator<T> comparatorClass)
+        public BasicTypeInfo(
+            Type clazz, 
+            Type[] possibleCastTargetTypes, 
+            TypeSerializer<T> serializer, 
+            TypeComparator<T> comparatorClass)
         {
-            _clazz = Preconditions.CheckNotNull(clazz);
+            TypeClass = Preconditions.CheckNotNull(clazz);
             _possibleCastTargetTypes = Preconditions.CheckNotNull(possibleCastTargetTypes);
             _serializer = Preconditions.CheckNotNull(serializer);
             _comparatorClass = comparatorClass;
@@ -58,5 +58,12 @@ namespace FLink.Core.Api.Common.TypeInfo
         {
             throw new NotImplementedException();
         }
+    }
+
+    public class BasicTypeInfo
+    {
+        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[] { }, StringSerializer.Instance, StringComparator.Instance);
+        public static readonly BasicTypeInfo<bool> BoolTypeInfo = new BasicTypeInfo<bool>(typeof(bool), new Type[]{}, BoolSerializer.Instance, BoolComparator.Instance);
+        public static readonly BasicTypeInfo<byte> ByteTypeInfo = new IntTypeInfo<byte>(typeof(byte), new Type[]{typeof(short), typeof(int), typeof(long), typeof(float), typeof(double), typeof(char) }, ByteSerializer.Instance, ByteComparator.Instance);
     }
 }

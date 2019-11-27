@@ -54,7 +54,7 @@ namespace FLink.Core.Api.Common.TypeInfo
         /// Checks whether this type can be used as a key for sorting.
         /// The order produced by sorting this type must be meaningful.
         /// </summary>
-        public abstract bool IsSortKeyType { get; }
+        public bool IsSortKeyType => IsKeyType;
 
         /// <summary>
         /// Creates a serializer for the type. The serializer may use the ExecutionConfig for parameterization.

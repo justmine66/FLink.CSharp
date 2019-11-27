@@ -5,41 +5,33 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
     public class LongSerializer : TypeSerializerSingleton<long>
     {
         public static readonly LongSerializer Instance = new LongSerializer();
-        public override bool IsImmutableType { get; }
-        public override TypeSerializer<long> Duplicate()
-        {
-            throw new System.NotImplementedException();
-        }
+        public const long Zero = 0L;
 
-        public override long CreateInstance()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override bool IsImmutableType => true;
 
-        public override long Copy(long @from)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override long CreateInstance() => Zero;
 
-        public override long Copy(long @from, long reuse)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override long Copy(long @from) => @from;
 
-        public override int Length { get; }
-        public override void Serialize(long record, IDataOutputView target)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override long Copy(long @from, long reuse) => @from;
 
-        public override long Deserialize(IDataInputView source)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override void Copy(IDataInputView source, IDataOutputView target) => target.WriteLong(source.ReadLong());
 
-        public override long Deserialize(long reuse, IDataInputView source)
+        public override int Length => sizeof(long);
+
+        public override void Serialize(long record, IDataOutputView target) => target.WriteLong(record);
+
+        public override long Deserialize(IDataInputView source) => source.ReadLong();
+
+        public override long Deserialize(long reuse, IDataInputView source) => Deserialize(source);
+
+        public override ITypeSerializerSnapshot<long> SnapshotConfiguration() => new LongSerializerSnapshot();
+
+        public class LongSerializerSnapshot : SimpleTypeSerializerSnapshot<long>
         {
-            throw new System.NotImplementedException();
+            public LongSerializerSnapshot() : base(() => Instance)
+            {
+            }
         }
     }
 }

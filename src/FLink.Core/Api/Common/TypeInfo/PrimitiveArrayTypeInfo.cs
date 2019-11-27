@@ -11,7 +11,6 @@ namespace FLink.Core.Api.Common.TypeInfo
         public override int TotalFields { get; }
         public override Type TypeClass { get; }
         public override bool IsKeyType { get; }
-        public override bool IsSortKeyType { get; }
 
         public override TypeSerializer<T> CreateSerializer(ExecutionConfig config)
         {

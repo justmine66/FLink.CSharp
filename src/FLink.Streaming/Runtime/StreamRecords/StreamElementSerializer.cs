@@ -56,6 +56,11 @@ namespace FLink.Streaming.Runtime.StreamRecords
             throw new NotImplementedException();
         }
 
+        public override void Copy(IDataInputView source, IDataOutputView target)
+        {
+            throw new NotImplementedException();
+        }
+
         public override int Length => -1;
 
         public override void Serialize(StreamElement value, IDataOutputView target)
@@ -160,6 +165,11 @@ namespace FLink.Streaming.Runtime.StreamRecords
             {
                 throw new IOException("Corrupt stream, found tag: " + tag);
             }
+        }
+
+        public override ITypeSerializerSnapshot<StreamElement> SnapshotConfiguration()
+        {
+            throw new NotImplementedException();
         }
     }
 }

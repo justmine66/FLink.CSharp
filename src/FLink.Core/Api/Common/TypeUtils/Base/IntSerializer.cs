@@ -17,6 +17,8 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
 
         public override int Copy(int @from, int reuse) => @from;
 
+        public override void Copy(IDataInputView source, IDataOutputView target) => target.WriteInt(source.ReadInt());
+
         public override int Length => 4;
 
         public override void Serialize(int record, IDataOutputView target) => target.WriteInt(record);
@@ -24,5 +26,14 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
         public override int Deserialize(IDataInputView source) => source.ReadInt();
 
         public override int Deserialize(int reuse, IDataInputView source) => Deserialize(source);
+
+        public override ITypeSerializerSnapshot<int> SnapshotConfiguration() => new IntSerializerSnapshot();
+
+        public class IntSerializerSnapshot : SimpleTypeSerializerSnapshot<int>
+        {
+            public IntSerializerSnapshot() : base(() => Instance)
+            {
+            }
+        }
     }
 }

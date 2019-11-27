@@ -146,5 +146,10 @@ namespace FLink.Core.Util
             }
             return c;
         }
+
+        public static string Create(char[] chars) => string.Create(chars.Length, chars, (arr, buf) =>
+        {
+            for (var i = 0; i < arr.Length; i++) arr[i] = buf[i];
+        });
     }
 }
