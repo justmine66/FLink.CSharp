@@ -1,7 +1,8 @@
-﻿using FLink.Core.Api.Common.TypeUtils;
+﻿using System;
+using System.Linq;
+using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.Common.TypeUtils.Base;
 using FLink.Core.Util;
-using System;
 
 namespace FLink.Core.Api.Common.TypeInfo
 {
@@ -9,7 +10,7 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// Type information for primitive types (int, long, double, byte, ...), String, Date, Void, BigInteger, and BigDecimal.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BasicTypeInfo<T> : TypeInformation<T>, IAtomicType<T>
+    public class BasicTypeInfo<T> : TypeInformation<T>, IAtomicType<T>, IEquatable<BasicTypeInfo<T>>
     {
         public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[] { }, StringSerializer.Instance, StringComparator.Instance);
 
@@ -48,7 +49,7 @@ namespace FLink.Core.Api.Common.TypeInfo
 
         private readonly Type[] _possibleCastTargetTypes;
         private readonly TypeSerializer<T> _serializer;
-        private readonly TypeComparator<T> _comparatorClass;
+        private readonly TypeComparator<T> _comparator;
 
         public BasicTypeInfo(
             Type clazz,
@@ -59,32 +60,48 @@ namespace FLink.Core.Api.Common.TypeInfo
             TypeClass = Preconditions.CheckNotNull(clazz);
             _possibleCastTargetTypes = Preconditions.CheckNotNull(possibleCastTargetTypes);
             _serializer = Preconditions.CheckNotNull(serializer);
-            _comparatorClass = comparatorClass;
+            _comparator = comparatorClass;
         }
 
-        public override TypeSerializer<T> CreateSerializer(ExecutionConfig config)
+        public bool ShouldAutoCastTo<TTo>(BasicTypeInfo<TTo> to)
         {
-            throw new NotImplementedException();
+            foreach (var from in _possibleCastTargetTypes)
+                return @from == to.TypeClass;
+
+            return false;
         }
 
-        public override string ToString()
-        {
-            throw new NotImplementedException();
-        }
+        public override TypeSerializer<T> CreateSerializer(ExecutionConfig config) => _serializer;
 
-        public TypeComparator<T> CreateComparator(bool sortOrderAscending, ExecutionConfig executionConfig)
-        {
-            throw new NotImplementedException();
-        }
+        public override string ToString() => TypeClass.Name;
 
-        public override bool Equals(object obj)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual TypeComparator<T> CreateComparator(bool sortOrderAscending, ExecutionConfig executionConfig) =>
+            _comparator;
+
+        public override bool Equals(object obj) => obj is BasicTypeInfo<T> other && Equals(other);
 
         public override int GetHashCode()
         {
-            throw new NotImplementedException();
+            unchecked
+            {
+                var hashCode = (_possibleCastTargetTypes != null ? HashCodeHelper.GetHashCode(_possibleCastTargetTypes) : 0);
+                hashCode = (hashCode * 397) ^ (_serializer != null ? _serializer.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_comparator != null ? _comparator.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (TypeClass != null ? TypeClass.GetHashCode() : 0);
+
+                return hashCode;
+            }
+        }
+
+        public bool Equals(BasicTypeInfo<T> other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Equals(_serializer, other._serializer) &&
+                   Equals(_comparator, other._comparator) &&
+                   Equals(TypeClass, other.TypeClass) &&
+                   _possibleCastTargetTypes.SequenceEqual(other._possibleCastTargetTypes);
         }
     }
 }

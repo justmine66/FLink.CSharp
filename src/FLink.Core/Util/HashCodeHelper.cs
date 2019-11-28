@@ -4,7 +4,7 @@ namespace FLink.Core.Util
 {
     public static class HashCodeHelper
     {
-        public static int CombineHashCodes(IEnumerable<object> entries)
+        public static int GetHashCode(IEnumerable<object> entries)
         {
             unchecked
             {

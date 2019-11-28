@@ -54,7 +54,7 @@ namespace FLink.Core.Api.Common.TypeInfo
         /// Checks whether this type can be used as a key for sorting.
         /// The order produced by sorting this type must be meaningful.
         /// </summary>
-        public bool IsSortKeyType => IsKeyType;
+        public virtual bool IsSortKeyType => IsKeyType;
 
         /// <summary>
         /// Creates a serializer for the type. The serializer may use the ExecutionConfig for parameterization.
@@ -66,10 +66,7 @@ namespace FLink.Core.Api.Common.TypeInfo
         public abstract override string ToString();
         public abstract override bool Equals(object obj);
         public abstract override int GetHashCode();
-    }
 
-    public static class TypeInformation
-    {
         public static TypeInformation<T> Of<T>()
         {
             return null;
