@@ -5,7 +5,6 @@
     /// </summary>
     /// <typeparam name="TKey">Type of the keys to which timers are scoped.</typeparam>
     /// <typeparam name="TNamespace">Type of the namespace to which timers are scoped.</typeparam>
-
     public interface IInternalTimer<out TKey, out TNamespace>
     {
         /// <summary>
