@@ -13,10 +13,12 @@ namespace FLink.Streaming.Runtime.StreamRecords
         /// The actual value held by this record.
         /// </summary>
         public T Value;
+
         /// <summary>
         /// The timestamp of the record.
         /// </summary>
         public long Timestamp;
+
         /// <summary>
         /// Flag whether the timestamp is actually set.
         /// </summary>

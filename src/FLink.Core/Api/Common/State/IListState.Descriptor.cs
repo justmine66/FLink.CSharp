@@ -11,7 +11,10 @@ namespace FLink.Core.Api.Common.State
     public class ListStateDescriptor<TValue> : StateDescriptor<IListState<TValue>, IList<TValue>>
     {
         public ListStateDescriptor(string name, IList<TValue> defaultValue = default)
-            : base(name, defaultValue) { }
+            : base(name, typeof(TValue), defaultValue) { }
+
+        public ListStateDescriptor(string name, System.Type type, IList<TValue> defaultValue = default)
+            : base(name, type, defaultValue) { }
 
         public ListStateDescriptor(string name, TypeSerializer<IList<TValue>> serializer, IList<TValue> defaultValue = default)
             : base(name, serializer, defaultValue)

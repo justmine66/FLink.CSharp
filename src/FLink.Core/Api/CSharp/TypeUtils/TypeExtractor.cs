@@ -55,6 +55,11 @@ namespace FLink.Core.Api.CSharp.TypeUtils
 
         #region [ Create type information ]
 
+        public static TypeInformation<T> CreateTypeInfo<T>(Type type)
+        {
+            return TypeInformation<T>.Of<T>();
+        }
+
         public static TypeInformation<T> CreateTypeInfo<T>()
         {
             return TypeInformation<T>.Of<T>();

@@ -38,17 +38,17 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// Gets true if elements are assigned to windows based on event time, false otherwise.
         /// </summary>
         public abstract bool IsEventTime { get; }
+    }
 
+    /// <summary>
+    /// A context provided to the <see cref="WindowAssigner{T,TW}"/> that allows it to query the current processing time.
+    /// </summary>
+    public abstract class WindowAssignerContext
+    {
         /// <summary>
-        /// A context provided to the <see cref="WindowAssigner{T,TW}"/> that allows it to query the current processing time.
+        /// Gets the current processing time.
         /// </summary>
-        public abstract class WindowAssignerContext
-        {
-            /// <summary>
-            /// Gets the current processing time.
-            /// </summary>
-            /// <returns></returns>
-            public abstract long CurrentProcessingTime { get; }
-        }
+        /// <returns></returns>
+        public abstract long CurrentProcessingTime { get; }
     }
 }

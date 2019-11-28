@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FLink.Streaming.Api.Windowing.Windows;
+using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Api.Windowing.Assigners
 {
@@ -22,7 +24,7 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// Callback to be used in <see cref="MergingWindowAssigner{T,TW}.MergeWindows"/> for specifying which windows should be merged.
     /// </summary>
     /// <typeparam name="TWindow"></typeparam>
-    public interface IMergeWindowCallback<in TWindow>
+    public interface IMergeWindowCallback<in TWindow> where TWindow : Window
     {
         /// <summary>
         /// Specifies that the given windows should be merged into the result window.
@@ -30,5 +32,25 @@ namespace FLink.Streaming.Api.Windowing.Assigners
         /// <param name="toBeMerged">The list of windows that should be merged into one window.</param>
         /// <param name="mergeResult">The resulting merged window.</param>
         void Merge(IEnumerable<TWindow> toBeMerged, TWindow mergeResult);
+    }
+
+    public class MergeWindowCallback<TWindow> : IMergeWindowCallback<TWindow> 
+        where TWindow : Window
+    {
+        private readonly ILogger _logger;
+        private readonly Dictionary<TWindow, IList<TWindow>> _mergeResults;
+
+        public MergeWindowCallback(Dictionary<TWindow, IList<TWindow>> mergeResults, ILogger logger)
+        {
+            _mergeResults = mergeResults;
+            _logger = logger;
+        }
+
+        public void Merge(IEnumerable<TWindow> toBeMerged, TWindow mergeResult)
+        {
+            _logger.LogDebug($"Merging {toBeMerged} into {mergeResult}");
+
+            _mergeResults.Add(mergeResult, toBeMerged.ToList());
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace FLink.Core.Api.Common.State
     /// <summary>
     /// This option value configures when to update last access timestamp which prolongs state TTL.
     /// </summary>
-    public enum TtlUpdateType
+    public enum TtlStateUpdateType
     {
         /// <summary>
         /// TTL is disabled. State does not expire.
@@ -87,16 +87,20 @@ namespace FLink.Core.Api.Common.State
     /// </summary>
     public class StateTtlConfig
     {
+        public static readonly StateTtlConfig Disabled = new StateTtlConfigBuilder(TimeSpan.FromSeconds(long.MaxValue))
+            .SetUpdateType(TtlStateUpdateType.Disabled)
+            .Build();
+
         public TimeSpan Ttl;
-        public TtlUpdateType UpdateType;
+        public TtlStateUpdateType UpdateType;
         public TtlStateVisibility StateVisibility;
         public TtlTimeCharacteristic TimeCharacteristic;
         public TtlCleanupStrategies CleanupStrategies;
 
-        public bool IsEnabled => UpdateType != TtlUpdateType.Disabled;
+        public bool IsEnabled => UpdateType != TtlStateUpdateType.Disabled;
 
         public StateTtlConfig(
-            TtlUpdateType updateType,
+            TtlStateUpdateType updateType,
             TtlStateVisibility stateVisibility,
             TtlTimeCharacteristic ttlTimeCharacteristic,
             TimeSpan ttl,
@@ -123,7 +127,7 @@ namespace FLink.Core.Api.Common.State
     public class StateTtlConfigBuilder
     {
         public TimeSpan Ttl;
-        public TtlUpdateType UpdateType;
+        public TtlStateUpdateType UpdateType;
         public TtlStateVisibility StateVisibility;
         public TtlTimeCharacteristic TimeCharacteristic;
         public Dictionary<TtlCleanupStrategies.Strategies, TtlCleanupStrategies.ICleanupStrategy> CleanupStrategies;
@@ -131,15 +135,15 @@ namespace FLink.Core.Api.Common.State
 
         public StateTtlConfigBuilder([NotNull]TimeSpan ttl) => Ttl = ttl;
 
-        public StateTtlConfigBuilder SetUpdateType(TtlUpdateType updateType)
+        public StateTtlConfigBuilder SetUpdateType(TtlStateUpdateType updateType)
         {
             UpdateType = updateType;
             return this;
         }
 
-        public StateTtlConfigBuilder UpdateTtlOnCreateAndWrite() => SetUpdateType(TtlUpdateType.OnCreateAndWrite);
+        public StateTtlConfigBuilder UpdateTtlOnCreateAndWrite() => SetUpdateType(TtlStateUpdateType.OnCreateAndWrite);
 
-        public StateTtlConfigBuilder UpdateTtlOnReadAndWrite() => SetUpdateType(TtlUpdateType.OnReadAndWrite);
+        public StateTtlConfigBuilder UpdateTtlOnReadAndWrite() => SetUpdateType(TtlStateUpdateType.OnReadAndWrite);
 
         public StateTtlConfigBuilder SetStateVisibility([NotNull]TtlStateVisibility stateVisibility)
         {

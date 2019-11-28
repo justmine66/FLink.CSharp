@@ -10,7 +10,11 @@ namespace FLink.Core.Api.Common.State
     public class ValueStateDescriptor<T> : StateDescriptor<IValueState<T>, T>
     {
         public ValueStateDescriptor(string name, T defaultValue = default)
-            : base(name, defaultValue)
+            : base(name, typeof(T), defaultValue)
+        { }
+
+        public ValueStateDescriptor(string name, System.Type type, T defaultValue = default)
+            : base(name, type, defaultValue)
         { }
 
         public ValueStateDescriptor(string name, TypeSerializer<T> serializer, T defaultValue = default)

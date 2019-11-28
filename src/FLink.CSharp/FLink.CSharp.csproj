@@ -8,8 +8,4 @@
     <ProjectReference Include="..\FLink.Core\FLink.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="IO\" />
-  </ItemGroup>
-
 </Project>
