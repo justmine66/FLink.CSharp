@@ -1,4 +1,6 @@
-﻿using FLink.Streaming.Api.Functions.Sink;
+﻿using FLink.Metrics.Core;
+using FLink.Runtime.JobGraphs;
+using FLink.Streaming.Api.Functions.Sink;
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Runtime.StreamRecords;
 
@@ -33,5 +35,19 @@ namespace FLink.Streaming.Api.Operators
         {
             throw new System.NotImplementedException();
         }
+
+        public void SetKeyContextElement1<T>(StreamRecord<T> record)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetKeyContextElement2<T>(StreamRecord<T> record)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public ChainingStrategy ChainingStrategy { get; set; }
+        public IMetricGroup MetricGroup { get; }
+        public OperatorId OperatorId { get; }
     }
 }

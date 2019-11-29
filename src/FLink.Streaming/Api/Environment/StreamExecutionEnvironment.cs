@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using FLink.Clients.Program;
@@ -21,7 +20,6 @@ using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Graph;
 using FLink.Streaming.Api.Operators;
-using FLink.Streaming.Api.Transformations;
 
 namespace FLink.Streaming.Api.Environment
 {
@@ -53,7 +51,7 @@ namespace FLink.Streaming.Api.Environment
         // The execution configuration for this environment.
         private static readonly ExecutionConfig Config = new ExecutionConfig();
 
-        private readonly List<StreamTransformation<object>> _transformations = new List<StreamTransformation<object>>();
+        private readonly List<Transformation<object>> _transformations = new List<Transformation<object>>();
 
         protected bool IsChainingEnabled = true;
 

@@ -11,6 +11,8 @@ using FLink.Streaming.Runtime.Tasks;
 using FLink.Streaming.Util;
 using Microsoft.Extensions.Logging;
 using System;
+using FLink.Metrics.Core;
+using FLink.Runtime.JobGraphs;
 
 namespace FLink.Streaming.Api.Operators
 {
@@ -29,7 +31,7 @@ namespace FLink.Streaming.Api.Operators
         /// <summary>
         /// A sane default for most operators
         /// </summary>
-        public ChainingStrategy ChainingStrategy = ChainingStrategy.Head;
+        public ChainingStrategy ChainingStrategy { get; set; } = ChainingStrategy.Head;
 
         /// <summary>
         /// Keyed state store view on the keyed backend.
@@ -50,16 +52,6 @@ namespace FLink.Streaming.Api.Operators
         public ExecutionConfig ExecutionConfig => Container.ExecutionConfig;
 
         public virtual void NotifyCheckpointComplete(long checkpointId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetCurrentKey(object key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object GetCurrentKey()
         {
             throw new NotImplementedException();
         }
@@ -98,6 +90,20 @@ namespace FLink.Streaming.Api.Operators
             throw new NotImplementedException();
         }
 
+        public void SetKeyContextElement1<T>(StreamRecord<T> record)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetKeyContextElement2<T>(StreamRecord<T> record)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMetricGroup MetricGroup { get; }
+
+        public OperatorId OperatorId { get; }
+
         protected TState GetPartitionedState<TState, TValue>(StateDescriptor<TState, TValue> stateDescriptor) where TState : IState =>
             GetPartitionedState(VoidNamespace.Instance, VoidNamespaceSerializer.Instance, stateDescriptor);
 
@@ -135,6 +141,8 @@ namespace FLink.Streaming.Api.Operators
             // everything except sinks forwards latency markers
             Output.EmitLatencyMarker(marker);
         }
+
+        public object CurrentKey { get; set; }
     }
 
 
