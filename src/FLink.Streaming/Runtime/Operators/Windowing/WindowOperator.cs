@@ -7,12 +7,10 @@ using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Metrics.Core;
-using FLink.Runtime.Checkpoint;
 using FLink.Runtime.State;
 using FLink.Runtime.State.Internal;
 using FLink.Streaming.Api.Functions.Windowing;
 using FLink.Streaming.Api.Operators;
-using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
@@ -33,9 +31,14 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
     /// <typeparam name="TAccumulator"></typeparam>
     /// <typeparam name="TOutput">The type of elements emitted by the <see cref="IInternalWindowFunction{TIn,TOut,TKey,TW}"/>.</typeparam>
     /// <typeparam name="TWindow">The type of <see cref="Window"/> that the <see cref="WindowAssigner{T,TW}"/> assigns.</typeparam>
-    public class WindowOperator<TKey, TInput, TAccumulator, TOutput, TWindow> : AbstractUdfStreamOperator<TOutput, IInternalWindowFunction<TAccumulator, TOutput, TKey, TWindow>>, IOneInputStreamOperator<TInput, TOutput>, ITriggerable<TKey, TWindow> where TWindow : Window
+    public class WindowOperator<TKey, TInput, TAccumulator, TOutput, TWindow>
+        : AbstractUdfStreamOperator<TOutput, IInternalWindowFunction<TAccumulator, TOutput, TKey, TWindow>>,
+          IOneInputStreamOperator<TInput, TOutput>,
+          ITriggerable<TKey, TWindow>
+        where TWindow : Window
     {
         private const string LateElementsDroppedMetricName = "numLateRecordsDropped";
+        private bool _disposed = false;
 
         public WindowAssigner<TInput, TWindow> WindowAssigner;
 
@@ -97,8 +100,6 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
 
         #endregion
 
-        #region [ State that needs to be checkpointed ]
-
         public IInternalTimerService<TWindow> InternalTimerService;
 
         /// <summary>
@@ -142,39 +143,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             ChainingStrategy = ChainingStrategy.Always;
         }
 
-        #endregion
-
-        public void Close()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public object GetCurrentKey()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void InitializeState()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void NotifyCheckpointComplete(long checkpointId)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Open()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void PrepareSnapshotPreBarrier(long checkpointId)
+        public override void Open()
         {
             throw new System.NotImplementedException();
         }
@@ -301,42 +270,64 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
             }
         }
 
-        public void ProcessLatencyMarker(LatencyMarker latencyMarker)
+        public virtual void OnEventTime(IInternalTimer<TKey, TWindow> timer)
         {
             throw new System.NotImplementedException();
         }
 
-        public void ProcessWatermark(Watermark mark)
+        public virtual void OnProcessingTime(IInternalTimer<TKey, TWindow> timer)
         {
             throw new System.NotImplementedException();
         }
 
-        public void SetCurrentKey(object key)
+        public override void Close()
         {
-            throw new System.NotImplementedException();
+            base.Close();
+            TimestampedCollector = null;
+            TriggerContext = null;
+            ProcessContext = null;
+            WindowAssignerContext = null;
         }
 
-        public OperatorSnapshotFutures SnapshotState(long checkpointId, long timestamp, CheckpointOptions checkpointOptions, ICheckpointStreamFactory storageLocation)
+        #region [ Release resources ]
+
+        public sealed override void Dispose()
         {
-            throw new System.NotImplementedException();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        public void OnEventTime(IInternalTimer<TKey, TWindow> timer)
+        ~WindowOperator() => Dispose(false);
+
+        protected virtual void Dispose(bool disposing)
         {
-            throw new System.NotImplementedException();
+            if (_disposed) return;
+
+            if (disposing)
+            {
+                // called via myClass.Dispose(). 
+                // OK to use any private object references
+                base.Dispose();
+            }
+
+            // Release unmanaged resources.
+            // Set large fields to null.  
+            TimestampedCollector = null;
+            TriggerContext = null;
+            ProcessContext = null;
+            WindowAssignerContext = null;
+
+            _disposed = true;
         }
 
-        public void OnProcessingTime(IInternalTimer<TKey, TWindow> timer)
-        {
-            throw new System.NotImplementedException();
-        }
+        #endregion
 
         /// <summary>
         /// Gets true if the watermark is after the end timestamp plus the allowed lateness of the given window.
         /// </summary>
         /// <param name="window">The given window</param>
         /// <returns></returns>
-        protected virtual bool IsWindowLate(TWindow window) => (WindowAssigner.IsEventTime && (CleanupTime(window) <= InternalTimerService.CurrentWatermark));
+        protected virtual bool IsWindowLate(TWindow window) => (WindowAssigner.IsEventTime && (GetCleanupTime(window) <= InternalTimerService.CurrentWatermark));
 
         /// <summary>
         /// Decide if a record is currently late, based on current watermark and allowed lateness.
@@ -346,7 +337,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
         protected virtual bool IsElementLate(StreamRecord<TInput> element) => (WindowAssigner.IsEventTime) &&
             (element.Timestamp + AllowedLateness <= InternalTimerService.CurrentWatermark);
 
-        protected bool IsCleanupTime(TWindow window, long time) => time == CleanupTime(window);
+        protected bool IsCleanupTime(TWindow window, long time) => time == GetCleanupTime(window);
 
         /// <summary>
         /// Retrieves the <see cref="MergingWindowSet"/> for the currently active key.
@@ -361,7 +352,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
         /// <param name="window">the window whose state to discard</param>
         protected void RegisterCleanupTimer(TWindow window)
         {
-            var cleanupTime = CleanupTime(window);
+            var cleanupTime = GetCleanupTime(window);
             if (cleanupTime == long.MaxValue)
             {
                 // don't set a GC timer for "end of time"
@@ -384,7 +375,7 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
         /// <param name="window">the window whose state to discard</param>
         protected void DeleteCleanupTimer(TWindow window)
         {
-            var cleanupTime = CleanupTime(window);
+            var cleanupTime = GetCleanupTime(window);
             if (cleanupTime == long.MaxValue)
             {
                 // no need to clean up because we didn't set one
@@ -406,31 +397,6 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
         /// </summary>
         /// <param name="element">skipped late arriving element to side output</param>
         protected void SideOutput(StreamRecord<TInput> element) => Output.Collect(LateDataOutputTag, element);
-
-        #region [ Private Methods ]
-
-        private long CleanupTime(TWindow window)
-        {
-            if (!WindowAssigner.IsEventTime) return window.MaxTimestamp;
-
-            var cleanupTime = window.MaxTimestamp + AllowedLateness;
-            return cleanupTime >= window.MaxTimestamp ? cleanupTime : long.MaxValue;
-        }
-
-        /// <summary>
-        /// Emits the contents of the given window using the <see cref="IInternalWindowFunction{TInput,TOutput,TKey,TWindow}"/>.
-        /// </summary>
-        /// <param name="window"></param>
-        /// <param name="contents"></param>
-        private void EmitWindowContents(TWindow window, TAccumulator contents)
-        {
-            TimestampedCollector.SetAbsoluteTimestamp(window.MaxTimestamp);
-            ProcessContext.Window = window;
-            UserFunction.Process(TriggerContext.Key, TriggerContext.Window, ProcessContext, contents,
-                TimestampedCollector);
-        }
-
-        #endregion
 
         /// <summary>
         /// Base class for per-window <see cref="IKeyedStateStore"/>.
@@ -680,5 +646,32 @@ namespace FLink.Streaming.Runtime.Operators.Windowing
                 _operator._windowMergingState.MergeNamespaces(stateWindowResult, mergedStateWindows);
             }
         }
+
+        #region [ Private Methods ]
+
+        private long GetCleanupTime(TWindow window)
+        {
+            if (!WindowAssigner.IsEventTime)
+                return window.MaxTimestamp;
+
+            var cleanupTime = window.MaxTimestamp + AllowedLateness;
+
+            return cleanupTime >= window.MaxTimestamp ? cleanupTime : long.MaxValue;
+        }
+
+        /// <summary>
+        /// Emits the contents of the given window using the <see cref="IInternalWindowFunction{TInput,TOutput,TKey,TWindow}"/>.
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="contents"></param>
+        private void EmitWindowContents(TWindow window, TAccumulator contents)
+        {
+            TimestampedCollector.SetAbsoluteTimestamp(window.MaxTimestamp);
+            ProcessContext.Window = window;
+            UserFunction.Process(TriggerContext.Key, TriggerContext.Window, ProcessContext, contents,
+                TimestampedCollector);
+        }
+
+        #endregion
     }
 }

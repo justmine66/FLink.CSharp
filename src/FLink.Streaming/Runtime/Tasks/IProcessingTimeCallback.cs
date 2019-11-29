@@ -1,7 +1,7 @@
 ﻿namespace FLink.Streaming.Runtime.Tasks
 {
     /// <summary>
-    /// Interface for processing-time callbacks that can be registered at a <see cref="ProcessingTimeService"/>.
+    /// Interface for processing-time callbacks that can be registered at a <see cref="IProcessingTimeService"/>.
     /// </summary>
     public interface IProcessingTimeCallback
     {

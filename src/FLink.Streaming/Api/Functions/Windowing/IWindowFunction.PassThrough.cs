@@ -7,10 +7,10 @@ namespace FLink.Streaming.Api.Functions.Windowing
     /// <summary>
     /// A <see cref="IWindowFunction{TInput, TOutput, TKey, TWindow}"/> that just emits each input element.
     /// </summary>
-    public class PassThroughWindowFunction<K, W, T> : IWindowFunction<T, T, K, W>
-        where W : Window
+    public class PassThroughWindowFunction<TKey, TWindow, TElement> : IWindowFunction<TElement, TElement, TKey, TWindow>
+        where TWindow : Window
     {
-        public void Apply(K key, W window, IEnumerable<T> elements, ICollector<T> output)
+        public void Apply(TKey key, TWindow window, IEnumerable<TElement> elements, ICollector<TElement> output)
         {
             foreach (var element in elements)
                 output.Collect(element);

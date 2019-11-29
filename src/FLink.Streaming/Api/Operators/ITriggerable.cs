@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TNamespace"></typeparam>
-    public interface ITriggerable<TKey, TNamespace>
+    public interface ITriggerable<in TKey, in TNamespace>
     {
         /// <summary>
         /// Invoked when an event-time timer fires.
