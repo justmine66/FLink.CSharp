@@ -4,7 +4,8 @@ using FLink.Streaming.Runtime.StreamRecords;
 namespace FLink.Streaming.Api.Operators
 {
     /// <summary>
-    /// Interface for stream operators with one input. Use <see cref="AbstractStreamOperator"/> as a base class if you want to implement a custom operator.
+    /// Interface for stream operators with one input.
+    /// Use <see cref="AbstractStreamOperator{TOutput}"/> as a base class if you want to implement a custom operator.
     /// </summary>
     /// <typeparam name="TInput">The input type of the operator</typeparam>
     /// <typeparam name="TOutput">The output type of the operator</typeparam>

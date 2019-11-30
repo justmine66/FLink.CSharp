@@ -2,7 +2,7 @@
 
 namespace FLink.Streaming.Api.Operators
 {
-    public class StreamSource<TOut, TSrc> : AbstractUdfStreamOperator<TOut, TSrc>, IStreamOperator<TOut>
+    public class StreamSource<TOut, TSrc> : AbstractUdfStreamOperator<TOut, TSrc>
         where TSrc : ISourceFunction<TOut>
     {
         public StreamSource(TSrc sourceFunction)

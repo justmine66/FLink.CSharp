@@ -8,7 +8,7 @@ using FLink.Streaming.Runtime.StreamRecords;
 namespace FLink.Streaming.Api.Operators
 {
     /// <summary>
-    /// Basic interface for stream operators. Implementers would implement one of <see cref="IOneInputStreamOperator{TInput, TOutput}"/> or <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}"/> to create operators that process elements.
+    /// Basic interface for stream operators. Implementers would implement one of <see cref="IOneInputStreamOperator{TInput, TOutput}"/> or <see cref="ITwoInputStreamOperator{TInput1,TInput2,TOutput}"/> to create operators that process elements.
     /// </summary>
     /// <remarks>
     /// The class <see cref="AbstractStreamOperator{TOutput}"/> offers default implementation for the lifecycle and properties methods.
@@ -29,8 +29,8 @@ namespace FLink.Streaming.Api.Operators
         /// <summary>
         /// This method is called after all records have been added to the operators via the methods
         /// <see cref="IOneInputStreamOperator{TInput, TOutput}.ProcessElement(StreamRecord{TInput})"/> or
-        /// <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}.ProcessElement1(StreamRecord{TInput1})"/> and
-        /// <see cref="TwoInputStreamOperator{TInput1, TInput2, TOutput}.ProcessElement2(StreamRecord{TInput2})"/>.
+        /// <see cref="ITwoInputStreamOperator{TInput1,TInput2,TOutput}.ProcessElement1(StreamRecord{TInput1})"/> and
+        /// <see cref="ITwoInputStreamOperator{TInput1,TInput2,TOutput}.ProcessElement2(StreamRecord{TInput2})"/>.
         /// </summary>
         /// <remarks>
         /// The method is expected to flush all remaining buffered data. Exceptions during this flushing of buffered should be propagated, in order to cause the operation to be recognized as failed, because the last data items are not processed properly.

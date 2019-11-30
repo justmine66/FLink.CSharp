@@ -4,12 +4,13 @@ using FLink.Streaming.Runtime.StreamRecords;
 namespace FLink.Streaming.Api.Operators
 {
     /// <summary>
-    /// Interface for stream operators with two inputs. Use <see cref="AbstractStreamOperator"/> as a base class if you want to implement a custom operator.
+    /// Interface for stream operators with two inputs.
+    /// Use <see cref="AbstractStreamOperator{TOutput}"/> as a base class if you want to implement a custom operator.
     /// </summary>
     /// <typeparam name="TInput1">The first input type of the operator</typeparam>
     /// <typeparam name="TInput2">The second input type of the operator</typeparam>
     /// <typeparam name="TOutput">The output type of the operator</typeparam>
-    public interface TwoInputStreamOperator<TInput1, TInput2, TOutput> : IStreamOperator<TOutput>
+    public interface ITwoInputStreamOperator<TInput1, TInput2, TOutput> : IStreamOperator<TOutput>
     {
         /// <summary>
         /// Processes one element that arrived on the first input of this two-input operator.
