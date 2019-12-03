@@ -13,12 +13,18 @@ using Microsoft.Extensions.Logging;
 using System;
 using FLink.Metrics.Core;
 using FLink.Runtime.JobGraphs;
+using FLink.Streaming.Api.Graph;
+using FLink.Core.Api.CSharp.Functions;
+using FLink.Runtime.Metrics.Groups;
 
 namespace FLink.Streaming.Api.Operators
 {
     /// <summary>
     /// Base class for all stream operators. Operators that contain a user function should extend the class
-    /// <see cref="AbstractUdfStreamOperator{TOut, TFunction}"/>instead(which is a specialized subclass of this class).
+    /// <see cref="AbstractUdfStreamOperator{TOut, TFunction}"/> instead(which is a specialized subclass of this class).
+    /// For concrete implementations, one of the following two interfaces must also be implemented, to mark the operator as unary or binary:
+    /// <see cref="IOneInputStreamOperator{TInput,TOutput}"/> or <see cref="ITwoInputStreamOperator{TInput1,TInput2,TOutput}"/>.
+    /// Methods of <see cref="IStreamOperator{TOutput}"/> are guaranteed not to be called concurrently. Also, if using the timer service, timer callbacks are also guaranteed not to be called concurrently with methods on <see cref="IStreamOperator{TOutput}"/>.
     /// </summary>
     /// <typeparam name="TOutput">The output type of the operator</typeparam>
     public abstract class AbstractStreamOperator<TOutput> : IStreamOperator<TOutput>
@@ -34,24 +40,85 @@ namespace FLink.Streaming.Api.Operators
         public ChainingStrategy ChainingStrategy { get; set; } = ChainingStrategy.Head;
 
         /// <summary>
+        /// The task that contains this operator (and other operators in the same chain).
+        /// </summary>
+        public StreamTask<TOutput, IStreamOperator<TOutput>> Container;
+
+        public StreamConfig Config;
+
+        public IOutput<StreamRecord<TOutput>> Output;
+
+        public StreamingRuntimeContext RuntimeContext;
+
+        #region [ key/value state ]
+
+        /// <summary>
+        /// <see cref="IKeySelector{TObject,TKey}"/> for extracting a key from an element being processed. This is used to scope keyed state to a key. This is null if the operator is not a keyed operator.
+        /// This is for elements from the first input.
+        /// </summary>
+        private readonly IKeySelector<dynamic, dynamic> _stateKeySelector1;
+
+        /// <summary>
+        /// <see cref="IKeySelector{TObject,TKey}"/> for extracting a key from an element being processed. This is used to scope keyed state to a key. This is null if the operator is not a keyed operator.
+        /// This is for elements from the second input.
+        /// </summary>
+        private readonly IKeySelector<dynamic, dynamic> _stateKeySelector2;
+
+        /// <summary>
+        /// Backend for keyed state. This might be empty if we're not on a keyed stream.
+        /// </summary>
+        public AbstractKeyedStateBackend<object> KeyedStateBackend;
+
+        /// <summary>
         /// Keyed state store view on the keyed backend.
         /// </summary>
         public DefaultKeyedStateStore<object> KeyedStateStore;
 
-        // Backend for keyed state. This might be empty if we're not on a keyed stream.
-        public AbstractKeyedStateBackend<object> KeyedStateBackend;
+        #endregion
 
-        public IOutput<StreamRecord<TOutput>> Output;
+        #region [ operator state ]
+
+        /// <summary>
+        /// Operator state backend / store.
+        /// </summary>
+        public IOperatorStateBackend OperatorStateBackend { get; }
+
+        /// <summary>
+        /// Metric group for the operator.
+        /// </summary>
+        public OperatorMetricGroup Metrics { get; }
+
+        public LatencyStats LatencyStats { get; }
+
+        #endregion
+
+        #region [ time handler ]
+
+        public IProcessingTimeService ProcessingTimeService;
 
         public InternalTimeServiceManager<object> TimeServiceManager;
 
-        public LatencyStats LatencyStats;
+        #endregion
 
-        public StreamTask<TOutput, IStreamOperator<TOutput>> Container;
+        #region [ two-input operator watermarks ]
 
-        public ExecutionConfig ExecutionConfig => Container.ExecutionConfig;
+        private long _combinedWatermark = long.MaxValue;
+        private long _input1Watermark = long.MaxValue;
+        private long _input2Watermark = long.MaxValue;
 
-        public virtual void NotifyCheckpointComplete(long checkpointId)
+        #endregion
+
+        #region [ Life Cycle ]
+
+        public virtual void Setup<TOut, TOperator>(StreamTask<TOut, TOperator> containingTask, StreamConfig config, IOutput<StreamRecord<TOutput>> output)
+            where TOperator : IStreamOperator<TOut>
+        {
+
+        }
+
+        public IMetricGroup MetricGroup { get; }
+
+        public virtual void InitializeState()
         {
             throw new NotImplementedException();
         }
@@ -85,7 +152,15 @@ namespace FLink.Streaming.Api.Operators
             throw new NotImplementedException();
         }
 
-        public virtual void InitializeState()
+        #endregion
+
+        #region [ Properties and Services ]
+
+        public ExecutionConfig ExecutionConfig => Container.ExecutionConfig;
+
+        #endregion
+
+        public virtual void NotifyCheckpointComplete(long checkpointId)
         {
             throw new NotImplementedException();
         }
@@ -99,8 +174,6 @@ namespace FLink.Streaming.Api.Operators
         {
             throw new NotImplementedException();
         }
-
-        public IMetricGroup MetricGroup { get; }
 
         public OperatorId OperatorId { get; }
 

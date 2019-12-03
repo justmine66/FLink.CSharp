@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FLink.Core.Api.Common;
 using FLink.Core.Configurations;
+using FLink.Runtime.JobGraphs.Tasks;
 using FLink.Runtime.Query;
 using FLink.Runtime.State.Internal;
+using FLink.Runtime.TaskExecutors;
 
 namespace FLink.Runtime.Execution
 {
@@ -46,5 +50,14 @@ namespace FLink.Runtime.Execution
         /// Gets the job-wide configuration object that was attached to the JobGraph.
         /// </summary>
         Configuration JobConfiguration { get; }
+
+        IDictionary<string, TaskCompletionSource<string>> DistributedCacheEntries { get; }
+
+        /// <summary>
+        /// Gets the input split provider assigned to this environment.
+        /// </summary>
+        IInputSplitProvider InputSplitProvider { get; }
+
+        IGlobalAggregateManager GlobalAggregateManager { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FLink.Core.Api.Common.Accumulators;
+using FLink.Core.Api.Common.Cache;
 using FLink.Core.Api.Common.State;
 using FLink.Metrics.Core;
 
@@ -13,44 +14,44 @@ namespace FLink.Core.Api.Common.Functions
     public interface IRuntimeContext
     {
         /// <summary>
-        /// Returns the name of the task in which the UDF runs, as assigned during plan construction.
+        /// Gets the name of the task in which the UDF runs, as assigned during plan construction.
         /// </summary>
-        string TaskName { get; set; }
+        string TaskName { get; }
 
         /// <summary>
-        /// Returns the metric group for this parallel sub task.
+        /// Gets the metric group for this parallel sub task.
         /// </summary>
-        IMetricGroup MetricGroup { get; set; }
+        IMetricGroup MetricGroup { get; }
 
         /// <summary>
         /// Gets the parallelism with which the parallel task runs.
         /// </summary>
-        int NumberOfParallelSubTasks { get; set; }
+        int NumberOfParallelSubTasks { get; }
 
         /// <summary>
         /// Gets the number of max-parallelism with which the parallel task runs.
         /// </summary>
-        int MaxNumberOfParallelSubTasks { get; set; }
+        int MaxNumberOfParallelSubTasks { get; }
 
         /// <summary>
         /// Gets the number of this parallel subTask. The numbering starts from 0 and goes up to parallelism-1(parallelism as returned by <see cref="NumberOfParallelSubTasks"/>)..
         /// </summary>
-        int IndexOfThisSubTask { get; set; }
+        int IndexOfThisSubTask { get; }
 
         /// <summary>
         /// Gets the attempt number of this parallel sub task. First attempt is numbered 0.
         /// </summary>
-        int AttemptNumber { get; set; }
+        int AttemptNumber { get;  }
 
         /// <summary>
-        /// Returns the name of the task, appended with the sub task indicator, such as "MyTask (3/6)", where 3 would be(<see cref="IndexOfThisSubTask"/> + 1), and 6 would be <see cref="NumberOfParallelSubTasks"/>.
+        /// Gets the name of the task, appended with the sub task indicator, such as "MyTask (3/6)", where 3 would be(<see cref="IndexOfThisSubTask"/> + 1), and 6 would be <see cref="NumberOfParallelSubTasks"/>.
         /// </summary>
-        string TaskNameWithSubTasks { get; set; }
+        string TaskNameWithSubTasks { get;  }
 
         /// <summary>
-        /// Returns the <see cref="ExecutionConfig"/> for the currently executing
+        /// Gets the <see cref="ExecutionConfig"/> for the currently executing
         /// </summary>
-        ExecutionConfig ExecutionConfig { get; set; }
+        ExecutionConfig ExecutionConfig { get;  }
 
         /// <summary>
         /// Add this accumulator. Throws an exception if the accumulator already exists in the same Task. 
@@ -75,7 +76,7 @@ namespace FLink.Core.Api.Common.Functions
         /// Returns a map of all registered accumulators for this task. The returned map must not be modified.
         /// </summary>
         /// <returns></returns>
-        IReadOnlyDictionary<string, IAccumulator<dynamic, dynamic>> GetAllAccumulators();
+        IReadOnlyDictionary<string, IAccumulator<dynamic, dynamic>> AllAccumulators { get; }
 
         /// <summary>
         /// Convenience function to create a counter object for integers.
@@ -84,9 +85,26 @@ namespace FLink.Core.Api.Common.Functions
         /// <returns></returns>
         IntCounter GetIntCounter(string name);
 
+        /// <summary>
+        /// Convenience function to create a counter object for longs.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         LongCounter GetLongCounter(string name);
 
+        /// <summary>
+        /// Convenience function to create a counter object for doubles.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         DoubleCounter GetDoubleCounter(string name);
+
+        /// <summary>
+        /// Convenience function to create a counter object for histograms.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IHistogram GetHistogram(string name);
 
         /// <summary>
         /// Tests for the existence of the broadcast variable identified by the  given name.
@@ -102,6 +120,12 @@ namespace FLink.Core.Api.Common.Functions
         /// <param name="name"></param>
         /// <returns></returns>
         List<T> GetBroadcastVariable<T>(string name);
+
+        /// <summary>
+        /// Get the local temporary file copies of files otherwise not locally accessible.
+        /// The distributed cache of the worker executing this instance.
+        /// </summary>
+        DistributedCache DistributedCache { get; }
 
         #region [ Methods for accessing state ]
 
