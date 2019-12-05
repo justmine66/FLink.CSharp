@@ -18,5 +18,7 @@ namespace FLink.Streaming.Api.Graph
         {
             throw new System.NotImplementedException();
         }
+
+        public void AddOperator<TIn, TOut>() { }
     }
 }

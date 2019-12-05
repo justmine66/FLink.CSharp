@@ -36,6 +36,6 @@ namespace FLink.Streaming.Api.Transformations
             throw new NotImplementedException();
         }
 
-        public override IList<Transformation<T>> TransitivePredecessors { get; }
+        public override IList<Transformation<dynamic>> TransitivePredecessors { get; }
     }
 }

@@ -187,7 +187,7 @@ namespace FLink.Core.Api.Dag
         /// <summary>
         /// Returns all transitive predecessor <see cref="Transformation{TElement}"/>s of this Transformation. This is, for example, used when determining whether a feedback edge of an iteration actually has the iteration head as a predecessor.
         /// </summary>
-        public abstract IList<Transformation<TElement>> TransitivePredecessors { get; }
+        public abstract IList<Transformation<dynamic>> TransitivePredecessors { get; }
 
         public override string ToString() => GetType().Name + "{" +
                                             "id=" + Id +

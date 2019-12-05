@@ -53,6 +53,14 @@ namespace FLink.Streaming.Api.Transformations
             ShuffleMode = shuffleMode;
         }
 
-        public override IList<Transformation<TElement>> TransitivePredecessors { get; }
+        public override IList<Transformation<dynamic>> TransitivePredecessors
+        {
+            get
+            {
+                var result = new List<Transformation<dynamic>> { this as Transformation<dynamic> };
+                result.AddRange(Input.TransitivePredecessors);
+                return result;
+            }
+        }
     }
 }

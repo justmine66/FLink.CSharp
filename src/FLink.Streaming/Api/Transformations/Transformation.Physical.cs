@@ -10,6 +10,12 @@ namespace FLink.Streaming.Api.Transformations
     /// <typeparam name="T">The type of the elements that this source produces</typeparam>
     public abstract class PhysicalTransformation<T> : Transformation<T>
     {
+        /// <summary>
+        ///  Creates a new <see cref="Transformation{TElement}"/> with the given name, output type and parallelism.
+        /// </summary>
+        /// <param name="name">The name of the <see cref="Transformation{TElement}"/>, this will be shown in Visualizations and the Log</param>
+        /// <param name="outputType">The output type of this <see cref="Transformation{TElement}"/></param>
+        /// <param name="parallelism">The parallelism of this <see cref="Transformation{TElement}"/></param>
         protected PhysicalTransformation(
             string name,
             TypeInformation<T> outputType,
@@ -18,6 +24,10 @@ namespace FLink.Streaming.Api.Transformations
         {
         }
 
+        /// <summary>
+        /// Sets the chaining strategy of this <see cref="Transformation{TElement}"/>.
+        /// </summary>
+        /// <param name="strategy"></param>
         public abstract void SetChainingStrategy(ChainingStrategy strategy);
     }
 }

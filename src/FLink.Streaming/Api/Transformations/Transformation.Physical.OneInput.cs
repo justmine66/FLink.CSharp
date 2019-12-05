@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.Dag;
@@ -23,6 +22,11 @@ namespace FLink.Streaming.Api.Transformations
         /// Gets the <see cref="TypeInformation{TType}"/> for the elements of the input.
         /// </summary>
         public TypeInformation<TInput> InputType => Input.OutputType;
+
+        public IOneInputStreamOperator<TInput, TOutput> Operator =>
+            OperatorFactory is SimpleOperatorFactory<TOutput> factory
+                ? factory.Operator as IOneInputStreamOperator<TInput, TOutput>
+                : null;
 
         /// <summary>
         /// Returns the <see cref="IStreamOperatorFactory{T}"/> of this Transformation.
@@ -65,11 +69,16 @@ namespace FLink.Streaming.Api.Transformations
             OperatorFactory = operatorFactory;
         }
 
-        public override void SetChainingStrategy(ChainingStrategy strategy)
-        {
-            throw new NotImplementedException();
-        }
+        public override void SetChainingStrategy(ChainingStrategy strategy) => OperatorFactory.ChainingStrategy = strategy;
 
-        public override IList<Transformation<TOutput>> TransitivePredecessors { get; }
+        public override IList<Transformation<dynamic>> TransitivePredecessors
+        {
+            get
+            {
+                var result = new List<Transformation<dynamic>> { this as Transformation<dynamic> };
+                result.AddRange(Input.TransitivePredecessors);
+                return result;
+            }
+        }
     }
 }
