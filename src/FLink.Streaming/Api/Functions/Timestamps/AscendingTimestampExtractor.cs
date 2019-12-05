@@ -30,8 +30,7 @@ namespace FLink.Streaming.Api.Functions.Timestamps
             }
         }
 
-        public Watermark GetCurrentWatermark() =>
-            new Watermark(_currentTimestamp == long.MinValue ? long.MinValue : _currentTimestamp - 1);
+        public Watermark CurrentWatermark => new Watermark(_currentTimestamp == long.MinValue ? long.MinValue : _currentTimestamp - 1);
 
         public AscendingTimestampExtractor<T> WithViolationHandler(IMonotonyViolationHandler handler)
         {

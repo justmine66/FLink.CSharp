@@ -199,13 +199,13 @@ namespace FLink.Streaming.Api.Operators
             return KeyedStateBackend.GetPartitionedState(@namespace, namespaceSerializer, stateDescriptor);
         }
 
-        public void ProcessWatermark(Watermark mark)
+        public virtual void ProcessWatermark(Watermark mark)
         {
             TimeServiceManager?.AdvanceWatermark(mark);
             Output.EmitWatermark(mark);
         }
 
-        public void ProcessLatencyMarker(LatencyMarker latencyMarker) => ReportOrForwardLatencyMarker(latencyMarker);
+        public virtual void ProcessLatencyMarker(LatencyMarker latencyMarker) => ReportOrForwardLatencyMarker(latencyMarker);
 
         protected void ReportOrForwardLatencyMarker(LatencyMarker marker)
         {

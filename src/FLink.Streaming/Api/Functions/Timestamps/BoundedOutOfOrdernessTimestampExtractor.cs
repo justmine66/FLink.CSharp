@@ -51,14 +51,17 @@ namespace FLink.Streaming.Api.Functions.Timestamps
         /// <returns>The new timestamp.</returns>
         public abstract long ExtractAscendingTimestamp(T element);
 
-        public Watermark GetCurrentWatermark()
+        public Watermark CurrentWatermark
         {
-            // this guarantees that the watermark never goes backwards.
-            var potentialWm = _currentMaxTimestamp - MaxOutOfOrdernessInMillis;
-            if (potentialWm >= _lastEmittedWatermark)
-                _lastEmittedWatermark = potentialWm;
+            get
+            {
+                // this guarantees that the watermark never goes backwards.
+                var potentialWm = _currentMaxTimestamp - MaxOutOfOrdernessInMillis;
+                if (potentialWm >= _lastEmittedWatermark)
+                    _lastEmittedWatermark = potentialWm;
 
-            return new Watermark(_lastEmittedWatermark);
+                return new Watermark(_lastEmittedWatermark);
+            }
         }
     }
 }

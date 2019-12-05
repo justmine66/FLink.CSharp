@@ -17,8 +17,8 @@ namespace FLink.Streaming.Api.Operators
         /// <remarks>
         /// This method is guaranteed to not be called concurrently with other methods of the operator.
         /// </remarks>
-        /// <param name="element">The <see cref="StreamRecord{T}"/></param>
-        void ProcessElement(StreamRecord<TInput> element);
+        /// <param name="record">The <see cref="StreamRecord{T}"/></param>
+        void ProcessElement(StreamRecord<TInput> record);
 
         /// <summary>
         /// Processes a <see cref="Watermark"/>.
@@ -26,8 +26,8 @@ namespace FLink.Streaming.Api.Operators
         /// <remarks>
         /// This method is guaranteed to not be called concurrently with other methods of the operator.
         /// </remarks>
-        /// <param name="mark">The <see cref="Watermark"/></param>
-        void ProcessWatermark(Watermark mark);
+        /// <param name="watermark">The <see cref="Watermark"/></param>
+        void ProcessWatermark(Watermark watermark);
 
         /// <summary>
         /// Processes a <see cref="LatencyMarker"/>.

@@ -12,6 +12,6 @@ namespace FLink.Streaming.Api.Functions
         /// <summary>
         /// Generate watermark. This method is periodically called by the system to retrieve the current watermark. if no watermark should be emitted, or the next watermark to emit.
         /// </summary>
-        Watermark GetCurrentWatermark();
+        Watermark CurrentWatermark { get; }
     }
 }
