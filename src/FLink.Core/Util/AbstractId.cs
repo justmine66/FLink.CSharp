@@ -13,7 +13,7 @@ namespace FLink.Core.Util
         /// <summary>
         /// The size of a long in bytes. 
         /// </summary>
-        private static readonly int SizeOfLong = 8;
+        private static readonly int SizeOfLong = sizeof(long);
 
         /// <summary>
         /// The size of the ID in byte.
