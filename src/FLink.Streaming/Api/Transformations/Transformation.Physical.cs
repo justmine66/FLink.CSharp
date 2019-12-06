@@ -7,8 +7,8 @@ namespace FLink.Streaming.Api.Transformations
     /// <summary>
     /// A <see cref="Transformation{T}"/> that creates a physical operation. It enables setting <see cref="ChainingStrategy"/>.
     /// </summary>
-    /// <typeparam name="T">The type of the elements that this source produces</typeparam>
-    public abstract class PhysicalTransformation<T> : Transformation<T>
+    /// <typeparam name="TElement">The type of the elements that this source produces</typeparam>
+    public abstract class PhysicalTransformation<TElement> : Transformation<TElement>
     {
         /// <summary>
         ///  Creates a new <see cref="Transformation{TElement}"/> with the given name, output type and parallelism.
@@ -18,7 +18,7 @@ namespace FLink.Streaming.Api.Transformations
         /// <param name="parallelism">The parallelism of this <see cref="Transformation{TElement}"/></param>
         protected PhysicalTransformation(
             string name,
-            TypeInformation<T> outputType,
+            TypeInformation<TElement> outputType,
             int parallelism)
             : base(name, outputType, parallelism)
         {

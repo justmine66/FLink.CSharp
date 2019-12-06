@@ -21,6 +21,7 @@ namespace FLink.Core.Api.Dag
     public abstract class Transformation<TElement> : IEquatable<Transformation<TElement>>
     {
         public const int UpperBoundMaxParallelism = 1 << 15;
+        public const int DefaultManagedMemoryWeight = 1;
 
         protected Transformation(string name, TypeInformation<TElement> outputType, int parallelism)
         {

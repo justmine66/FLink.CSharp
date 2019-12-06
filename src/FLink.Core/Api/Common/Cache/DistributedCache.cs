@@ -8,6 +8,14 @@ namespace FLink.Core.Api.Common.Cache
     /// </summary>
     public class DistributedCache
     {
+        /// <summary>
+        /// Meta info about an entry in <see cref="DistributedCache"/>.
+        /// </summary>
+        public class DistributedCacheEntry
+        {
+
+        }
+
         private readonly IDictionary<string, TaskCompletionSource<string>> _cacheCopyTasks;
 
         public DistributedCache(IDictionary<string, TaskCompletionSource<string>> cacheCopyTasks)

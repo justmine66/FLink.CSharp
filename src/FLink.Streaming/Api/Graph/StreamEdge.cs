@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Runtime.Partitioners;
@@ -7,9 +6,9 @@ using FLink.Streaming.Runtime.Partitioners;
 namespace FLink.Streaming.Api.Graph
 {
     /// <summary>
-    /// An edge in the streaming topology. One edge like this does not necessarily gets converted to a connection between two job vertices(due to chaining/optimization).
+    /// An edge in the streaming topology.
+    /// One edge like this does not necessarily gets converted to a connection between two job vertices(due to chaining/optimization).
     /// </summary>
-    [Serializable]
     public class StreamEdge
     {
         public string EdgeId;
