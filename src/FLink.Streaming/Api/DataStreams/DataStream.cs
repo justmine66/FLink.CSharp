@@ -2,6 +2,7 @@
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.Operators;
+using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
@@ -141,6 +142,11 @@ namespace FLink.Streaming.Api.DataStreams
             return new KeyedStream<TElement, TKey>(this, Clean(selector), keyType);
         }
 
+        public KeyedStream<TElement, TKey> KeyBy<TKey>(Func<TElement, TKey> selector)
+        {
+            return null;
+        }
+
         private KeyedStream<TElement, TKey> KeyBy<TKey>(Keys<TElement> keys) => new KeyedStream<TElement, TKey>(this, Clean(KeySelectorUtil.GetSelectorForKeys<TElement, TKey>(keys,
                 Type, ExecutionConfig)));
 
@@ -221,6 +227,54 @@ namespace FLink.Streaming.Api.DataStreams
         /// <returns>The trigger windows data stream.</returns>
         public AllWindowedStream<TElement, TWindow> WindowAll<TWindow>(WindowAssigner<TElement, TWindow> assigner)
             where TWindow : Window => new AllWindowedStream<TElement, TWindow>(this, assigner);
+
+        #endregion
+
+        #region [ Co-datastream Utilities ]
+
+        /// <summary>
+        /// Creates a new <see cref="ConnectedStreams{TInput1,TInput2}"/> by connecting <see cref="DataStream{TElement}"/> outputs of (possible) different types with each other.
+        /// The DataStreams connected using this operator can be used with CoFunctions to apply joint transformations.
+        /// </summary>
+        /// <typeparam name="TOutput"></typeparam>
+        /// <param name="dataStream">The DataStream with which this stream will be connected.</param>
+        /// <returns>The <see cref="ConnectedStreams{TInput1,TInput2}"/>.</returns>
+        public ConnectedStreams<TElement, TOutput> Connect<TOutput>(DataStream<TOutput> dataStream) =>
+            new ConnectedStreams<TElement, TOutput>(ExecutionEnvironment, this, dataStream);
+
+        /// <summary>
+        /// Creates a new <see cref=""/> by connecting the current
+        /// </summary>
+        /// <typeparam name="TOutput"></typeparam>
+        /// <param name="broadcastStream">The broadcast stream with the broadcast state to be connected with this stream.</param>
+        /// <returns>The <see cref="BroadcastConnectedStream{TInput1,TInput2}"/>.</returns>
+        public BroadcastConnectedStream<TElement, TOutput> Connect<TOutput>(BroadcastStream<TOutput> broadcastStream) =>
+            new BroadcastConnectedStream<TElement, TOutput>(
+                ExecutionEnvironment,
+                this,
+                Preconditions.CheckNotNull(broadcastStream),
+                broadcastStream.BroadcastStateDescriptors);
+
+        /// <summary>
+        /// Sets the partitioning of the <see cref="DataStream{TElement}"/> so that the output elements are broadcasted to every parallel instance of the next operation.
+        /// </summary>
+        /// <returns>The DataStream with broadcast partitioning set.</returns>
+        public DataStream<TElement> Broadcast()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Sets the partitioning of the <see cref="DataStream{TElement}"/> so that the output elements are broadcasted to every parallel instance of the next operation. In addition, it implicitly as many <see cref="IBroadcastState{TKey,TValue}"/> as the specified descriptors which can be used to store the element of the stream.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="broadcastStateDescriptors">the descriptors of the broadcast states to create.</param>
+        /// <returns>A <see cref="BroadcastStream{T}"/> which can be used in the <see cref="Connect{TOutput}(FLink.Streaming.Api.DataStreams.DataStream{TOutput})}"/> to create a <see cref="BroadcastConnectedStream{TInput1,TInput2}"/> for further processing of the elements.</returns>
+        public BroadcastStream<TElement> Broadcast<TKey, TValue>(params MapStateDescriptor<TKey, TValue>[] broadcastStateDescriptors)
+        {
+            return null;
+        }
 
         #endregion
 
