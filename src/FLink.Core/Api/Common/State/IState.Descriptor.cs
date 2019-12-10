@@ -33,7 +33,7 @@ namespace FLink.Core.Api.Common.State
         /// An enumeration of the types of supported states.
         /// Used to identify the state type when writing and restoring checkpoints and savepoints.
         /// </summary>
-        public enum Type
+        public enum StateType
         {
             Value,
             List,
@@ -198,5 +198,7 @@ namespace FLink.Core.Api.Common.State
         public override int GetHashCode() => Name.GetHashCode() + 31 * GetType().GetHashCode();
 
         public override string ToString() => $"{GetType().Name}{{name={Name}, defaultValue={_defaultValue}, serializer={_serializerAtomicReference.Value}{(IsQueryable ? ", queryableStateName=" + QueryableStateName + "" : "")}{'}'}";
+
+        public abstract StateType Type { get; }
     }
 }

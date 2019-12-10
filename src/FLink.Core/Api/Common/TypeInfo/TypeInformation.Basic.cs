@@ -12,34 +12,6 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// <typeparam name="T"></typeparam>
     public class BasicTypeInfo<T> : TypeInformation<T>, IAtomicType<T>, IEquatable<BasicTypeInfo<T>>
     {
-        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[] { }, StringSerializer.Instance, StringComparator.Instance);
-
-        public static readonly BasicTypeInfo<bool> BoolTypeInfo = new BasicTypeInfo<bool>(typeof(bool), new Type[] { }, BoolSerializer.Instance, BoolComparator.Instance);
-
-        public static readonly BasicTypeInfo<byte> ByteTypeInfo = new IntTypeInfo<byte>(typeof(byte), new Type[] { typeof(short), typeof(int), typeof(long), typeof(float), typeof(double), typeof(char) }, ByteSerializer.Instance, ByteComparator.Instance);
-
-        public static readonly BasicTypeInfo<short> ShortTypeInfo = new IntTypeInfo<short>(typeof(short), new Type[] { typeof(int), typeof(long), typeof(float), typeof(double), typeof(char) }, ShortSerializer.Instance, ShortComparator.Instance);
-
-        public static readonly BasicTypeInfo<int> IntTypeInfo = new IntTypeInfo<int>(typeof(short), new Type[] { typeof(long), typeof(float), typeof(double), typeof(char) }, IntSerializer.Instance, IntComparator.Instance);
-
-        public static readonly BasicTypeInfo<long> LongTypeInfo = new IntTypeInfo<long>(typeof(short), new Type[] { typeof(float), typeof(double), typeof(char) }, LongSerializer.Instance, LongComparator.Instance);
-
-        public static readonly BasicTypeInfo<float> FloatTypeInfo = new FractionalTypeInfo<float>(typeof(short),
-            new Type[] { typeof(double) }, FloatSerializer.Instance,
-            FloatComparator.Instance);
-
-        public static readonly BasicTypeInfo<double> DoubleTypeInfo = new FractionalTypeInfo<double>(typeof(short),
-            new Type[] { }, DoubleSerializer.Instance,
-            DoubleComparator.Instance);
-
-        public static readonly BasicTypeInfo<char> CharTypeInfo = new BasicTypeInfo<char>(typeof(short),
-            new Type[] { }, CharSerializer.Instance,
-            CharComparator.Instance);
-
-        public static readonly BasicTypeInfo<DateTime> DateTimeTypeInfo = new BasicTypeInfo<DateTime>(typeof(short),
-            new Type[] { }, DateTimeSerializer.Instance,
-            DateTimeComparator.Instance);
-
         public override bool IsBasicType => true;
         public override bool IsTupleType => false;
         public override int Arity => 1;
@@ -103,5 +75,38 @@ namespace FLink.Core.Api.Common.TypeInfo
                    Equals(TypeClass, other.TypeClass) &&
                    _possibleCastTargetTypes.SequenceEqual(other._possibleCastTargetTypes);
         }
+    }
+
+    public class BasicTypeInfo
+    {
+        public static readonly BasicTypeInfo<string> StringTypeInfo = new BasicTypeInfo<string>(typeof(string), new Type[] { }, StringSerializer.Instance, StringComparator.Instance);
+
+        public static readonly BasicTypeInfo<bool> BoolTypeInfo = new BasicTypeInfo<bool>(typeof(bool), new Type[] { }, BoolSerializer.Instance, BoolComparator.Instance);
+
+        public static readonly BasicTypeInfo<byte> ByteTypeInfo = new IntTypeInfo<byte>(typeof(byte), new Type[] { typeof(short), typeof(int), typeof(long), typeof(float), typeof(double), typeof(char) }, ByteSerializer.Instance, ByteComparator.Instance);
+
+        public static readonly BasicTypeInfo<short> ShortTypeInfo = new IntTypeInfo<short>(typeof(short), new Type[] { typeof(int), typeof(long), typeof(float), typeof(double), typeof(char) }, ShortSerializer.Instance, ShortComparator.Instance);
+
+        public static readonly BasicTypeInfo<int> IntTypeInfo = new IntTypeInfo<int>(typeof(short), new Type[] { typeof(long), typeof(float), typeof(double), typeof(char) }, IntSerializer.Instance, IntComparator.Instance);
+
+        public static readonly BasicTypeInfo<long> LongTypeInfo = new IntTypeInfo<long>(typeof(short), new Type[] { typeof(float), typeof(double), typeof(char) }, LongSerializer.Instance, LongComparator.Instance);
+
+        public static readonly BasicTypeInfo<float> FloatTypeInfo = new FractionalTypeInfo<float>(typeof(short),
+            new Type[] { typeof(double) }, FloatSerializer.Instance,
+            FloatComparator.Instance);
+
+        public static readonly BasicTypeInfo<double> DoubleTypeInfo = new FractionalTypeInfo<double>(typeof(short),
+            new Type[] { }, DoubleSerializer.Instance,
+            DoubleComparator.Instance);
+
+        public static readonly BasicTypeInfo<char> CharTypeInfo = new BasicTypeInfo<char>(typeof(short),
+            new Type[] { }, CharSerializer.Instance,
+            CharComparator.Instance);
+
+        public static readonly BasicTypeInfo<DateTime> DateTimeTypeInfo = new BasicTypeInfo<DateTime>(typeof(short),
+            new Type[] { }, DateTimeSerializer.Instance,
+            DateTimeComparator.Instance);
+
+        public static readonly BasicTypeInfo<decimal> DecimalTypeInfo = new BasicTypeInfo<decimal>(typeof(decimal), new Type[] { }, DecimalSerializer.Instance, DecimalComparator.Instance);
     }
 }

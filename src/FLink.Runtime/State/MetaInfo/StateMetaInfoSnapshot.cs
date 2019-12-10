@@ -24,7 +24,7 @@ namespace FLink.Runtime.State.MetaInfo
         public enum CommonOptionsKeys
         {
             /// <summary>
-            /// Key to define the <see cref="StateDescriptor{TState,T}.Type"/> of a key/value keyed-state.
+            /// Key to define the <see cref="StateDescriptor{TState,T}.StateType"/> of a key/value keyed-state.
             /// </summary>
             KeyedStateType,
             /// <summary>

@@ -1,4 +1,5 @@
-﻿using FLink.Core.Api.Common.State;
+﻿using FLink.Core.Api.Common.Functions;
+using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeUtils.Base;
 using FLink.Streaming.Api.Windowing.Windows;
 
@@ -10,7 +11,7 @@ namespace FLink.Streaming.Api.Windowing.Triggers
     public class CountWindowTrigger<TElement, TWindow> : WindowTrigger<TElement, TWindow>
         where TWindow : Window
     {
-        private readonly ReducingStateDescriptor<long> _stateDesc = new ReducingStateDescriptor<long>("count", LongSerializer.Instance);
+        private readonly ReducingStateDescriptor<long> _stateDesc = new ReducingStateDescriptor<long>("count", new Sum(), LongSerializer.Instance);
 
         public long Limit;
 
@@ -39,6 +40,11 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         public override WindowTriggerResult OnProcessingTime(long time, TWindow window, IWindowTriggerContext ctx) => WindowTriggerResult.Continue;
 
         public override bool CanMerge => true;
+
+        public class Sum : IReduceFunction<long>
+        {
+            public long Reduce(long value1, long value2) => value1 + value2;
+        }
     }
 
     public class CountWindowTrigger

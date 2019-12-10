@@ -11,7 +11,7 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// <typeparam name="TComponent">The type (class) of the array component.</typeparam>
     public class BasicArrayTypeInfo<TArray, TComponent> : TypeInformation<TArray>
     {
-        public static readonly BasicArrayTypeInfo<string[], string> StringArrayTypeInfo = new BasicArrayTypeInfo<string[], string>(default, BasicTypeInfo<string>.StringTypeInfo);
+        public static readonly BasicArrayTypeInfo<string[], string> StringArrayTypeInfo = new BasicArrayTypeInfo<string[], string>(default, BasicTypeInfo.StringTypeInfo);
 
         public override bool IsBasicType => false;
         public override bool IsTupleType => false;

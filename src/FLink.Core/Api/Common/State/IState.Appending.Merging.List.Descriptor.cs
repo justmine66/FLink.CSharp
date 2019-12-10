@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Common.TypeUtils;
 
 namespace FLink.Core.Api.Common.State
@@ -16,9 +18,12 @@ namespace FLink.Core.Api.Common.State
         public ListStateDescriptor(string name, System.Type type, IList<TValue> defaultValue = default)
             : base(name, type, defaultValue) { }
 
+        public ListStateDescriptor(string name, TypeInformation<IList<TValue>> typeInfo, IList<TValue> defaultValue = default)
+            : base(name, typeInfo, defaultValue) { }
+
         public ListStateDescriptor(string name, TypeSerializer<IList<TValue>> serializer, IList<TValue> defaultValue = default)
-            : base(name, serializer, defaultValue)
-        {
-        }
+            : base(name, serializer, defaultValue) { }
+
+        public override StateType Type => StateType.List;
     }
 }

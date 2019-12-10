@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Clients", "src\FLink.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.CSharp", "src\FLink.CSharp\FLink.CSharp.csproj", "{2E125437-5E82-4932-9F1F-40E64D991207}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserActionsEvaluation", "samples\DataAnalytics\StreamingAnalytics\UserActionsEvaluation\UserActionsEvaluation.csproj", "{E950D436-A2B7-43AD-9F18-023B3D17CEC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{2E125437-5E82-4932-9F1F-40E64D991207}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E125437-5E82-4932-9F1F-40E64D991207}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E125437-5E82-4932-9F1F-40E64D991207}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E950D436-A2B7-43AD-9F18-023B3D17CEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E950D436-A2B7-43AD-9F18-023B3D17CEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E950D436-A2B7-43AD-9F18-023B3D17CEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E950D436-A2B7-43AD-9F18-023B3D17CEC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -153,6 +159,7 @@ Global
 		{A50ADA1D-3EBE-488E-ACC3-60F797196357} = {9DFA4D3E-FEFC-4708-A31F-657F9C775ED8}
 		{97C7B79E-47D0-4BC9-95D8-D52AFB208415} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
 		{2E125437-5E82-4932-9F1F-40E64D991207} = {06E15089-8F2D-4E78-AF29-29334A85AAB4}
+		{E950D436-A2B7-43AD-9F18-023B3D17CEC1} = {C637AFF8-0926-4F8C-94F4-8FABB59E65C1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {252658CA-1EEA-4A0D-BFCA-DADA623B82B5}
