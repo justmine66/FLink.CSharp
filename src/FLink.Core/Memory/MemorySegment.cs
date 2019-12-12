@@ -18,30 +18,30 @@ namespace FLink.Core.Memory
         /// <summary>
         /// The beginning of the byte array contents, relative to the byte array object.
         /// </summary>
-        protected static readonly long ByteArrayBaseOffset = 0;
+        public static readonly long ByteArrayBaseOffset = 0;
 
         /// <summary>
         /// The heap byte array object relative to which we access the memory.
         /// Is non-null if the memory is on the heap, and is null, if the memory is off the heap. If we have this buffer, we must never void this reference, or the memory segment will point to undefined addresses outside the heap and may in out-of-order execution cases cause segmentation faults.
         /// </summary>
-        protected byte[] HeapMemory { get; }
+        public byte[] HeapMemory { get; }
 
         /// <summary>
         /// The address to the data, relative to the heap memory byte array. If the heap memory byte array is null, this becomes an absolute memory address outside the heap.
         /// </summary>
-        protected long Address { get; private set; }
+        public long Address { get; private set; }
 
         /// <summary>
         /// The address one byte after the last addressable byte, i.e. <tt>address + size</tt> while the segment is not disposed.
         /// </summary>
-        protected long AddressLimit { get; }
+        public long AddressLimit { get; }
 
         /// <summary>
         /// Gets the size of the memory segment, in bytes.
         /// </summary>
-        protected int Size { get; }
+        public int Size { get; }
 
-        protected object Owner { get; }
+        public object Owner { get; }
 
         protected MemorySegment(byte[] buffer, object owner)
         {

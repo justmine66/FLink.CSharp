@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Memory;
 
-namespace FLink.Runtime.IO.Network.Buffer
+namespace FLink.Runtime.IO.Network.Buffers
 {
     /// <summary>
     /// Interface for recycling <see cref="MemorySegment"/>s.

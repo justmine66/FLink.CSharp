@@ -1,5 +1,5 @@
 ﻿using FLink.Core.IO;
-using FLink.Runtime.IO.Network.Buffer;
+using FLink.Runtime.IO.Network.Buffers;
 
 namespace FLink.Runtime.IO.Network.Api.Serialization
 {

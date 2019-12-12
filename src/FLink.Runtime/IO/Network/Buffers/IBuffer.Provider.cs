@@ -1,4 +1,4 @@
-﻿namespace FLink.Runtime.IO.Network.Buffer
+﻿namespace FLink.Runtime.IO.Network.Buffers
 {
     /// <summary>
     /// A buffer provider to request buffers from in a synchronous or asynchronous fashion.
@@ -21,12 +21,28 @@
         IBuffer RequestBufferBlocking();
 
         /// <summary>
-        /// Gets whether the buffer provider has been destroyed.
+        /// Returns a <see cref="BufferBuilder"/> instance from the buffer provider.
+        /// If there is no buffer available, the call will block until one becomes available again or the buffer provider has been destroyed.
+        /// </summary>
+        /// <returns></returns>
+        BufferBuilder RequestBufferBuilderBlocking();
+
+        /// <summary>
+        /// Adds a buffer availability listener to the buffer provider.
+        /// The operation fails with return value <code>false</code>, when there is a buffer available or the buffer provider has been destroyed.
+        /// </summary>
+        /// <param name="listener"></param>
+        /// <returns></returns>
+        bool AddBufferListener(IBufferListener listener);
+
+        /// <summary>
+        /// Returns whether the buffer provider has been destroyed.
         /// </summary>
         bool IsDestroyed { get; }
 
         /// <summary>
-        /// Gets the size of the underlying memory segments. This is the maximum size a <see cref="IBuffer"/> instance can have.
+        /// Returns the size of the underlying memory segments.
+        /// This is the maximum size a <see cref="IBuffer"/> instance can have.
         /// </summary>
         int MemorySegmentSize { get; }
     }
