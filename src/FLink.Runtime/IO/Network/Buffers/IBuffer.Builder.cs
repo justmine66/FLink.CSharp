@@ -24,6 +24,11 @@ namespace FLink.Runtime.IO.Network.Buffers
             _recycler = Preconditions.CheckNotNull(recycler);
         }
 
+        /// <summary>
+        /// Gets created matching instance of <see cref="BufferConsumer"/> to this <see cref="BufferBuilder"/>.
+        /// There can exist only one <see cref="BufferConsumer"/> per each <see cref="BufferBuilder"/> and vice versa.
+        /// </summary>
+        /// <returns></returns>
         public BufferConsumer CreateBufferConsumer()
         {
             Preconditions.CheckState(!_bufferConsumerCreated, "There can not exists two BufferConsumer for one BufferBuilder");
