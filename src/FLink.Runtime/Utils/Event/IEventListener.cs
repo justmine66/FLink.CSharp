@@ -1,7 +1,7 @@
 ﻿namespace FLink.Runtime.Utils.Event
 {
-    public interface IEventListener<in T>
+    public interface IEventListener<in TEvent>
     {
-        void OnEvent(T @event);
+        void OnEvent(TEvent @event);
     }
 }
