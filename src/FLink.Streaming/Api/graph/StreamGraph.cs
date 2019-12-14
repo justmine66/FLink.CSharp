@@ -195,5 +195,14 @@ namespace FLink.Streaming.Api.Graph
         }
 
         public StreamNode GetStreamNode(int vertexId) => StreamNodes[vertexId];
+
+        public void SetBufferTimeout(int vertexId, long bufferTimeout)
+        {
+            if (GetStreamNode(vertexId) != null)
+            {
+                GetStreamNode(vertexId).BufferTimeout = bufferTimeout;
+            }
+        }
+
     }
 }

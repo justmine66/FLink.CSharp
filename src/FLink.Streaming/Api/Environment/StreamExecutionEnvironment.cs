@@ -65,7 +65,7 @@ namespace FLink.Streaming.Api.Environment
         /// <summary>
         /// Gets the parallelism with which operation are executed by default. Operations can individually override this value to use a specific parallelism.
         /// </summary>
-        public int Parallelism { get; } = Config.GetParallelism();
+        public int Parallelism { get; } = Config.Parallelism;
 
         public List<Transformation<dynamic>> Transformations = new List<Transformation<dynamic>>();
 

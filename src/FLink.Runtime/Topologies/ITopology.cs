@@ -6,7 +6,7 @@ namespace FLink.Runtime.Topologies
     /// Base topology for all logical and execution topologies.
     /// A topology consists of <see cref="IVertex{TVertexId,TResultId,TVertex,TResult}"/> and <see cref="IResult{TVertexId,TResultId,TVertex,TResult}"/>.
     /// </summary>
-    public interface ITopology<TVertexId, out TResultId, TVertex, TResult>
+    public interface ITopology<TVertexId, out TResultId, out TVertex, TResult>
         where TVertexId : IVertexId
         where TResultId : IResultId
         where TVertex : IVertex<TVertexId, TResultId, TVertex, TResult>
