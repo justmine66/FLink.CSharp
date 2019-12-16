@@ -55,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.Clients", "src\FLink.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.CSharp", "src\FLink.CSharp\FLink.CSharp.csproj", "{2E125437-5E82-4932-9F1F-40E64D991207}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserActionsEvaluation", "samples\DataAnalytics\StreamingAnalytics\UserActionsEvaluation\UserActionsEvaluation.csproj", "{E950D436-A2B7-43AD-9F18-023B3D17CEC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserActionsEvaluation", "samples\DataAnalytics\StreamingAnalytics\UserActionsEvaluation\UserActionsEvaluation.csproj", "{E950D436-A2B7-43AD-9F18-023B3D17CEC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
