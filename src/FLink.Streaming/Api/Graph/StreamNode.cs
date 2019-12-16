@@ -51,7 +51,7 @@ namespace FLink.Streaming.Api.Graph
         public IInputFormat<object, IInputSplit> InputFormat { get; set; }
         public IOutputFormat<object> OutputFormat { get; set; }
 
-        public string TransformationUid { get; set; }
+        public string TransformationUId { get; set; }
         public string UserHash { get; set; }
 
         public StreamNode(

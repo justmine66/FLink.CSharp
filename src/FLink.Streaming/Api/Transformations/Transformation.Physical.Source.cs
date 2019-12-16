@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using FLink.Core.Api.Common.TypeInfo;
+﻿using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Operators;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Transformations
 {
