@@ -92,6 +92,11 @@ namespace FLink.Core.Api.Dag
         public ResourceSpec PreferredResources = ResourceSpec.Default;
 
         /// <summary>
+        /// Gets and sets the managed memory weight which indicates how much this transformation relies on managed memory, so that a transformation highly relies on managed memory would be able to acquire more managed memory in runtime(linear association). The default weight value is 1. Note that currently it's only allowed to set the weight in cases of UNKNOWN resources.
+        /// </summary>
+        public int ManagedMemoryWeight { get; set; } = DefaultManagedMemoryWeight;
+
+        /// <summary>
         /// Sets the minimum and preferred resources for this stream transformation.
         /// </summary>
         /// <param name="minResources">The minimum resource of this transformation.</param>
@@ -103,9 +108,9 @@ namespace FLink.Core.Api.Dag
         }
 
         /// <summary>
-        /// User-specified ID for this transformation. This is used to assign the same operator ID across job restarts. There is also the automatically generated <see cref="Id"/>, which is assigned from a static counter. That field is independent from this.
+        /// Gets and sets user-specified ID for this transformation. This is used to assign the same operator ID across job restarts. There is also the automatically generated <see cref="Id"/>, which is assigned from a static counter. That field is independent from this.
         /// </summary>
-        private string _uid;
+        public string UId { get; set; }
 
         /// <summary>
         /// Gets the user provided hash.

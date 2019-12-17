@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
+using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.CSharp.TypeUtils;
@@ -204,5 +205,38 @@ namespace FLink.Streaming.Api.Graph
             }
         }
 
+        public void SetTransformationUId(int nodeId, string transformationId)
+        {
+            var node = StreamNodes[nodeId];
+            if (node != null)
+            {
+                node.TransformationUId = transformationId;
+            }
+        }
+
+        public void SetTransformationUserHash(int nodeId, string nodeHash)
+        {
+            var node = StreamNodes[nodeId];
+            if (node != null)
+            {
+                node.UserHash = nodeHash;
+            }
+        }
+
+        public void SetResources(int vertexId, ResourceSpec minResources, ResourceSpec preferredResources)
+        {
+            if (GetStreamNode(vertexId) != null)
+            {
+                GetStreamNode(vertexId).SetResources(minResources, preferredResources);
+            }
+        }
+
+        public void SetManagedMemoryWeight(int vertexId, int managedMemoryWeight)
+        {
+            if (GetStreamNode(vertexId) != null)
+            {
+                GetStreamNode(vertexId).ManagedMemoryWeight = managedMemoryWeight;
+            }
+        }
     }
 }

@@ -2,7 +2,11 @@
 using FLink.Extensions.DependencyInjection;
 using FLink.Runtime.Execution;
 using FLink.Runtime.JobGraphs.Tasks;
+using FLink.Runtime.State;
+using FLink.Streaming.Api;
+using FLink.Streaming.Api.Graph;
 using FLink.Streaming.Api.Operators;
+using FLink.Streaming.Runtime.IO;
 using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Runtime.Tasks
@@ -44,6 +48,31 @@ namespace FLink.Streaming.Runtime.Tasks
         /// The logger used by the StreamTask and its subclasses.
         /// </summary>
         public static readonly ILogger Logger = ServiceLocator.GetService<ILogger<StreamTask<TOutput, TOperator>>>();
+
+        private readonly SynchronizedStreamTaskActionExecutor _actionExecutor;
+
+        public IStreamInputProcessor InputProcessor { get; }
+
+        public TOperator HeadOperator { get; }
+
+        public OperatorChain<TOutput, TOperator> OperatorChain { get; }
+
+        /// <summary>
+        /// The configuration of this streaming task.
+        /// </summary>
+        public StreamConfig Configuration { get; }
+
+        /// <summary>
+        /// Our state backend. We use this to create checkpoint streams and a keyed state backend.
+        /// </summary>
+        public IStateBackend StateBackend { get; }
+
+        /// <summary>
+        /// The external storage where checkpoint data is persisted.
+        /// </summary>
+        private ICheckpointStorageWorkerView CheckpointStorage { get; }
+
+        public ITimerService TimerService { get; }
 
         protected StreamTask(IEnvironment environment) : base(environment)
         {
