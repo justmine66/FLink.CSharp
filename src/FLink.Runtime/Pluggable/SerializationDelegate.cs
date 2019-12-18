@@ -13,11 +13,9 @@ namespace FLink.Runtime.Pluggable
     {
         private readonly TypeSerializer<T> _serializer;
 
-        public T Instance;
+        public T Instance { get; set; }
 
         public SerializationDelegate(TypeSerializer<T> serializer) => _serializer = serializer;
-
-        public void SetInstance(T instance) => Instance = instance;
 
         public void Write(IDataOutputView output) => _serializer.Serialize(Instance, output);
 

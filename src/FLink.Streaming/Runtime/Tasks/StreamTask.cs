@@ -1,12 +1,17 @@
 ﻿using System;
+using FLink.Core.Api.CSharp.Threading;
 using FLink.Extensions.DependencyInjection;
 using FLink.Runtime.Execution;
+using FLink.Runtime.IO.Network.Api.Writer;
 using FLink.Runtime.JobGraphs.Tasks;
+using FLink.Runtime.Pluggable;
 using FLink.Runtime.State;
 using FLink.Streaming.Api;
 using FLink.Streaming.Api.Graph;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Runtime.IO;
+using FLink.Streaming.Runtime.StreamRecords;
+using FLink.Streaming.Runtime.Tasks.Mailbox;
 using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Runtime.Tasks
@@ -74,9 +79,54 @@ namespace FLink.Streaming.Runtime.Tasks
 
         public ITimerService TimerService { get; }
 
-        protected StreamTask(IEnvironment environment) : base(environment)
-        {
+        private readonly IUnCaughtExceptionHandler _unCaughtExceptionHandler;
 
+        /// <summary>
+        /// Flag to mark the task "in operation", in which case check needs to be initialized to true, so that early cancel() before invoke() behaves correctly.
+        /// </summary>
+        private volatile bool _isRunning;
+
+        /// <summary>
+        /// Flag to mark this task as canceled.
+        /// </summary>
+        private volatile bool _canceled;
+
+        private readonly IRecordWriterDelegate<SerializationDelegate<StreamRecord<TOutput>>> _recordWriter;
+
+        /// <summary>
+        /// Constructor for initialization, possibly with initial state (recovery / savepoint / etc).   
+        /// </summary>
+        /// <param name="environment">The task environment for this task.</param>
+        /// <param name="timerService">A specific timer service to use.</param>
+        /// <param name="exceptionHandler">To handle uncaught exceptions in the async operations thread pool</param>
+        /// <param name="actionExecutor">A mean to wrap all actions performed by this task thread. Currently, only SynchronizedActionExecutor can be used to preserve locking semantics.</param>
+        protected StreamTask(
+            IEnvironment environment,
+            ITimerService timerService = null,
+            IUnCaughtExceptionHandler exceptionHandler = null,
+            SynchronizedStreamTaskActionExecutor actionExecutor = null)
+            : this(environment, timerService, exceptionHandler, actionExecutor, null)
+        { }
+
+        /// <summary>
+        /// Constructor for initialization, possibly with initial state (recovery / savepoint / etc).
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <param name="timerService"></param>
+        /// <param name="exceptionHandler"></param>
+        /// <param name="actionExecutor"></param>
+        /// <param name="mailbox"></param>
+        protected StreamTask(
+            IEnvironment environment,
+            ITimerService timerService,
+            IUnCaughtExceptionHandler exceptionHandler,
+            SynchronizedStreamTaskActionExecutor actionExecutor,
+            ITaskMailbox mailbox)
+            : base(environment)
+        {
+            TimerService = timerService;
+            _unCaughtExceptionHandler = exceptionHandler;
+            Configuration = new StreamConfig(TaskConfiguration);
         }
 
         public void HandleAsyncException(string message, Exception exception)

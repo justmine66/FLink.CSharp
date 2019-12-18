@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
+using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Exceptions;
@@ -63,16 +65,20 @@ namespace FLink.Streaming.Api.Graph
         public IDictionary<int, StreamNode> StreamNodes { get; set; }
         public ISet<int> Sources { get; set; }
         public ISet<int> Sinks { get; set; }
-        public IDictionary<int, (int, List<string>)> VirtualSelectNodes { get; set; }
-        public IDictionary<int, (int, OutputTag<object>)> VirtualSideOutputNodes { get; set; }
-        public IDictionary<int, (int, StreamPartitioner<object>, ShuffleMode)> VirtualPartitionNodes { get; set; }
+        public IDictionary<int, (int Id, List<string> Values)> VirtualSelectNodes { get; set; }
+        public IDictionary<int, (int Id, OutputTag<object> OutputTag)> VirtualSideOutputNodes { get; set; }
 
-        public IDictionary<int, string> VertexIDtoBrokerID { get; set; }
+        public IDictionary<int, (int Id, StreamPartitioner<object> Partitioner, ShuffleMode ShuffleMode)>
+            VirtualPartitionNodes
+        { get; set; }
+
+        public IDictionary<int, string> VertexIDtoBrokerId { get; set; }
         public IDictionary<int, long> VertexIDtoLoopTimeout { get; set; }
         public IStateBackend StateBackend { get; set; }
         public ISet<(StreamNode, StreamNode)> IterationSourceSinkPairs { get; set; }
 
-        public StreamGraph(ExecutionConfig executionConfig, CheckpointConfig checkpointConfig, SavepointRestoreSettings savepointRestoreSettings)
+        public StreamGraph(ExecutionConfig executionConfig, CheckpointConfig checkpointConfig,
+            SavepointRestoreSettings savepointRestoreSettings)
         {
             ExecutionConfig = Preconditions.CheckNotNull(executionConfig);
             CheckpointConfig = Preconditions.CheckNotNull(checkpointConfig);
@@ -88,7 +94,7 @@ namespace FLink.Streaming.Api.Graph
             VirtualSelectNodes = new Dictionary<int, (int, List<string>)>();
             VirtualSideOutputNodes = new Dictionary<int, (int, OutputTag<object>)>();
             VirtualPartitionNodes = new Dictionary<int, (int, StreamPartitioner<object>, ShuffleMode)>();
-            VertexIDtoBrokerID = new Dictionary<int, string>();
+            VertexIDtoBrokerId = new Dictionary<int, string>();
             VertexIDtoLoopTimeout = new Dictionary<int, long>();
             IterationSourceSinkPairs = new HashSet<(StreamNode, StreamNode)>();
             Sources = new HashSet<int>();
@@ -106,7 +112,8 @@ namespace FLink.Streaming.Api.Graph
             TypeInformation<TOut> outTypeInfo,
             string operatorName)
         {
-            AddOperator(vertexId, slotSharingGroup, coLocationGroup, operatorFactory, inTypeInfo, outTypeInfo, operatorName);
+            AddOperator(vertexId, slotSharingGroup, coLocationGroup, operatorFactory, inTypeInfo, outTypeInfo,
+                operatorName);
             Sources.Add(vertexId);
         }
 
@@ -119,7 +126,8 @@ namespace FLink.Streaming.Api.Graph
             TypeInformation<TOut> outTypeInfo,
             string operatorName)
         {
-            AddOperator(vertexId, slotSharingGroup, coLocationGroup, operatorFactory, inTypeInfo, outTypeInfo, operatorName);
+            AddOperator(vertexId, slotSharingGroup, coLocationGroup, operatorFactory, inTypeInfo, outTypeInfo,
+                operatorName);
             Sinks.Add(vertexId);
         }
 
@@ -136,12 +144,18 @@ namespace FLink.Streaming.Api.Graph
                 ? typeof(SourceStreamTask<TOut, ISourceFunction<TOut>, StreamSource<TOut, ISourceFunction<TOut>>>)
                 : typeof(OneInputStreamTask<object, TOut>);
 
-            AddNode(vertexId, slotSharingGroup, coLocationGroup, vertexType, operatorFactory as IStreamOperatorFactory<object>, operatorName);
+            AddNode(vertexId, slotSharingGroup, coLocationGroup, vertexType,
+                operatorFactory as IStreamOperatorFactory<object>, operatorName);
 
-            var inSerializer = inTypeInfo == null || inTypeInfo is MissingTypeInfo ? null : inTypeInfo.CreateSerializer(ExecutionConfig);
-            var outSerializer = outTypeInfo == null || outTypeInfo is MissingTypeInfo ? null : outTypeInfo.CreateSerializer(ExecutionConfig);
+            var inSerializer = inTypeInfo == null || inTypeInfo is MissingTypeInfo
+                ? null
+                : inTypeInfo.CreateSerializer(ExecutionConfig);
+            var outSerializer = outTypeInfo == null || outTypeInfo is MissingTypeInfo
+                ? null
+                : outTypeInfo.CreateSerializer(ExecutionConfig);
 
-            SetSerializers(vertexId, inSerializer as TypeSerializer<object>, null, outSerializer as TypeSerializer<object>);
+            SetSerializers(vertexId, inSerializer as TypeSerializer<object>, null,
+                outSerializer as TypeSerializer<object>);
 
             if (operatorFactory.IsOutputTypeConfigurable && outTypeInfo != null)
             {
@@ -187,7 +201,8 @@ namespace FLink.Streaming.Api.Graph
             return vertex;
         }
 
-        public void SetSerializers(int vertexId, TypeSerializer<object> in1, TypeSerializer<object> in2, TypeSerializer<object> output)
+        public void SetSerializers(int vertexId, TypeSerializer<object> in1, TypeSerializer<object> in2,
+            TypeSerializer<object> output)
         {
             var vertex = GetStreamNode(vertexId);
             vertex.TypeSerializerIn1 = in1;
@@ -236,6 +251,167 @@ namespace FLink.Streaming.Api.Graph
             if (GetStreamNode(vertexId) != null)
             {
                 GetStreamNode(vertexId).ManagedMemoryWeight = managedMemoryWeight;
+            }
+        }
+
+        /// <summary>
+        /// Determines the slot sharing group of an operation across virtual nodes.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetSlotSharingGroup(int id)
+        {
+            if (VirtualSideOutputNodes.ContainsKey(id))
+            {
+                var mappedId = VirtualSideOutputNodes[id].Id;
+
+                return GetSlotSharingGroup(mappedId);
+            }
+
+            if (VirtualSelectNodes.ContainsKey(id))
+            {
+                var mappedId = VirtualSelectNodes[id].Id;
+
+                return GetSlotSharingGroup(mappedId);
+            }
+
+            if (VirtualPartitionNodes.ContainsKey(id))
+            {
+                var mappedId = VirtualPartitionNodes[id].Id;
+
+                return GetSlotSharingGroup(mappedId);
+            }
+
+            var node = GetStreamNode(id);
+            return node.SlotSharingGroup;
+        }
+
+        public void SetOutputFormat(int vertexId, IOutputFormat<object> outputFormat)
+            => GetStreamNode(vertexId).OutputFormat = outputFormat;
+
+        public void SetParallelism(int vertexId, int parallelism)
+        {
+            if (GetStreamNode(vertexId) != null)
+            {
+                GetStreamNode(vertexId).Parallelism = parallelism;
+            }
+        }
+
+        public void SetMaxParallelism(int vertexId, int maxParallelism)
+        {
+            if (GetStreamNode(vertexId) != null)
+            {
+                GetStreamNode(vertexId).MaxParallelism = maxParallelism;
+            }
+        }
+
+        public void SetOneInputStateKey(int vertexId, IKeySelector<object, object> keySelector,
+            TypeSerializer<object> keySerializer)
+        {
+            var node = GetStreamNode(vertexId);
+
+            node.StatePartitioner1 = keySelector;
+            node.StateKeySerializer = keySerializer;
+        }
+
+        public void AddEdge(int upStreamVertexId, int downStreamVertexId, int typeNumber)
+        {
+            AddEdgeInternal(upStreamVertexId,
+                downStreamVertexId,
+                typeNumber,
+                null,
+                new List<string>(),
+                null,
+                ShuffleMode.Undefined);
+        }
+
+        private void AddEdgeInternal(
+            int upStreamVertexId,
+            int downStreamVertexId,
+            int typeNumber,
+            StreamPartitioner<object> partitioner,
+            List<string> outputNames,
+            OutputTag<object> outputTag,
+            ShuffleMode shuffleMode)
+        {
+            if (VirtualSideOutputNodes.ContainsKey(upStreamVertexId))
+            {
+                var virtualId = upStreamVertexId;
+
+                upStreamVertexId = VirtualSideOutputNodes[virtualId].Id;
+                if (outputTag == null)
+                {
+                    outputTag = VirtualSideOutputNodes[virtualId].OutputTag;
+                }
+
+                AddEdgeInternal(upStreamVertexId, downStreamVertexId, typeNumber, partitioner, null, outputTag,
+                    shuffleMode);
+            }
+            else if (VirtualSelectNodes.ContainsKey(upStreamVertexId))
+            {
+                var virtualId = upStreamVertexId;
+
+                upStreamVertexId = VirtualSelectNodes[virtualId].Id;
+                if (outputNames.Count <= 0)
+                {
+                    // selections that happen downstream override earlier selections
+                    outputNames = VirtualSelectNodes[virtualId].Values;
+                }
+
+                AddEdgeInternal(upStreamVertexId, downStreamVertexId, typeNumber, partitioner, outputNames, outputTag,
+                    shuffleMode);
+            }
+            else if (VirtualPartitionNodes.ContainsKey(upStreamVertexId))
+            {
+                var virtualId = upStreamVertexId;
+                upStreamVertexId = VirtualPartitionNodes[virtualId].Id;
+                if (partitioner == null)
+                {
+                    partitioner = VirtualPartitionNodes[virtualId].Partitioner;
+                }
+
+                shuffleMode = VirtualPartitionNodes[virtualId].ShuffleMode;
+
+                AddEdgeInternal(upStreamVertexId, downStreamVertexId, typeNumber, partitioner, outputNames, outputTag,
+                    shuffleMode);
+            }
+            else
+            {
+                var upstreamNode = GetStreamNode(upStreamVertexId);
+                var downstreamNode = GetStreamNode(downStreamVertexId);
+
+                switch (partitioner)
+                {
+                    // If no partitioner was specified and the parallelism of upstream and downstream
+                    // operator matches use forward partitioning, use rebalance otherwise.
+                    case null when upstreamNode.Parallelism == downstreamNode.Parallelism:
+                        partitioner = new ForwardPartitioner<object>();
+                        break;
+                    case null:
+                        partitioner = new RebalancePartitioner<object>();
+                        break;
+                }
+
+                if (partitioner is ForwardPartitioner<object>)
+                {
+                    if (upstreamNode.Parallelism != downstreamNode.Parallelism)
+                    {
+                        throw new UnSupportedOperationException(
+                            $"Forward partitioning does not allow change of parallelism. Upstream operation: {upstreamNode} parallelism: {upstreamNode.Parallelism}, downstream operation: {downstreamNode} parallelism: {downstreamNode.Parallelism} You must use another partitioning strategy, such as broadcast, rebalance, shuffle or global.");
+                    }
+                }
+
+                var edge = new StreamEdge(
+                    upstreamNode, 
+                    downstreamNode, 
+                    typeNumber, 
+                    outputNames, 
+                    partitioner, 
+                    outputTag, 
+                    shuffleMode);
+
+                GetStreamNode(edge.SourceId).AddOutEdge(edge);
+                GetStreamNode(edge.TargetId).AddOutEdge(edge);
             }
         }
     }

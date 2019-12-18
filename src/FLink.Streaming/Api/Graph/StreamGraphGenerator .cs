@@ -9,6 +9,7 @@ using FLink.Extensions.DependencyInjection;
 using FLink.Runtime.JobGraphs;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 using Microsoft.Extensions.Logging;
 
@@ -178,8 +179,6 @@ namespace FLink.Streaming.Api.Graph
                 }
             }
 
-            // call at least once to trigger exceptions about MissingTypeInfo
-            transform.GetOutputType();
             IList<int> transformedIds;
 
             switch (transform)
@@ -260,32 +259,32 @@ namespace FLink.Streaming.Api.Graph
             return transformedIds;
         }
 
-        private IList<int> TransformSideOutput(SideOutputTransformation<object> transformation)
+        private IList<int> TransformSideOutput(SideOutputTransformation<object> sideOutput)
         {
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformPartition(PartitionTransformation<object> transformation)
+        private IList<int> TransformPartition(PartitionTransformation<object> partition)
         {
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformCoFeedback(CoFeedbackTransformation<object> transformation)
+        private IList<int> TransformCoFeedback(CoFeedbackTransformation<object> coFeedback)
         {
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformFeedback(FeedbackTransformation<object> transformation)
+        private IList<int> TransformFeedback(FeedbackTransformation<object> feedback)
         {
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformSelect(SelectTransformation<object> transformation)
+        private IList<int> TransformSelect(SelectTransformation<object> select)
         {
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformSplit(SplitTransformation<object> transformation)
+        private IList<int> TransformSplit(SplitTransformation<object> split)
         {
             throw new NotImplementedException();
         }
@@ -309,12 +308,47 @@ namespace FLink.Streaming.Api.Graph
             return resultIds;
         }
 
-        private IList<int> TransformSink(SinkTransformation<object> transformation)
+        private IList<int> TransformSink(SinkTransformation<object> sink)
         {
-            throw new NotImplementedException();
+            var inputIds = Transform(sink.Input);
+            var slotSharingGroup = DetermineSlotSharingGroup(sink.SlotSharingGroup, inputIds);
+
+            _streamGraph.AddSink(sink.Id,
+                slotSharingGroup,
+                sink.CoLocationGroupKey,
+                sink.OperatorFactory,
+                sink.Input.OutputType,
+                null,
+                $"Sink: {sink.Name}");
+
+            var operatorFactory = sink.OperatorFactory;
+            if (operatorFactory is IOutputFormatOperatorFactory<object> factory)
+            {
+                _streamGraph.SetOutputFormat(sink.Id, factory.OutputFormat);
+            }
+
+            var parallelism = sink.Parallelism != ExecutionConfig.DefaultParallelism
+                ? sink.Parallelism
+                : _executionConfig.Parallelism;
+
+            _streamGraph.SetParallelism(sink.Id, parallelism);
+            _streamGraph.SetMaxParallelism(sink.Id, sink.MaxParallelism);
+
+            foreach (var id in inputIds)
+            {
+                _streamGraph.AddEdge(id, sink.Id, 0);
+            }
+
+            if (sink.StateKeySelector != null)
+            {
+                var keySerializer = sink.StateKeyType.CreateSerializer(_executionConfig);
+                _streamGraph.SetOneInputStateKey(sink.Id, sink.StateKeySelector, keySerializer);
+            }
+
+            return new List<int>();
         }
 
-        private IList<int> TransformSource(SourceTransformation<object> transformation)
+        private IList<int> TransformSource(SourceTransformation<object> source)
         {
             throw new NotImplementedException();
         }
@@ -327,6 +361,37 @@ namespace FLink.Streaming.Api.Graph
         private IList<int> TransformOneInputTransform<IN, OUT>(OneInputTransformation<IN, OUT> transform)
         {
             return null;
+        }
+
+        /// <summary>
+        /// Determines the slot sharing group for an operation based on the slot sharing group set by the user and the slot sharing groups of the inputs. 
+        /// If the user specifies a group name, this is taken as is. If nothing is specified and the input operations all have the same group name then this name is taken. Otherwise the default group is chosen.
+        /// </summary>
+        /// <param name="specifiedGroup">The group specified by the user.</param>
+        /// <param name="inputIds">The IDs of the input operations.</param>
+        /// <returns></returns>
+        private string DetermineSlotSharingGroup(string specifiedGroup, IList<int> inputIds)
+        {
+            if (specifiedGroup != null)
+            {
+                return specifiedGroup;
+            }
+
+            string inputGroup = null;
+            foreach (var id in inputIds)
+            {
+                var inputGroupCandidate = _streamGraph.GetSlotSharingGroup(id);
+                if (inputGroup == null)
+                {
+                    inputGroup = inputGroupCandidate;
+                }
+                else if (!inputGroup.Equals(inputGroupCandidate))
+                {
+                    return DefaultSlotSharingGroup;
+                }
+            }
+
+            return inputGroup ?? DefaultSlotSharingGroup;
         }
     }
 }

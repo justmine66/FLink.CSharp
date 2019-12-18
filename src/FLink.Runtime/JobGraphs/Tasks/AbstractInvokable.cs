@@ -77,12 +77,12 @@ namespace FLink.Runtime.JobGraphs.Tasks
         /// <summary>
         /// Gets the task-wide configuration object, originally attached to the job vertex.
         /// </summary>
-        Configuration TaskConfiguration => Environment.TaskConfiguration;
+        public Configuration TaskConfiguration => Environment.TaskConfiguration;
 
         /// <summary>
         /// Gets the job-wide configuration object that was attached to the JobGraph.
         /// </summary>
-        Configuration JobConfiguration => Environment.JobConfiguration;
+        public Configuration JobConfiguration => Environment.JobConfiguration;
 
         /// <summary>
         /// Gets the global ExecutionConfig.

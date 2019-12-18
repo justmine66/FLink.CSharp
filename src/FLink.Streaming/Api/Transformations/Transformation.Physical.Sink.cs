@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.Dag;
 using FLink.Streaming.Api.Operators;
 
@@ -7,23 +9,30 @@ namespace FLink.Streaming.Api.Transformations
     /// <summary>
     /// This Transformation represents a Sink.
     /// </summary>
-    /// <typeparam name="T">The type of the elements in the input <see cref="SinkTransformation{T}"/></typeparam>
-    public class SinkTransformation<T> : PhysicalTransformation<object>
+    /// <typeparam name="TElement">The type of the elements in the input <see cref="SinkTransformation{T}"/></typeparam>
+    public class SinkTransformation<TElement> : PhysicalTransformation<object>
     {
-        public Transformation<T> Input { get; }
+        public Transformation<TElement> Input { get; }
         public IStreamOperatorFactory<object> OperatorFactory { get; }
 
+        /// <summary>
+        /// Sets the <see cref="IKeySelector{TObject,TKey}"/> that must be used for partitioning keyed state of this Sink.
+        /// </summary>
+        public IKeySelector<TElement, object> StateKeySelector { get; set; }
+
+        public TypeInformation<object> StateKeyType { get; set; }
+
         public SinkTransformation(
-            Transformation<T> input,
+            Transformation<TElement> input,
             string name,
-            StreamSink<T> @operator,
+            StreamSink<TElement> @operator,
             int parallelism)
             : this(input, name, SimpleOperatorFactory<object>.Of(@operator), parallelism)
         {
         }
 
         public SinkTransformation(
-            Transformation<T> input,
+            Transformation<TElement> input,
             string name,
             IStreamOperatorFactory<object> operatorFactory,
             int parallelism)
@@ -33,7 +42,7 @@ namespace FLink.Streaming.Api.Transformations
             OperatorFactory = operatorFactory;
         }
 
-        public IStreamOperator<T> Operator => (OperatorFactory as SimpleOperatorFactory<T>)?.Operator;
+        public IStreamOperator<TElement> Operator => (OperatorFactory as SimpleOperatorFactory<TElement>)?.Operator;
 
         public override void SetChainingStrategy(ChainingStrategy strategy) => OperatorFactory.ChainingStrategy = strategy;
 

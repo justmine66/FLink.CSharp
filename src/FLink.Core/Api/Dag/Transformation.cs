@@ -1,13 +1,13 @@
-﻿using FLink.Core.Api.Common.Functions;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.Operators.Util;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
-using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace FLink.Core.Api.Dag
 {
@@ -46,7 +46,36 @@ namespace FLink.Core.Api.Dag
         /// </summary>
         public string Name { get; set; }
 
-        public TypeInformation<TElement> OutputType;
+        public TypeInformation<TElement> OutputType
+        {
+            get
+            {
+                if (OutputType is MissingTypeInfo typeInfo)
+                    throw new InvalidTypesException(
+                        "The return type of function '"
+                        + typeInfo.FunctionName
+                        + "' could not be determined automatically, due to type erasure. "
+                        + "You can give type information hints by using the returns(...) "
+                        + "method on the result of the transformation call, or by letting "
+                        + "your function implement the 'ResultTypeQueryable' "
+                        + "interface.", typeInfo.TypeException);
+
+                TypeUsed = true;
+
+                return OutputType;
+            }
+            set
+            {
+                if (TypeUsed)
+                    throw new IllegalStateException(
+                        "TypeInformation cannot be filled in for the type after it has been used. "
+                        + "Please make sure that the type info hints are the first call after"
+                        + " the transformation function, "
+                        + "before any access to types or semantic properties, etc.");
+
+                OutputType = value;
+            }
+        }
 
         /// <summary>
         /// This is used to handle MissingTypeInfo. As long as the outputType has not been queried it can still be changed using setOutputType(). Afterwards an exception is thrown when trying to change the output type.
@@ -160,34 +189,6 @@ namespace FLink.Core.Api.Dag
                 "Node hash must be a 32 character String that describes a hex code. Found: " + uidHash);
 
             UserProvidedNodeHash = uidHash;
-        }
-
-        public TypeInformation<TElement> GetOutputType()
-        {
-            if (OutputType is MissingTypeInfo typeInfo)
-                throw new InvalidTypesException(
-                    "The return type of function '"
-                    + typeInfo.FunctionName
-                    + "' could not be determined automatically, due to type erasure. "
-                    + "You can give type information hints by using the returns(...) "
-                    + "method on the result of the transformation call, or by letting "
-                    + "your function implement the 'ResultTypeQueryable' "
-                    + "interface.", typeInfo.TypeException);
-
-            TypeUsed = true;
-            return OutputType;
-        }
-
-        public void SetOutputType(TypeInformation<TElement> outputType)
-        {
-            if (TypeUsed)
-                throw new IllegalStateException(
-                    "TypeInformation cannot be filled in for the type after it has been used. "
-                    + "Please make sure that the type info hints are the first call after"
-                    + " the transformation function, "
-                    + "before any access to types or semantic properties, etc.");
-
-            OutputType = outputType;
         }
 
         /// <summary>

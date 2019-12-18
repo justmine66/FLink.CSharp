@@ -64,7 +64,7 @@ namespace FLink.Streaming.Api.DataStreams
 
         protected TFunction Clean<TFunction>(TFunction f) => ExecutionEnvironment.Clean(f);
 
-        public TypeInformation<TElement> Type => Transformation.GetOutputType();
+        public TypeInformation<TElement> Type => Transformation.OutputType;
 
         /// <summary>
         /// Applies a FlatMap transformation on a <see cref="DataStream{T}"/>. The transformation calls a <see cref="IFlatMapFunction{TInput,TOutput}"/> for each element of the DataStream. Each FlatMapFunction call can return any number of elements including none. The user can also extend <see cref="IRichFunction"/> to gain access to other features provided by the  <see cref="IRichFunction"/> interface.
