@@ -23,7 +23,7 @@ namespace FLink.Streaming.Api.Graph
         /// <summary>
         /// A list of output names that the target vertex listens to (if there is output selection).
         /// </summary>
-        public List<string> SelectedNames;
+        public IList<string> SelectedNames;
 
         /// <summary>
         /// The side-output tag (if any) of this <see cref="StreamEdge"/>.
@@ -59,7 +59,7 @@ namespace FLink.Streaming.Api.Graph
         { }
 
         public StreamEdge(StreamNode sourceVertex, StreamNode targetVertex, int typeNumber,
-            List<string> selectedNames, StreamPartitioner<object> outputPartitioner, OutputTag<object> outputTag,
+            IList<string> selectedNames, StreamPartitioner<object> outputPartitioner, OutputTag<object> outputTag,
             ShuffleMode shuffleMode)
         {
             SourceId = sourceVertex.Id;

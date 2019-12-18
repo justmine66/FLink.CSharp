@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using FLink.Core.Api.Common;
+﻿using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
+using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.Dag;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
@@ -13,6 +12,8 @@ using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Runtime.Partitioners;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 
 namespace FLink.Streaming.Api.Graph
 {
@@ -171,8 +172,7 @@ namespace FLink.Streaming.Api.Graph
 
             if (transform.MaxParallelism <= 0)
             {
-                // if the max parallelism hasn't been set, then first use the job wide max parallelism
-                // from the ExecutionConfig.
+                // if the max parallelism hasn't been set, then first use the job wide max parallelism from the ExecutionConfig.
                 var globalMaxParallelismFromConfig = _executionConfig.MaxParallelism;
                 if (globalMaxParallelismFromConfig > 0)
                 {
@@ -226,8 +226,8 @@ namespace FLink.Streaming.Api.Graph
                 _alreadyTransformed.Add(transform, transformedIds);
             }
 
-            _streamGraph.SetBufferTimeout(transform.Id,
-                transform.BufferTimeout >= 0 ? transform.BufferTimeout : _defaultBufferTimeout);
+            var bufferTimeout = transform.BufferTimeout >= 0 ? transform.BufferTimeout : _defaultBufferTimeout;
+            _streamGraph.SetBufferTimeout(transform.Id, bufferTimeout);
 
             if (transform.UId != null)
             {
@@ -262,7 +262,25 @@ namespace FLink.Streaming.Api.Graph
 
         private IList<int> TransformSideOutput(SideOutputTransformation<object> sideOutput)
         {
-            throw new NotImplementedException();
+            var input = sideOutput.Input;
+            var resultIds = Transform(input);
+
+            // the recursive transform might have already transformed this
+            if (_alreadyTransformed.ContainsKey(sideOutput))
+            {
+                return _alreadyTransformed[sideOutput];
+            }
+
+            var virtualResultIds = new List<int>();
+
+            foreach (var inputId in resultIds)
+            {
+                var virtualId = Transformation<object>.NewNodeId;
+                _streamGraph.AddVirtualSideOutputNode(inputId, virtualId, sideOutput.OutputTag);
+                virtualResultIds.Add(virtualId);
+            }
+
+            return virtualResultIds;
         }
 
         private IList<int> TransformPartition<T>(PartitionTransformation<T> partition)
@@ -295,12 +313,50 @@ namespace FLink.Streaming.Api.Graph
 
         private IList<int> TransformSelect<T>(SelectTransformation<T> select)
         {
-            throw new NotImplementedException();
+            var input = select.Input as Transformation<object>;
+            var resultIds = Transform(input);
+
+            // the recursive transform might have already transformed this
+            if (_alreadyTransformed.ContainsKey(input))
+            {
+                return _alreadyTransformed[input];
+            }
+
+            var virtualResultIds = new List<int>();
+
+            foreach (var inputId in resultIds)
+            {
+                var virtualId = Transformation<object>.NewNodeId;
+                _streamGraph.AddVirtualSelectNode(inputId, virtualId, select.SelectedNames);
+                virtualResultIds.Add(virtualId);
+            }
+
+            return virtualResultIds;
         }
 
+        /// <summary>
+        /// Transforms a <see cref="TransformSplit"/>.
+        /// We add the output selector to previously transformed nodes.
+        /// </summary>
         private IList<int> TransformSplit(SplitTransformation<object> split)
         {
-            throw new NotImplementedException();
+            var input = split.Input as Transformation<object>;
+            var resultIds = Transform(input);
+
+            ValidateSplitTransformation(input);
+
+            // the recursive transform call might have transformed this already
+            if (_alreadyTransformed.ContainsKey(split))
+            {
+                return _alreadyTransformed[split];
+            }
+
+            foreach (var inputId in resultIds)
+            {
+                _streamGraph.AddOutputSelector(inputId, split.OutputSelector);
+            }
+
+            return resultIds;
         }
 
         /// <summary>
@@ -364,17 +420,129 @@ namespace FLink.Streaming.Api.Graph
 
         private IList<int> TransformSource(SourceTransformation<object> source)
         {
-            throw new NotImplementedException();
+            var slotSharingGroup = DetermineSlotSharingGroup(source.SlotSharingGroup, new List<int>());
+
+            _streamGraph.AddSource<object, object>(source.Id,
+                slotSharingGroup,
+                source.CoLocationGroupKey,
+                source.OperatorFactory,
+                null,
+                source.OutputType,
+                $"Source: {source.Name}");
+
+            if (source.OperatorFactory is IInputFormatOperatorFactory<object> factory)
+            {
+                _streamGraph.SetInputFormat(source.Id, factory.InputFormat);
+            }
+
+            var parallelism = source.Parallelism != ExecutionConfig.DefaultParallelism ?
+                source.Parallelism : _executionConfig.Parallelism;
+            _streamGraph.SetParallelism(source.Id, parallelism);
+            _streamGraph.SetMaxParallelism(source.Id, source.MaxParallelism);
+
+            var result = SingletonList<int>.Instance;
+            result.Add(source.Id);
+
+            return result;
         }
 
         private IList<int> TransformTwoInputTransform(TwoInputTransformation<object, object, object> transform)
         {
-            throw new NotImplementedException();
+            var inputIds1 = Transform(transform.Input1);
+            var inputIds2 = Transform(transform.Input2);
+
+            // the recursive call might have already transformed this
+            if (_alreadyTransformed.ContainsKey(transform))
+            {
+                return _alreadyTransformed[transform];
+            }
+
+            var allInputIds = new List<int>();
+            allInputIds.AddRange(inputIds1);
+            allInputIds.AddRange(inputIds2);
+
+            var slotSharingGroup = DetermineSlotSharingGroup(transform.SlotSharingGroup, allInputIds);
+
+            _streamGraph.AddCoOperator(
+                transform.Id,
+                slotSharingGroup,
+                transform.CoLocationGroupKey,
+                transform.OperatorFactory,
+                transform.InputType1,
+                transform.InputType2,
+                transform.OutputType,
+                transform.Name);
+
+            if (transform.StateKeySelector1 != null || transform.StateKeySelector2 != null)
+            {
+                var keySerializer = transform.StateKeyType.CreateSerializer(_executionConfig);
+
+                _streamGraph.SetTwoInputStateKey(transform.Id, transform.StateKeySelector1, transform.StateKeySelector2, keySerializer);
+            }
+
+            var parallelism = transform.Parallelism != ExecutionConfig.DefaultParallelism
+                ? transform.Parallelism
+                : _executionConfig.Parallelism;
+            _streamGraph.SetParallelism(transform.Id, parallelism);
+            _streamGraph.SetMaxParallelism(transform.Id, transform.MaxParallelism);
+
+            foreach (var inputId in inputIds1)
+            {
+                _streamGraph.AddEdge(inputId, transform.Id, 1);
+            }
+
+            foreach (var inputId in inputIds2)
+            {
+                _streamGraph.AddEdge(inputId, transform.Id, 2);
+            }
+
+            var result = SingletonList<int>.Instance;
+            result.Add(transform.Id);
+            return result;
         }
 
-        private IList<int> TransformOneInputTransform<IN, OUT>(OneInputTransformation<IN, OUT> transform)
+        private IList<int> TransformOneInputTransform<TInput, TOutput>(OneInputTransformation<TInput, TOutput> transform)
         {
-            return null;
+            var input = transform.Input as Transformation<object>;
+            var inputIds = Transform(input);
+
+            // the recursive call might have already transformed this
+            if (_alreadyTransformed.ContainsKey(input))
+            {
+                return _alreadyTransformed[input];
+            }
+
+            var slotSharingGroup = DetermineSlotSharingGroup(input.SlotSharingGroup, inputIds);
+
+            _streamGraph.AddOperator(transform.Id,
+                slotSharingGroup,
+                transform.CoLocationGroupKey,
+                transform.OperatorFactory,
+                transform.InputType,
+                transform.OutputType,
+                transform.Name);
+
+            if (transform.StateKeySelector != null)
+            {
+                var keySerializer = transform.StateKeyType.CreateSerializer(_executionConfig);
+                var selector = transform.StateKeySelector as IKeySelector<object, object>;
+
+                _streamGraph.SetOneInputStateKey(transform.Id, selector, keySerializer);
+            }
+
+            var parallelism = transform.Parallelism != ExecutionConfig.DefaultParallelism ?
+                transform.Parallelism : _executionConfig.Parallelism;
+            _streamGraph.SetParallelism(transform.Id, parallelism);
+            _streamGraph.SetMaxParallelism(transform.Id, transform.MaxParallelism);
+
+            foreach (var inputId in inputIds)
+            {
+                _streamGraph.AddEdge(inputId, transform.Id, 0);
+            }
+
+            var result = SingletonList<int>.Instance;
+            result.Add(transform.Id);
+            return result;
         }
 
         /// <summary>
@@ -406,6 +574,36 @@ namespace FLink.Streaming.Api.Graph
             }
 
             return inputGroup ?? DefaultSlotSharingGroup;
+        }
+
+        private void ValidateSplitTransformation<T>(Transformation<T> input)
+        {
+            if (input is SelectTransformation<T> || input is SplitTransformation<T>)
+            {
+                throw new IllegalStateException("Consecutive multiple splits are not supported. Splits are deprecated. Please use side-outputs.");
+            }
+
+            if (input is SideOutputTransformation<T>)
+            {
+                throw new IllegalStateException("Split after side-outputs are not supported. Splits are deprecated. Please use side-outputs.");
+            }
+
+            switch (input)
+            {
+                case UnionTransformation<T> union:
+                    {
+                        foreach (var transformation in union.Inputs)
+                        {
+                            ValidateSplitTransformation(transformation);
+                        }
+
+                        break;
+                    }
+
+                case PartitionTransformation<T> partition:
+                    ValidateSplitTransformation(partition.Input);
+                    break;
+            }
         }
     }
 }

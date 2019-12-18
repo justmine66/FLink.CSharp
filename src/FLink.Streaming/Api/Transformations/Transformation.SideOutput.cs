@@ -7,13 +7,13 @@ namespace FLink.Streaming.Api.Transformations
     public class SideOutputTransformation<T> : Transformation<T>
     {
         public Transformation<T> Input { get; }
-        public OutputTag<T> Tag { get; }
+        public OutputTag<T> OutputTag { get; }
 
         public SideOutputTransformation(Transformation<T> input, OutputTag<T> tag)
             : base("SideOutput", tag.TypeInfo, input.Parallelism)
         {
             Input = input;
-            Tag = tag;
+            OutputTag = tag;
         }
 
         public override IList<Transformation<dynamic>> TransitivePredecessors

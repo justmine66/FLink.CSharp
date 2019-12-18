@@ -10,6 +10,7 @@ using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Exceptions;
+using FLink.Core.IO;
 using FLink.Core.Util;
 using FLink.Extensions.DependencyInjection;
 using FLink.Runtime.JobGraphs;
@@ -65,7 +66,7 @@ namespace FLink.Streaming.Api.Graph
         public IDictionary<int, StreamNode> StreamNodes { get; set; }
         public ISet<int> Sources { get; set; }
         public ISet<int> Sinks { get; set; }
-        public IDictionary<int, (int Id, List<string> Values)> VirtualSelectNodes { get; set; }
+        public IDictionary<int, (int Id, IList<string> Values)> VirtualSelectNodes { get; set; }
         public IDictionary<int, (int Id, OutputTag<object> OutputTag)> VirtualSideOutputNodes { get; set; }
 
         public IDictionary<int, (int Id, StreamPartitioner<object> Partitioner, ShuffleMode ShuffleMode)>
@@ -91,7 +92,7 @@ namespace FLink.Streaming.Api.Graph
         public void Clear()
         {
             StreamNodes = new Dictionary<int, StreamNode>();
-            VirtualSelectNodes = new Dictionary<int, (int, List<string>)>();
+            VirtualSelectNodes = new Dictionary<int, (int, IList<string>)>();
             VirtualSideOutputNodes = new Dictionary<int, (int, OutputTag<object>)>();
             VirtualPartitionNodes = new Dictionary<int, (int, StreamPartitioner<object>, ShuffleMode)>();
             VertexIDtoBrokerId = new Dictionary<int, string>();
@@ -172,6 +173,28 @@ namespace FLink.Streaming.Api.Graph
             {
                 Logger.LogDebug($"Vertex: {vertexId}");
             }
+        }
+
+        public void AddCoOperator<TInput1, TInput2, TOutput>(
+            int vertexId,
+            string slotSharingGroup,
+            string coLocationGroup,
+            IStreamOperatorFactory<TOutput> taskOperatorFactory,
+            TypeInformation<TInput1> in1TypeInfo,
+            TypeInformation<TInput2> in2TypeInfo,
+            TypeInformation<TOutput> outTypeInfo,
+            string operatorName)
+        {
+
+        }
+
+        public void SetTwoInputStateKey(int vertexID, IKeySelector<object, object> keySelector1, IKeySelector<object, object> keySelector2, TypeSerializer<object> keySerializer)
+        {
+            var node = GetStreamNode(vertexID);
+
+            node.StatePartitioner1 = keySelector1;
+            node.StatePartitioner2 = keySelector2;
+            node.StateKeySerializer = keySerializer;
         }
 
         protected StreamNode AddNode(
@@ -314,6 +337,11 @@ namespace FLink.Streaming.Api.Graph
             node.StateKeySerializer = keySerializer;
         }
 
+        public void SetInputFormat(int vertexId, IInputFormat<object, IInputSplit> inputFormat)
+        {
+            GetStreamNode(vertexId).InputFormat = inputFormat;
+        }
+
         public void AddEdge(int upStreamVertexId, int downStreamVertexId, int typeNumber)
         {
             AddEdgeInternal(upStreamVertexId,
@@ -339,12 +367,90 @@ namespace FLink.Streaming.Api.Graph
             VirtualPartitionNodes.Add(virtualId, (originalId, partitioner, shuffleMode));
         }
 
+        /// <summary>
+        /// Adds a new virtual node that is used to connect a downstream vertex to only the outputs with the selected side-output <see cref="OutputTag{TElement}"/>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="originalId">of the node that should be connected to.</param>
+        /// <param name="virtualId">of the virtual node.</param>
+        /// <param name="outputTag">The selected side-output <see cref="OutputTag{TElement}"/>.</param>
+        public void AddVirtualSideOutputNode(int originalId, int virtualId, OutputTag<object> outputTag)
+        {
+            if (VirtualSideOutputNodes.ContainsKey(virtualId))
+            {
+                throw new IllegalStateException("Already has virtual output node with id " + virtualId);
+            }
+
+            // verify that we don't already have a virtual node for the given originalId/outputTag
+            // combination with a different TypeInformation. This would indicate that someone is trying
+            // to read a side output from an operation with a different type for the same side output
+            // id.
+
+            foreach (var (id, tag) in VirtualSideOutputNodes.Values)
+            {
+                if (!id.Equals(originalId))
+                {
+                    // different source operator
+                    continue;
+                }
+
+                if (tag.Id.Equals(outputTag.Id) &&
+                    !tag.TypeInfo.Equals(outputTag.TypeInfo))
+                {
+                    throw new IllegalArgumentException("Trying to add a side output for the same " +
+                                                       "side-output id with a different type. This is not allowed. Side-output ID: " +
+                                                       tag.Id);
+                }
+            }
+
+            VirtualSideOutputNodes.Add(virtualId, (originalId, outputTag));
+        }
+
+        /// <summary>
+        /// Adds a new virtual node that is used to connect a downstream vertex to only the outputs with the selected names.
+        /// When adding an edge from the virtual node to a downstream node the connection will be made to the original node, only with the selected names given here.
+        /// </summary>
+        /// <param name="originalId">of the node that should be connected to.</param>
+        /// <param name="virtualId">of the virtual node.</param>
+        /// <param name="selectedNames">The selected names.</param>
+        public void AddVirtualSelectNode(int originalId, int virtualId, IList<string> selectedNames)
+        {
+            if (VirtualSelectNodes.ContainsKey(virtualId))
+            {
+                throw new IllegalStateException("Already has virtual select node with id " + virtualId);
+            }
+
+            VirtualSelectNodes.Add(virtualId, (originalId, selectedNames));
+        }
+
+        public void AddOutputSelector<T>(int vertexId, IOutputSelector<T> outputSelector)
+        {
+            if (VirtualPartitionNodes.ContainsKey(vertexId))
+            {
+                AddOutputSelector(VirtualPartitionNodes[vertexId].Id, outputSelector);
+            }
+            else if (VirtualSelectNodes.ContainsKey(vertexId))
+            {
+                AddOutputSelector(VirtualSelectNodes[vertexId].Id, outputSelector);
+            }
+            else
+            {
+                GetStreamNode(vertexId).AddOutputSelector(outputSelector as IOutputSelector<object>);
+
+                if (Logger.IsEnabled(LogLevel.Debug))
+                {
+                    Logger.LogDebug("Outputselector set for {}", vertexId);
+                }
+            }
+
+        }
+
         private void AddEdgeInternal(
             int upStreamVertexId,
             int downStreamVertexId,
             int typeNumber,
             StreamPartitioner<object> partitioner,
-            List<string> outputNames,
+            IList<string> outputNames,
             OutputTag<object> outputTag,
             ShuffleMode shuffleMode)
         {
@@ -416,12 +522,12 @@ namespace FLink.Streaming.Api.Graph
                 }
 
                 var edge = new StreamEdge(
-                    upstreamNode, 
-                    downstreamNode, 
-                    typeNumber, 
-                    outputNames, 
-                    partitioner, 
-                    outputTag, 
+                    upstreamNode,
+                    downstreamNode,
+                    typeNumber,
+                    outputNames,
+                    partitioner,
+                    outputTag,
                     shuffleMode);
 
                 GetStreamNode(edge.SourceId).AddOutEdge(edge);

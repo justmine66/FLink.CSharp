@@ -35,7 +35,7 @@ namespace FLink.Core.Api.Dag
         /// <summary>
         /// This is used to assign a unique ID to every Transformation.
         /// </summary>
-        public static int IdCounter;
+        public static int IdCounter { get; private set; }
 
         public static int NewNodeId => ++IdCounter;
 
