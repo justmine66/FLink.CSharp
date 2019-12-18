@@ -1,6 +1,9 @@
-﻿using FLink.Core.Api.CSharp.Functions;
+﻿using System;
+using FLink.Core.Api.CSharp.Functions;
+using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Runtime.Pluggable;
+using FLink.Runtime.State;
 using FLink.Streaming.Runtime.StreamRecords;
 
 namespace FLink.Streaming.Runtime.Partitioners
@@ -14,7 +17,7 @@ namespace FLink.Streaming.Runtime.Partitioners
     {
         public IKeySelector<TElement, TKey> KeySelector { get; }
 
-        public int MaxParallelism { get; }
+        public int MaxParallelism { get; private set; }
 
         public KeyGroupStreamPartitioner(IKeySelector<TElement, TKey> keySelector, int maxParallelism)
         {
@@ -25,14 +28,25 @@ namespace FLink.Streaming.Runtime.Partitioners
 
         public override int SelectChannel(SerializationDelegate<StreamRecord<TElement>> record)
         {
-            throw new System.NotImplementedException();
+            TKey key;
+            try
+            {
+                key = KeySelector.GetKey(record.Instance.Value);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException($"Could not extract key from {record.Instance.Value}", e);
+            }
+
+            return KeyGroupRangeAssignment.AssignKeyToParallelOperator(key, MaxParallelism, NumberOfChannels);
         }
 
         public override StreamPartitioner<TElement> Copy() => this;
 
         public void Configure(int maxParallelism)
         {
-            throw new System.NotImplementedException();
+            KeyGroupRangeAssignment.CheckParallelismPreconditions(maxParallelism);
+            MaxParallelism = maxParallelism;
         }
 
         public override string ToString() => "HASH";

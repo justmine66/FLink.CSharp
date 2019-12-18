@@ -7,17 +7,17 @@ namespace FLink.Streaming.Runtime.Partitioners
     /// <summary>
     /// A special <see cref="IChannelSelector{TRecord}"/> for use in streaming programs.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class StreamPartitioner<T> : IChannelSelector<SerializationDelegate<StreamRecord<T>>>
+    /// <typeparam name="TElement"></typeparam>
+    public abstract class StreamPartitioner<TElement> : IChannelSelector<SerializationDelegate<StreamRecord<TElement>>>
     {
-        public int NumberOfChannels;
+        public int NumberOfChannels { get; private set; }
 
-        public void Setup(int numberOfChannels) => NumberOfChannels = numberOfChannels;
+        public virtual void Setup(int numberOfChannels) => NumberOfChannels = numberOfChannels;
 
-        public abstract int SelectChannel(SerializationDelegate<StreamRecord<T>> record);
+        public abstract int SelectChannel(SerializationDelegate<StreamRecord<TElement>> record);
 
-        public bool IsBroadcast => false;
+        public virtual bool IsBroadcast => false;
 
-        public abstract StreamPartitioner<T> Copy();
+        public abstract StreamPartitioner<TElement> Copy();
     }
 }
