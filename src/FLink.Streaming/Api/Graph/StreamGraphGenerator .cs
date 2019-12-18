@@ -11,6 +11,7 @@ using FLink.Runtime.State;
 using FLink.Streaming.Api.Environment;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
+using FLink.Streaming.Runtime.Partitioners;
 using Microsoft.Extensions.Logging;
 
 namespace FLink.Streaming.Api.Graph
@@ -264,9 +265,22 @@ namespace FLink.Streaming.Api.Graph
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformPartition(PartitionTransformation<object> partition)
+        private IList<int> TransformPartition<T>(PartitionTransformation<T> partition)
         {
-            throw new NotImplementedException();
+            var input = partition.Input as Transformation<object>;
+            var resultIds = new List<int>();
+
+            var transformedIds = Transform(input);
+            var partitioner = partition.Partitioner as StreamPartitioner<object>;
+
+            foreach (var transformedId in transformedIds)
+            {
+                var virtualId = Transformation<object>.NewNodeId;
+                _streamGraph.AddVirtualPartitionNode(transformedId, virtualId, partitioner, partition.ShuffleMode);
+                resultIds.Add(virtualId);
+            }
+
+            return resultIds;
         }
 
         private IList<int> TransformCoFeedback(CoFeedbackTransformation<object> coFeedback)
@@ -279,7 +293,7 @@ namespace FLink.Streaming.Api.Graph
             throw new NotImplementedException();
         }
 
-        private IList<int> TransformSelect(SelectTransformation<object> select)
+        private IList<int> TransformSelect<T>(SelectTransformation<T> select)
         {
             throw new NotImplementedException();
         }

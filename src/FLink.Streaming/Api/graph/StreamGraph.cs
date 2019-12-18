@@ -325,6 +325,20 @@ namespace FLink.Streaming.Api.Graph
                 ShuffleMode.Undefined);
         }
 
+        public void AddVirtualPartitionNode(
+            int originalId,
+            int virtualId,
+            StreamPartitioner<object> partitioner,
+            ShuffleMode shuffleMode)
+        {
+            if (VirtualPartitionNodes.ContainsKey(virtualId))
+            {
+                throw new IllegalStateException("Already has virtual partition node with id " + virtualId);
+            }
+
+            VirtualPartitionNodes.Add(virtualId, (originalId, partitioner, shuffleMode));
+        }
+
         private void AddEdgeInternal(
             int upStreamVertexId,
             int downStreamVertexId,
