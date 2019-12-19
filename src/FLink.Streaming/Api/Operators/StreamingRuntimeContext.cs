@@ -7,7 +7,7 @@ using FLink.Core.Util;
 using FLink.Runtime.Execution;
 using FLink.Runtime.JobGraphs.Tasks;
 using FLink.Runtime.TaskExecutors;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Runtime.Tasks;
 
 namespace FLink.Streaming.Api.Operators

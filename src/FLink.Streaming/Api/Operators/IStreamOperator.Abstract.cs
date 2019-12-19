@@ -13,9 +13,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using FLink.Metrics.Core;
 using FLink.Runtime.JobGraphs;
-using FLink.Streaming.Api.Graph;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Runtime.Metrics.Groups;
+using FLink.Streaming.Api.Graphs;
 
 namespace FLink.Streaming.Api.Operators
 {

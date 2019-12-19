@@ -1,4 +1,6 @@
-﻿using FLink.Core.Api.Common;
+﻿using System;
+using System.Collections.Generic;
+using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.Dag;
@@ -7,18 +9,16 @@ using FLink.Core.Util;
 using FLink.Extensions.DependencyInjection;
 using FLink.Runtime.JobGraphs;
 using FLink.Runtime.State;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Runtime.Partitioners;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 
-namespace FLink.Streaming.Api.Graph
+namespace FLink.Streaming.Api.Graphs
 {
     /// <summary>
-    /// A generator that generates a <see cref="StreamGraph"/> from a graph of <see cref="tr"/>s.
+    /// A generator that generates a <see cref="StreamGraph"/> from a graph of <see cref="Transform"/>s.
     /// </summary>
     public class StreamGraphGenerator
     {

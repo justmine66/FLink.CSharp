@@ -3,7 +3,7 @@ using FLink.Core.Util;
 using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Runtime.Partitioners;
 
-namespace FLink.Streaming.Api.Graph
+namespace FLink.Streaming.Api.Graphs
 {
     /// <summary>
     /// An edge in the streaming topology.

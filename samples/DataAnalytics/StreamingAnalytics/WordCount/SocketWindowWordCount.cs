@@ -1,9 +1,9 @@
 ﻿using FLink.Core.Api.Common.Functions;
 using FLink.Core.Util;
 using FLink.Extensions.DependencyInjection;
-using FLink.Streaming.Api.Environment;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using FLink.Streaming.Api.Environments;
 
 namespace WordCount
 {

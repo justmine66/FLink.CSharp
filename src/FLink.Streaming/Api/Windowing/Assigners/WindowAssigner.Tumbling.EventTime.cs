@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Exceptions;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Windowing.Triggers;
 using FLink.Streaming.Api.Windowing.Windows;
 

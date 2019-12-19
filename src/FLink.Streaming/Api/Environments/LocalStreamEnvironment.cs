@@ -1,9 +1,9 @@
 ﻿using FLink.Core.Api.Common;
 using FLink.Core.Configurations;
 using FLink.CSharp;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 
-namespace FLink.Streaming.Api.Environment
+namespace FLink.Streaming.Api.Environments
 {
     /// <summary>
     /// The LocalStreamEnvironment is a StreamExecutionEnvironment that runs the program locally, multi-threaded, in the CLR where the environment is instantiated. It spawns an embedded Flink cluster in the background and executes the program on that cluster.

@@ -1,8 +1,8 @@
 ﻿using FLink.Clients.Program;
 using FLink.Core.Api.Common;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 
-namespace FLink.Streaming.Api.Environment
+namespace FLink.Streaming.Api.Environments
 {
     /// <summary>
     /// Special <see cref="StreamExecutionEnvironment"/> that will be used in cases where the CLI client or testing utilities create a <see cref="StreamExecutionEnvironment"/> that should be used when <see cref="StreamExecutionEnvironment.GetExecutionEnvironment()"/> is called.

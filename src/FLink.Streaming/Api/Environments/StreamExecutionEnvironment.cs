@@ -19,10 +19,10 @@ using FLink.Runtime.State;
 using FLink.Streaming.Api.Checkpoint;
 using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Api.Operators;
 
-namespace FLink.Streaming.Api.Environment
+namespace FLink.Streaming.Api.Environments
 {
     /// <summary>
     /// The StreamExecutionEnvironment is the context in which a streaming program is executed. 

@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Exceptions;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;

@@ -16,7 +16,7 @@ using FLink.Extensions.DependencyInjection;
 using FLink.Runtime.JobGraphs;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Collector.Selector;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Operators;
 using FLink.Streaming.Api.Transformations;
@@ -24,7 +24,7 @@ using FLink.Streaming.Runtime.Partitioners;
 using FLink.Streaming.Runtime.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace FLink.Streaming.Api.Graph
+namespace FLink.Streaming.Api.Graphs
 {
     /// <summary>
     /// Class representing the streaming topology.

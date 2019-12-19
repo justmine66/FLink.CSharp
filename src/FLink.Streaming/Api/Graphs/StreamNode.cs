@@ -11,7 +11,7 @@ using FLink.Core.IO;
 using FLink.Streaming.Api.Collector.Selector;
 using FLink.Streaming.Api.Operators;
 
-namespace FLink.Streaming.Api.Graph
+namespace FLink.Streaming.Api.Graphs
 {
     /// <summary>
     /// Representing the operators in the streaming programs, with all their properties.

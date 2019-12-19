@@ -1,9 +1,9 @@
 ﻿using FLink.Core.Api.Common;
 using FLink.Core.Configurations;
 using FLink.CSharp;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 
-namespace FLink.Streaming.Api.Environment
+namespace FLink.Streaming.Api.Environments
 {
     /// <summary>
     /// A special <see cref="StreamExecutionEnvironment"/> that is used in the web frontend when generating a user-inspectable graph of a streaming job.

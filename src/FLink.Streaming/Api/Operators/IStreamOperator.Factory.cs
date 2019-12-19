@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.TypeInfo;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Runtime.StreamRecords;
 using FLink.Streaming.Runtime.Tasks;
 

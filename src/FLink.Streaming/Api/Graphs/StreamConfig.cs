@@ -1,7 +1,7 @@
 ﻿using FLink.Core.Configurations;
 using FLink.Streaming.Api.Operators;
 
-namespace FLink.Streaming.Api.Graph
+namespace FLink.Streaming.Api.Graphs
 {
     /// <summary>
     /// Internal configuration for a <see cref="IStreamOperator{TOutput}"/>. This is created and populated by the <see cref="StreamGraphGenerator"/>.

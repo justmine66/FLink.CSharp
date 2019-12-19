@@ -1,4 +1,4 @@
-﻿namespace FLink.Streaming.Api.Environment
+﻿namespace FLink.Streaming.Api.Environments
 {
     public abstract class RemoteStreamEnvironment
     {

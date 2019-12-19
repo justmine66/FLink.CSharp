@@ -1,7 +1,7 @@
 ﻿using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Streaming.Api.DataStreams;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 
 namespace UserActionsEvaluation
 {

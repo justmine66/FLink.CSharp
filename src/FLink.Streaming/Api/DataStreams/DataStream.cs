@@ -9,7 +9,7 @@ using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Util;
 using FLink.CSharp;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Functions.Sink;
 using FLink.Streaming.Api.Operators;

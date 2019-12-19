@@ -2,7 +2,7 @@
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Util;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Co;
 using FLink.Streaming.Api.Operators;
 

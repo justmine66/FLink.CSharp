@@ -4,7 +4,7 @@ using FLink.Core.Configurations;
 using FLink.Core.Util;
 using FLink.Examples.Streaming.StateMachine.DFA;
 using FLink.Examples.Streaming.StateMachine.Events;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Source;
 
 namespace FLink.Examples.Streaming.StateMachine

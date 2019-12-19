@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Util;
 
-namespace FLink.Streaming.Api.Environment
+namespace FLink.Streaming.Api.Environments
 {
     /// <summary>
     /// Configuration that captures all checkpointing related settings.

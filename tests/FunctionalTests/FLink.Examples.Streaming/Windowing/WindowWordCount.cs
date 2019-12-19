@@ -1,6 +1,6 @@
 ﻿using FLink.Core.Api.Common.Functions;
 using FLink.Core.Util;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 
 namespace FLink.Examples.Streaming.Windowing
 {

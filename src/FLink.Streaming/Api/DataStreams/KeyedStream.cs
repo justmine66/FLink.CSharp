@@ -4,7 +4,7 @@ using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Streaming.Api.Functions;
-using FLink.Streaming.Api.Graph;
+using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Api.Transformations;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Windows;

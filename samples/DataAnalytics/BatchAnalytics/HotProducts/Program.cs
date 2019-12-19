@@ -9,7 +9,7 @@ using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Configurations;
 using FLink.Core.Util;
 using FLink.Streaming.Api;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions;
 using FLink.Streaming.Api.Functions.Timestamps;
 using FLink.Streaming.Api.Functions.Windowing;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FLink.Streaming.Api;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Api.Windowing.Assigners;

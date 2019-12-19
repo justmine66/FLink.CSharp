@@ -3,7 +3,7 @@ using System.Linq;
 using FLink.Core.Api.Common.State;
 using FLink.Core.Api.Common.TypeInfo;
 using FLink.Core.Api.Dag;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 
 namespace FLink.Streaming.Api.DataStreams
 {

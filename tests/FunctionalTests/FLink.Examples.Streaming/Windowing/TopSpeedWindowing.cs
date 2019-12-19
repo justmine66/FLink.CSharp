@@ -1,7 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common.Functions;
 using FLink.Streaming.Api;
-using FLink.Streaming.Api.Environment;
+using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Timestamps;
 using FLink.Streaming.Api.Functions.Windowing.Delta;
 using FLink.Streaming.Api.Windowing.Assigners;
