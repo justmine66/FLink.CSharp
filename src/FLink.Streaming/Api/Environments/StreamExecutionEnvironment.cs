@@ -12,6 +12,7 @@ using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Configurations;
 using FLink.Core.Exceptions;
+using FLink.Core.Execution;
 using FLink.Core.IO;
 using FLink.Core.Util;
 using FLink.CSharp;
@@ -56,6 +57,32 @@ namespace FLink.Streaming.Api.Environments
         // The default parallelism used when creating a local environment.
         private static readonly int DefaultLocalParallelism = System.Environment.ProcessorCount;
 
+        private readonly IExecutorServiceLoader _executorServiceLoader;
+        private readonly Configuration _configuration;
+        private readonly Type _userClassType;
+
+        #region [ Constructors ]
+
+        protected StreamExecutionEnvironment()
+            : this(new Configuration())
+        { }
+
+        protected StreamExecutionEnvironment(Configuration configuration)
+            : this(DefaultExecutorServiceLoader.Instance, configuration, null)
+        { }
+
+        protected StreamExecutionEnvironment(
+            IExecutorServiceLoader executorServiceLoader,
+            Configuration configuration,
+            Type userClassType)
+        {
+            _executorServiceLoader = executorServiceLoader;
+            _configuration = configuration;
+            _userClassType = userClassType;
+        }
+
+        #endregion
+
         /// <summary>
         /// The execution configuration for this environment.
         /// </summary>
@@ -87,6 +114,12 @@ namespace FLink.Streaming.Api.Environments
         /// </summary>
         public int Parallelism => ExecutionConfig.Parallelism;
 
+        /// <summary>
+        /// Gets the maximum degree of parallelism defined for the program.
+        /// The maximum degree of parallelism specifies the upper limit for dynamic scaling. It also defines the number of key groups used for partitioned state.
+        /// </summary>
+        public int MaxParallelism => ExecutionConfig.MaxParallelism;
+
         public IList<Transformation<object>> Transformations = new List<Transformation<object>>();
 
         /// <summary>
@@ -108,6 +141,23 @@ namespace FLink.Streaming.Api.Environments
         public StreamExecutionEnvironment SetParallelism(int parallelism)
         {
             ExecutionConfig.SetParallelism(parallelism);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the maximum degree of parallelism defined for the program. The upper limit (inclusive) is <see cref="short.MaxValue"/>.
+        /// The maximum degree of parallelism specifies the upper limit for dynamic scaling. It also defines the number of key groups used for partitioned state.
+        /// </summary>
+        /// <param name="maxParallelism"></param>
+        /// <returns></returns>
+        public StreamExecutionEnvironment SetMaxParallelism(int maxParallelism)
+        {
+            Preconditions.CheckArgument(
+                maxParallelism > 0 && maxParallelism <= KeyGroupRangeAssignment.UpperBoundMaxParallelism,
+                $"maxParallelism is out of bounds 0 < maxParallelism <= {KeyGroupRangeAssignment.UpperBoundMaxParallelism}. Found: {maxParallelism}");
+
+            ExecutionConfig.MaxParallelism = maxParallelism;
+
             return this;
         }
 
@@ -572,20 +622,44 @@ namespace FLink.Streaming.Api.Environments
             Transformations.Add(transformation as Transformation<dynamic>);
         }
 
-        public JobExecutionResult Execute() => Execute(DefaultJobName);
+        /// <summary>
+        /// Triggers the program execution.
+        /// The environment will execute all parts of the program that have resulted in a "sink" operation.
+        /// Sink operations are for example printing results or forwarding them to a message queue.
+        /// The program execution will be logged and displayed with a generated default name.
+        /// </summary>
+        /// <returns>The result of the job execution, containing elapsed time and accumulators.</returns>
+        /// <exception cref="Exception">which occurs during job execution.</exception>
+        public virtual JobExecutionResult Execute() => Execute(DefaultJobName);
 
         /// <summary>
-        /// Triggers the program execution. The environment will execute all parts of the program that have resulted in a "sink" operation.Sink operations are for example printing results or forwarding them to a message queue.
+        /// Triggers the program execution.
+        /// The environment will execute all parts of the program that have resulted in a "sink" operation.
+        /// Sink operations are for example printing results or forwarding them to a message queue.
+        ///  The program execution will be logged and displayed with a generated default name.
         /// </summary>
-        /// <param name="jobName"></param>
-        /// <returns></returns>
-        public JobExecutionResult Execute(string jobName)
+        /// <param name="jobName">Desired name of the job</param>
+        /// <returns>The result of the job execution, containing elapsed time and accumulators.</returns>
+        /// <exception cref="Exception">which occurs during job execution.</exception>
+        public virtual JobExecutionResult Execute(string jobName)
         {
             Preconditions.CheckNotNull(jobName, "Streaming Job name should not be null.");
 
             return Execute(GetStreamGraph(jobName));
         }
 
-        public abstract JobExecutionResult Execute(StreamGraph streamGraph);
+        /// <summary>
+        /// Triggers the program execution.
+        /// The environment will execute all parts of the program that have resulted in a "sink" operation.
+        /// Sink operations are for example printing results or forwarding them to a message queue.
+        ///  The program execution will be logged and displayed with a generated default name.
+        /// </summary>
+        /// <param name="streamGraph">the stream graph representing the transformations</param>
+        /// <returns>The result of the job execution, containing elapsed time and accumulators.</returns>
+        /// <exception cref="Exception">which occurs during job execution.</exception>
+        public virtual JobExecutionResult Execute(StreamGraph streamGraph)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

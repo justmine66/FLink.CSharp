@@ -1,7 +1,7 @@
 ﻿using FLink.Core.Api.Common;
 using FLink.Core.Configurations;
+using FLink.Core.Util;
 using FLink.CSharp;
-using FLink.Streaming.Api.Graphs;
 
 namespace FLink.Streaming.Api.Environments
 {
@@ -15,27 +15,30 @@ namespace FLink.Streaming.Api.Environments
         public LocalStreamEnvironment()
             : this(new Configuration()) { }
 
-        public LocalStreamEnvironment(Configuration configuration)
+        public LocalStreamEnvironment(Configuration configuration) 
+            : base(ValidateAndGetConfiguration(configuration))
         {
             if (!ExecutionEnvironment.AreExplicitEnvironmentsAllowed)
             {
-                throw new InvalidProgramException(
-                    "The LocalStreamEnvironment cannot be used when submitting a program through a client, " +
-                    "or running in a TestEnvironment context.");
+                throw new InvalidProgramException("The LocalStreamEnvironment cannot be used when submitting a program through a client, or running in a TestEnvironment context.");
             }
 
             _configuration = configuration;
             SetParallelism(1);
         }
 
-        /// <summary>
-        /// Executes the JobGraph of the on a mini cluster of ClusterUtil with a user specified name.
-        /// </summary>
-        /// <param name="streamGraph"></param>
-        /// <returns>The result of the job execution, containing elapsed time and accumulators.</returns>
-        public override JobExecutionResult Execute(StreamGraph streamGraph)
+        private static Configuration ValidateAndGetConfiguration(Configuration configuration)
         {
-            throw new System.NotImplementedException();
+            if (!ExecutionEnvironment.AreExplicitEnvironmentsAllowed)
+            {
+                throw new InvalidProgramException("The LocalStreamEnvironment cannot be used when submitting a program through a client, or running in a TestEnvironment context.");
+            }
+
+            var effectiveConfiguration = new Configuration(Preconditions.CheckNotNull(configuration));
+            effectiveConfiguration.Set(DeploymentOptions.Target, "local");
+            effectiveConfiguration.Set(DeploymentOptions.Attached, true);
+
+            return effectiveConfiguration;
         }
     }
 }

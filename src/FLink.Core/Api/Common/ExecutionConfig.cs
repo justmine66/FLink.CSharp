@@ -104,4 +104,12 @@ namespace FLink.Core.Api.Common
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Abstract class for a custom user configuration object registered at the execution config.
+    /// </summary>
+    public class GlobalJobParameters
+    {
+
+    }
 }
