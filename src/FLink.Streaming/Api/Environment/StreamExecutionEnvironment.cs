@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using FLink.Clients.Program;
 using FLink.Core.Api.Common;
+using FLink.Core.Api.Common.Cache;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.TypeInfo;
@@ -53,7 +54,16 @@ namespace FLink.Streaming.Api.Environment
 
         private readonly List<Transformation<object>> _transformations = new List<Transformation<object>>();
 
-        protected bool IsChainingEnabled = true;
+        /// <summary>
+        /// Gets whether operator chaining is enabled.
+        /// true if chaining is enabled, false otherwise.
+        /// </summary>
+        public bool IsChainingEnabled = true;
+
+        /// <summary>
+        /// Get the list of cached files that were registered for distribution among the task managers.
+        /// </summary>
+        public IList<(string, DistributedCacheEntry)> CachedFiles = new List<(string, DistributedCacheEntry)>();
 
         public TimeCharacteristic TimeCharacteristic;
 
@@ -67,7 +77,7 @@ namespace FLink.Streaming.Api.Environment
         /// </summary>
         public int Parallelism { get; } = Config.Parallelism;
 
-        public List<Transformation<dynamic>> Transformations = new List<Transformation<dynamic>>();
+        public IList<Transformation<dynamic>> Transformations = new List<Transformation<dynamic>>();
 
         /// <summary>
         /// Returns a "closure-cleaned" version of the given function. Cleans only if closure cleaning is not disabled in the <see cref="ExecutionConfig"/>.
@@ -94,6 +104,32 @@ namespace FLink.Streaming.Api.Environment
         {
             Config.SetParallelism(parallelism);
             return this;
+        }
+
+        /// <summary>
+        /// Disables operator chaining for streaming operators.
+        /// Operator chaining allows non-shuffle operations to be co-located in the same thread fully avoiding serialization and de-serialization.
+        /// </summary>
+        /// <returns>StreamExecutionEnvironment with chaining disabled.</returns>
+        public StreamExecutionEnvironment DisableOperatorChaining()
+        {
+            IsChainingEnabled = false;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Registers a file at the distributed cache under the given name.
+        /// The file will be accessible from any user-defined function in the (distributed) runtime under a local path.
+        /// Files may be local files (which will be distributed via BlobServer), or files in a distributed file system.
+        /// The runtime will copy the files temporarily to a local cache, if needed.
+        /// </summary>
+        /// <param name="filePath">The path of the file, as a URI (e.g. "file:///some/path" or "hdfs://host:port/and/path")</param>
+        /// <param name="name">The name under which the file is registered.</param>
+        /// <param name="executable">Flag indicating whether the file should be executable</param>
+        public void RegisterCachedFile(string filePath, string name, bool executable)
+        {
+            CachedFiles.Add((name, new DistributedCacheEntry(filePath, executable)));
         }
 
         /// <summary>
@@ -157,9 +193,52 @@ namespace FLink.Streaming.Api.Environment
             }
         }
 
-        public StreamGraph GetStreamGraph(string jobName)
+        /// <summary>
+        /// Getter of the <see cref="StreamGraph"/> of the streaming job.
+        /// This call clears previously registered <see cref="Transformations"/>.
+        /// </summary>
+        /// <returns>The streamgraph representing the transformations</returns>
+        public StreamGraph GetStreamGraph() => GetStreamGraph(DefaultJobName);
+
+        /// <summary>
+        /// Getter of the <see cref="StreamGraph"/> of the streaming job.
+        /// This call clears previously registered <see cref="Transformations"/>.
+        /// </summary>
+        /// <param name="jobName">Desired name of the job</param>
+        /// <returns>The streamgraph representing the transformations</returns>
+        public StreamGraph GetStreamGraph(string jobName) => GetStreamGraph(jobName, true);
+
+        /// <summary>
+        /// Getter of the <see cref="StreamGraph"/> of the streaming job with the option to clear previously registered <see cref="Transformations"/>.
+        /// Clearing the transformations allows, for example, to not re-execute the same operations when calling <see cref="Execute()"/> multiple times.
+        /// </summary>
+        /// <param name="jobName">Desired name of the job</param>
+        /// <param name="clearTransformations">Whether or not to clear previously registered transformations</param>
+        /// <returns>The streamgraph representing the transformations</returns>
+        public StreamGraph GetStreamGraph(string jobName, bool clearTransformations)
         {
-            return null;
+            var streamGraph = GetStreamGraphGenerator().SetJobName(jobName).Generate();
+            if (clearTransformations)
+            {
+                Transformations.Clear();
+            }
+
+            return streamGraph;
+        }
+
+        private StreamGraphGenerator GetStreamGraphGenerator()
+        {
+            if (Transformations.Count <= 0)
+            {
+                throw new IllegalStateException("No operators defined in streaming topology. Cannot execute.");
+            }
+
+            return new StreamGraphGenerator(Transformations, ExecutionConfig, CheckpointConfig)
+                .SetStateBackend(StateBackend)
+                .SetChaining(IsChainingEnabled)
+                .SetUserArtifacts(CachedFiles)
+                .SetTimeCharacteristic(TimeCharacteristic)
+                .SetDefaultBufferTimeout(BufferTimeout);
         }
 
         public StreamExecutionEnvironment SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
@@ -403,9 +482,9 @@ namespace FLink.Streaming.Api.Environment
         /// <summary>
         /// Gets the state backend that defines how to store and checkpoint state.
         /// </summary>
-        public IStateBackend StateBackend;
+        public IStateBackend StateBackend { get; private set; }
 
-        public CheckpointConfig CheckpointCfg = new CheckpointConfig();
+        public CheckpointConfig CheckpointConfig = new CheckpointConfig();
 
         /// <summary>
         /// Sets the state backend that describes how to store and checkpoint operator state.
@@ -428,7 +507,7 @@ namespace FLink.Streaming.Api.Environment
         /// <returns>This StreamExecutionEnvironment itself, to allow chaining of function calls.</returns>
         public StreamExecutionEnvironment EnableCheckpointing(long interval)
         {
-            CheckpointCfg.CheckpointInterval = interval;
+            CheckpointConfig.CheckpointInterval = interval;
             return this;
         }
 
@@ -441,8 +520,8 @@ namespace FLink.Streaming.Api.Environment
         /// <returns>This StreamExecutionEnvironment itself, to allow chaining of function calls.</returns>
         public StreamExecutionEnvironment EnableCheckpointing(long interval, CheckpointingMode mode)
         {
-            CheckpointCfg.CheckpointingMode = mode;
-            CheckpointCfg.CheckpointInterval = interval;
+            CheckpointConfig.CheckpointingMode = mode;
+            CheckpointConfig.CheckpointInterval = interval;
             return this;
         }
 

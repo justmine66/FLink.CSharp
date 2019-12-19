@@ -49,7 +49,7 @@ namespace FLink.Streaming.Api.Graph
 
         public bool IsChainingEnabled { get; set; }
 
-        public IList<(string, DistributedCache.DistributedCacheEntry)> UserArtifacts { get; set; }
+        public IList<(string, DistributedCacheEntry)> UserArtifacts { get; set; }
 
         public TimeCharacteristic TimeCharacteristic { get; set; }
 

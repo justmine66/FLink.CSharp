@@ -41,7 +41,7 @@ namespace FLink.Streaming.Api.Graph
         private IStateBackend _stateBackend;
         private bool _chaining = true;
         private ScheduleMode _scheduleMode = DefaultScheduleMode;
-        private IList<(string, DistributedCache.DistributedCacheEntry)> _userArtifacts;
+        private IList<(string, DistributedCacheEntry)> _userArtifacts;
         private TimeCharacteristic _timeCharacteristic = DefaultTimeCharacteristic;
         private long _defaultBufferTimeout = DefaultNetworkBufferTimeout;
         private string _jobName = DefaultJobName;
@@ -65,7 +65,7 @@ namespace FLink.Streaming.Api.Graph
         // Keep track of which Transforms we have already transformed, this is necessary because we have loops, i.e. feedback edges.
         private IDictionary<Transformation<object>, IList<int>> _alreadyTransformed;
 
-        public StreamGraphGenerator(List<Transformation<object>> transformations, ExecutionConfig executionConfig, CheckpointConfig checkpointConfig)
+        public StreamGraphGenerator(IList<Transformation<object>> transformations, ExecutionConfig executionConfig, CheckpointConfig checkpointConfig)
         {
             _transformations = Preconditions.CheckNotNull(transformations);
             _executionConfig = Preconditions.CheckNotNull(executionConfig);
@@ -90,7 +90,7 @@ namespace FLink.Streaming.Api.Graph
             return this;
         }
 
-        public StreamGraphGenerator SetUserArtifacts(IList<(string, DistributedCache.DistributedCacheEntry)> userArtifacts)
+        public StreamGraphGenerator SetUserArtifacts(IList<(string, DistributedCacheEntry)> userArtifacts)
         {
             _userArtifacts = userArtifacts;
             return this;
