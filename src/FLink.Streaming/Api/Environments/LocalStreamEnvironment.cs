@@ -35,6 +35,7 @@ namespace FLink.Streaming.Api.Environments
             }
 
             var effectiveConfiguration = new Configuration(Preconditions.CheckNotNull(configuration));
+
             effectiveConfiguration.Set(DeploymentOptions.Target, "local");
             effectiveConfiguration.Set(DeploymentOptions.Attached, true);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
 using FLink.Core.IO;
@@ -22,7 +23,7 @@ namespace FLink.Core.Configurations
         /// Creates a new configuration with the copy of the given configuration.
         /// </summary>
         /// <param name="other">The configuration to copy the entries from.</param>
-        public Configuration(Configuration other) => ConfData = new Dictionary<string, object>(other.ConfData);
+        public Configuration(Configuration other) => ConfData = new ConcurrentDictionary<string, object>();
 
         public string GetString(ConfigOption<string> option)
         {
@@ -67,12 +68,29 @@ namespace FLink.Core.Configurations
 
         public IWritableConfig Set<T>(ConfigOption<T> option, T value)
         {
-            throw new NotImplementedException();
+            SetValueInternal(option.Key, value);
+
+            return this;
         }
 
         public T Get<T>(ConfigOption<T> option)
         {
             throw new NotImplementedException();
+        }
+
+        private void SetValueInternal<T>(string key, T value)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            ConfData.Add(key, value);
         }
     }
 }
