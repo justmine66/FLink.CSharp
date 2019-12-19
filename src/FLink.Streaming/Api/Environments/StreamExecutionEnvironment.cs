@@ -32,27 +32,34 @@ namespace FLink.Streaming.Api.Environments
     /// </remarks>
     public abstract class StreamExecutionEnvironment
     {
-        // The default name to use for a streaming job if no other name has been specified.
+        /// <summary>
+        /// The default name to use for a streaming job if no other name has been specified.
+        /// </summary>
         public const string DefaultJobName = "Flink Streaming Job";
 
-        // The time characteristic that is used if none other is set.
-        private const TimeCharacteristic DefaultTimeCharacteristic = TimeCharacteristic.ProcessingTime;
+        /// <summary>
+        /// The time characteristic that is used if none other is set.
+        /// </summary>
+        public const TimeCharacteristic DefaultTimeCharacteristic = TimeCharacteristic.ProcessingTime;
 
-        // The default buffer timeout 100ms (max delay of records in the network stack).
-        private const long DefaultNetworkBufferTimeout = 100L;
+        /// <summary>
+        /// The default buffer timeout 100ms (max delay of records in the network stack).
+        /// </summary>
+        public const long DefaultNetworkBufferTimeout = 100L;
 
         // The environment of the context (local by default, cluster if invoked through command line).
-        private static readonly IStreamExecutionEnvironmentFactory ContextEnvironmentFactory;
+        private static IStreamExecutionEnvironmentFactory _contextEnvironmentFactory;
+
         // The ThreadLocal used to store IStreamExecutionEnvironmentFactory.
         private static readonly ThreadLocal<IStreamExecutionEnvironmentFactory> ThreadLocalContextEnvironmentFactory = new ThreadLocal<IStreamExecutionEnvironmentFactory>();
 
         // The default parallelism used when creating a local environment.
-        private static int _defaultLocalParallelism = System.Environment.ProcessorCount;
+        private static readonly int DefaultLocalParallelism = System.Environment.ProcessorCount;
 
-        // The execution configuration for this environment.
-        private static readonly ExecutionConfig Config = new ExecutionConfig();
-
-        private readonly List<Transformation<object>> _transformations = new List<Transformation<object>>();
+        /// <summary>
+        /// The execution configuration for this environment.
+        /// </summary>
+        public readonly ExecutionConfig ExecutionConfig = new ExecutionConfig();
 
         /// <summary>
         /// Gets whether operator chaining is enabled.
@@ -65,7 +72,10 @@ namespace FLink.Streaming.Api.Environments
         /// </summary>
         public IList<(string, DistributedCacheEntry)> CachedFiles = new List<(string, DistributedCacheEntry)>();
 
-        public TimeCharacteristic TimeCharacteristic;
+        /// <summary>
+        /// Gets the time characteristic used by the data streams.
+        /// </summary>
+        public TimeCharacteristic StreamTimeCharacteristic { get; private set; } = DefaultTimeCharacteristic;
 
         /// <summary>
         /// A maximum wait time for the buffers to fill up in the network stack. The default buffer timeout 100ms.
@@ -75,9 +85,9 @@ namespace FLink.Streaming.Api.Environments
         /// <summary>
         /// Gets the parallelism with which operation are executed by default. Operations can individually override this value to use a specific parallelism.
         /// </summary>
-        public int Parallelism { get; } = Config.Parallelism;
+        public int Parallelism => ExecutionConfig.Parallelism;
 
-        public IList<Transformation<dynamic>> Transformations = new List<Transformation<dynamic>>();
+        public IList<Transformation<object>> Transformations = new List<Transformation<object>>();
 
         /// <summary>
         /// Returns a "closure-cleaned" version of the given function. Cleans only if closure cleaning is not disabled in the <see cref="ExecutionConfig"/>.
@@ -91,18 +101,27 @@ namespace FLink.Streaming.Api.Environments
         }
 
         /// <summary>
-        /// Gets the config object. 
-        /// </summary>
-        public ExecutionConfig ExecutionConfig => Config;
-
-        /// <summary>
         /// Sets the parallelism for operations executed through this environment. Setting a parallelism of x here will cause all operators (such as map, batchReduce) to run with x parallel instances. This method overrides the default parallelism for this environment. The <see cref="LocalStreamEnvironment"/> uses by default a value equal to the number of hardware contexts(CPU cores / threads). 
         /// </summary>
         /// <param name="parallelism">The parallelism</param>
         /// <returns>The configured <see cref="StreamExecutionEnvironment"/>.</returns>
         public StreamExecutionEnvironment SetParallelism(int parallelism)
         {
-            Config.SetParallelism(parallelism);
+            ExecutionConfig.SetParallelism(parallelism);
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the time characteristic for all streams create from this environment, e.g., processing time, event time, or ingestion time.
+        /// If you set the characteristic to IngestionTime of EventTime this will set a default watermark update interval of 200 ms.
+        /// If this is not applicable for your application you should change it using <see cref="ExecutionConfig.SetAutoWatermarkInterval(long)"/>.
+        /// </summary>
+        /// <param name="characteristic">The time characteristic.</param>
+        /// <returns>The configured <see cref="StreamExecutionEnvironment"/>.</returns>
+        public StreamExecutionEnvironment SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
+        {
+            StreamTimeCharacteristic = Preconditions.CheckNotNull(characteristic);
+            ExecutionConfig.SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
             return this;
         }
 
@@ -139,7 +158,7 @@ namespace FLink.Streaming.Api.Environments
         /// <returns>The execution environment of the context in which the program is</returns>
         public static StreamExecutionEnvironment GetExecutionEnvironment()
         {
-            var factory = Utils.ResolveFactory(ThreadLocalContextEnvironmentFactory, ContextEnvironmentFactory);
+            var factory = Utils.ResolveFactory(ThreadLocalContextEnvironmentFactory, _contextEnvironmentFactory);
             var environment = factory?.CreateExecutionEnvironment() ?? CreateStreamExecutionEnvironment();
 
             return environment;
@@ -150,7 +169,7 @@ namespace FLink.Streaming.Api.Environments
         /// The local execution environment will run the program in a multi-threaded fashion in the same CLR as the  environment was created in. The default parallelism of the local environment is the number of hardware contexts(CPU cores / threads), unless it was specified differently by  <see cref="StreamExecutionEnvironment.SetParallelism"/>.
         /// </summary>
         /// <returns>A local execution environment.</returns>
-        public static LocalStreamEnvironment CreateLocalEnvironment() => CreateLocalEnvironment(_defaultLocalParallelism);
+        public static LocalStreamEnvironment CreateLocalEnvironment() => CreateLocalEnvironment(DefaultLocalParallelism);
 
         /// <summary>
         /// Creates a <see cref="LocalStreamEnvironment"/>. The local execution environment will run the program in a multi-threaded fashion in the same CLR as the environment was created in. It will use the parallelism specified in the parameter.
@@ -237,15 +256,8 @@ namespace FLink.Streaming.Api.Environments
                 .SetStateBackend(StateBackend)
                 .SetChaining(IsChainingEnabled)
                 .SetUserArtifacts(CachedFiles)
-                .SetTimeCharacteristic(TimeCharacteristic)
+                .SetTimeCharacteristic(StreamTimeCharacteristic)
                 .SetDefaultBufferTimeout(BufferTimeout);
-        }
-
-        public StreamExecutionEnvironment SetStreamTimeCharacteristic(TimeCharacteristic characteristic)
-        {
-            TimeCharacteristic = Preconditions.CheckNotNull(characteristic);
-            ExecutionConfig.SetAutoWatermarkInterval(characteristic == TimeCharacteristic.ProcessingTime ? 0 : 200);
-            return this;
         }
 
         /// <summary>
@@ -276,7 +288,7 @@ namespace FLink.Streaming.Api.Environments
             ISourceFunction<TOut> function;
             try
             {
-                function = new FromElementsFunction<TOut>(typeInfo.CreateSerializer(Config), data);
+                function = new FromElementsFunction<TOut>(typeInfo.CreateSerializer(ExecutionConfig), data);
             }
             catch (Exception e)
             {
@@ -484,6 +496,9 @@ namespace FLink.Streaming.Api.Environments
         /// </summary>
         public IStateBackend StateBackend { get; private set; }
 
+        /// <summary>
+        /// Gets the checkpoint config, which defines values like checkpoint interval, delay between checkpoints, etc.
+        /// </summary>
         public CheckpointConfig CheckpointConfig = new CheckpointConfig();
 
         /// <summary>
@@ -523,6 +538,22 @@ namespace FLink.Streaming.Api.Environments
             CheckpointConfig.CheckpointingMode = mode;
             CheckpointConfig.CheckpointInterval = interval;
             return this;
+        }
+
+        #endregion
+
+        #region [ Methods to control the context and local environments for execution from packaged programs ]
+
+        protected static void InitializeContextEnvironment(IStreamExecutionEnvironmentFactory factory)
+        {
+            _contextEnvironmentFactory = factory;
+            ThreadLocalContextEnvironmentFactory.Value = _contextEnvironmentFactory;
+        }
+
+        protected static void ResetContextEnvironment()
+        {
+            _contextEnvironmentFactory = null;
+            ThreadLocalContextEnvironmentFactory.Value = null;
         }
 
         #endregion

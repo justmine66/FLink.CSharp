@@ -180,7 +180,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="size">The size of the window.</param>
         /// <returns></returns>
         public AllWindowedStream<TElement, TimeWindow> TimeWindowAll(TimeSpan size) =>
-            ExecutionEnvironment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+            ExecutionEnvironment.StreamTimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? WindowAll(TumblingProcessingTimeWindowAssigner<TElement>.Of(size))
                 : WindowAll(TumblingEventTimeWindowAssigner<TElement>.Of(size));
 
@@ -192,7 +192,7 @@ namespace FLink.Streaming.Api.DataStreams
         /// <param name="slide">The slide parameter controls how frequently a sliding window is started.</param>
         /// <returns></returns>
         public AllWindowedStream<TElement, TimeWindow> TimeWindowAll(TimeSpan size, TimeSpan slide) =>
-            ExecutionEnvironment.TimeCharacteristic == TimeCharacteristic.ProcessingTime
+            ExecutionEnvironment.StreamTimeCharacteristic == TimeCharacteristic.ProcessingTime
                 ? WindowAll(SlidingProcessingTimeWindowAssigner<TElement>.Of(size, slide))
                 : WindowAll(SlidingEventTimeWindowAssigner<TElement>.Of(size, slide));
 
