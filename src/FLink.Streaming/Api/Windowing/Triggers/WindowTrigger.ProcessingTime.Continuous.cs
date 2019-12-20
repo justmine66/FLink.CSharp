@@ -34,5 +34,8 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         {
             throw new NotImplementedException();
         }
+
+        public static ContinuousProcessingTimeTrigger<TElement, TWindow> Of(TimeSpan interval) =>
+            new ContinuousProcessingTimeTrigger<TElement, TWindow>((long) interval.TotalMilliseconds);
     }
 }

@@ -15,11 +15,11 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <typeparam name="TElement"></typeparam>
     public class SlidingEventTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
-        public long Size;
+        public long Size { get; }
 
-        public long Slide;
+        public long Slide { get; }
 
-        public long Offset;
+        public long Offset { get; }
 
         /// <summary>
         /// Create a <see cref="SlidingEventTimeWindowAssigner{TElement}"/> instance.

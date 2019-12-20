@@ -19,7 +19,8 @@ namespace FLink.Streaming.Api.DataStreams
             StreamExecutionEnvironment env,
             TypeInformation<T> outTypeInfo,
             StreamSource<T, ISourceFunction<T>> @operator,
-            bool isParallel, string sourceName)
+            bool isParallel, 
+            string sourceName)
             : base(env, new SourceTransformation<T>(sourceName, @operator, outTypeInfo, env.Parallelism))
         {
             _isParallel = isParallel;

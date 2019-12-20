@@ -1,4 +1,5 @@
-﻿using FLink.Streaming.Api.Watermarks;
+﻿using System;
+using FLink.Streaming.Api.Watermarks;
 using FLink.Streaming.Api.Windowing.Windows;
 
 namespace FLink.Streaming.Api.Windowing.Triggers
@@ -34,5 +35,8 @@ namespace FLink.Streaming.Api.Windowing.Triggers
         {
             throw new System.NotImplementedException();
         }
+
+        public static ContinuousEventTimeTrigger<TElement, TWindow> Of(TimeSpan interval) =>
+            new ContinuousEventTimeTrigger<TElement, TWindow>((long)interval.TotalMilliseconds);
     }
 }

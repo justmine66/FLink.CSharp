@@ -14,26 +14,26 @@ namespace FLink.Core.Api.Common.State
     public class MapStateDescriptor<TKey, TValue> : StateDescriptor<IMapState<TKey, TValue>, IDictionary<TKey, TValue>>
     {
         public MapStateDescriptor(
-            string name, 
-            TypeSerializer<TKey> keySerializer, 
-            TypeSerializer<TValue> valueSerializer, 
+            string name,
+            TypeSerializer<TKey> keySerializer,
+            TypeSerializer<TValue> valueSerializer,
             IDictionary<TKey, TValue> defaultValue = default)
             : base(name, new MapSerializer<TKey, TValue>(keySerializer, valueSerializer), defaultValue)
         {
         }
 
         public MapStateDescriptor(
-            string name, 
-            TypeInformation<TKey> keyTypeInfo, 
-            TypeInformation<TValue> valueTypeInfo, 
+            string name,
+            TypeInformation<TKey> keyTypeInfo,
+            TypeInformation<TValue> valueTypeInfo,
             IDictionary<TKey, TValue> defaultValue = default)
             : base(name, new MapTypeInfo<TKey, TValue>(keyTypeInfo, valueTypeInfo), defaultValue)
         {
         }
 
         public MapStateDescriptor(
-            string name, 
-            TypeSerializer<IDictionary<TKey, TValue>> serializer, 
+            string name,
+            TypeSerializer<IDictionary<TKey, TValue>> serializer,
             IDictionary<TKey, TValue> defaultValue = default)
             : base(name, serializer, defaultValue)
         {

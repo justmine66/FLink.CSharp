@@ -146,21 +146,23 @@ namespace FLink.Core.Api.Dag
         /// </summary>
         public string UserProvidedNodeHash { get; private set; }
 
+        private long _bufferTimeout = -1;
         /// <summary>
-        /// Gets the buffer timeout of this <see cref="Transformation{TElement}"/>.
-        /// </summary>
-        public long BufferTimeout { get; private set; } = -1;
-        /// <summary>
-        /// Set the buffer timeout of this <see cref="Transformation{TElement}"/>. The timeout defines how long data may linger in a partially full buffer before being sent over the network.
+        /// Gets and sets the buffer timeout of this <see cref="Transformation{TElement}"/>.
+        /// The timeout defines how long data may linger in a partially full buffer before being sent over the network.
         /// Lower timeouts lead to lower tail latencies, but may affect throughput. For Flink 1.5+, timeouts of 1ms are feasible for jobs with high parallelism.
         /// A value of -1 means that the default buffer timeout should be used. A value of zero indicates that no buffering should happen, and all records/events should be immediately sent through the network, without additional buffering.
         /// </summary>
-        /// <param name="bufferTimeout"></param>
-        public void SetBufferTimeout(long bufferTimeout)
+        public long BufferTimeout
         {
-            Preconditions.CheckArgument(bufferTimeout >= -1);
-            BufferTimeout = bufferTimeout;
-        }
+            get => _bufferTimeout;
+            set
+            {
+                var bufferTimeout = value;
+                Preconditions.CheckArgument(bufferTimeout >= -1);
+                _bufferTimeout = bufferTimeout;
+            }
+        } 
 
         /// <summary>
         /// Gets and sets the slot sharing group name of this transformation.
@@ -182,7 +184,7 @@ namespace FLink.Core.Api.Dag
         /// A use case for this is in migration between Flink versions or changing the jobs in a way that changes the automatically generated hashes. In this case, providing the previous hashes directly through this method (e.g. obtained from old logs) can help to reestablish a lost mapping from states to their target operator.
         /// </summary>
         /// <param name="uidHash">The user provided hash for this operator. This will become the JobVertexID, which is shown in the logs and web ui.</param>
-        public void SetUidHash(string uidHash)
+        public void SetUIdHash(string uidHash)
         {
             Preconditions.CheckNotNull(uidHash);
             Preconditions.CheckArgument(Regex.IsMatch(uidHash, "^[0-9A-Fa-f]{32}$"),

@@ -15,9 +15,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <typeparam name="TElement"></typeparam>
     public class TumblingProcessingTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
-        public long Size;
+        public long Size { get; }
 
-        public long Offset;
+        public long Offset { get; }
 
         /// <summary>
         /// Create a <see cref="TumblingProcessingTimeWindowAssigner{TElement}"/> instance.

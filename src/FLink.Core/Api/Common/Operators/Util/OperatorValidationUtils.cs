@@ -14,6 +14,9 @@ namespace FLink.Core.Api.Common.Operators.Util
                 $"The parallelism of an operator must be at least 1, or {nameof(ExecutionConfig.DefaultParallelism)} (use system default).");
         }
 
+        public static void ValidateMaxParallelism(int maxParallelism, bool canBeParallel) =>
+            ValidateMaxParallelism(maxParallelism, int.MaxValue, canBeParallel);
+
         public static void ValidateMaxParallelism(int maxParallelism, int upperBound = int.MaxValue, bool canBeParallel = true)
         {
             Preconditions.CheckArgument(maxParallelism > 0,

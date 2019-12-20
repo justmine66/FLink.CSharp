@@ -32,9 +32,9 @@
         /// <summary>
         /// Merges two accumulators.
         /// </summary>
-        /// <param name="a">An accumulator to merge</param>
-        /// <param name="b">Another accumulator to merge</param>
+        /// <param name="acc1">An accumulator to merge</param>
+        /// <param name="acc2">Another accumulator to merge</param>
         /// <returns>The accumulator with the merged state</returns>
-        TAccumulator Merge(TAccumulator a, TAccumulator b);
+        TAccumulator Merge(TAccumulator acc1, TAccumulator acc2);
     }
 }

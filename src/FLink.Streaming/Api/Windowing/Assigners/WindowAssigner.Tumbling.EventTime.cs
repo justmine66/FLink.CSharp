@@ -15,9 +15,9 @@ namespace FLink.Streaming.Api.Windowing.Assigners
     /// <typeparam name="TElement">The type of elements that this WindowAssigner can assign windows to.</typeparam>
     public class TumblingEventTimeWindowAssigner<TElement> : WindowAssigner<TElement, TimeWindow>
     {
-        public long Size;
+        public long Size { get; }
 
-        public long Offset;
+        public long Offset { get; }
 
         /// <summary>
         /// Create a <see cref="TumblingEventTimeWindowAssigner{TElement}"/> instance.
