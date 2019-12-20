@@ -21,8 +21,7 @@ namespace FLink.Streaming.Api.Transformations
             TypeInformation<TElement> outputType,
             int parallelism)
             : base(name, outputType, parallelism)
-        {
-        }
+        { }
 
         /// <summary>
         /// Sets the chaining strategy of this <see cref="Transformation{TElement}"/>.

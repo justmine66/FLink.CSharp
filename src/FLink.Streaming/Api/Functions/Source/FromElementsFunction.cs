@@ -88,7 +88,7 @@ namespace FLink.Streaming.Api.Functions.Source
             }
         }
 
-        public void Run(ISourceContext<T> ctx)
+        public void Run(ISourceFunctionContext<T> ctx)
         {
             var stream = new MemoryStream(_elementsSerialized);
             var input = new DataInputViewStreamWrapper(stream);

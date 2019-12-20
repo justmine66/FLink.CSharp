@@ -198,12 +198,8 @@ namespace FLink.Core.Api.Dag
         /// </summary>
         public abstract IList<Transformation<dynamic>> TransitivePredecessors { get; }
 
-        public override string ToString() => GetType().Name + "{" +
-                                            "id=" + Id +
-                                            ", name='" + Name + '\'' +
-                                            ", outputType=" + OutputType +
-                                            ", parallelism=" + Parallelism +
-                                            '}';
+        public override string ToString() =>
+            $"{GetType().Name}{{id={Id}, name='{Name}{'\''}, outputType={OutputType}, parallelism={Parallelism}{'}'}";
 
         public bool Equals(Transformation<TElement> other)
         {

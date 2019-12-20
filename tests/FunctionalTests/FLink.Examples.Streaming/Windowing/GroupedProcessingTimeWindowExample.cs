@@ -43,7 +43,7 @@ namespace FLink.Examples.Streaming.Windowing
         {
             private volatile bool _running = true;
 
-            public override void Run(ISourceContext<Element> ctx)
+            public override void Run(ISourceFunctionContext<Element> ctx)
             {
                 var startTime = DateTime.Now.Ticks;
                 var numElements = 20000000;

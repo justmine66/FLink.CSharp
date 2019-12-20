@@ -10,24 +10,30 @@ namespace FLink.Streaming.Api.DataStreams
     /// <summary>
     /// The DataStreamSource represents the starting point of a DataStream.
     /// </summary>
-    /// <typeparam name="T">Type of the elements in the DataStream created from the this source.</typeparam>
-    public class DataStreamSource<T> : SingleOutputStreamOperator<T>
+    /// <typeparam name="TElement">Type of the elements in the DataStream created from the this source.</typeparam>
+    public class DataStreamSource<TElement> : SingleOutputStreamOperator<TElement>
     {
         private readonly bool _isParallel;
 
         public DataStreamSource(
             StreamExecutionEnvironment env,
-            TypeInformation<T> outTypeInfo,
-            StreamSource<T, ISourceFunction<T>> @operator,
-            bool isParallel, 
+            TypeInformation<TElement> outTypeInfo,
+            StreamSource<TElement, ISourceFunction<TElement>> @operator,
+            bool isParallel,
             string sourceName)
-            : base(env, new SourceTransformation<T>(sourceName, @operator, outTypeInfo, env.Parallelism))
+            : base(env, new SourceTransformation<TElement>(sourceName, @operator, outTypeInfo, env.Parallelism))
         {
             _isParallel = isParallel;
             if (!isParallel) SetParallelism(1);
         }
 
-        public new DataStreamSource<T> SetParallelism(int parallelism)
+        public DataStreamSource(SingleOutputStreamOperator<TElement> @operator)
+            : base(@operator.ExecutionEnvironment, @operator.Transformation)
+        {
+            _isParallel = true;
+        }
+
+        public new DataStreamSource<TElement> SetParallelism(int parallelism)
         {
             if (parallelism != 1 && !_isParallel)
             {

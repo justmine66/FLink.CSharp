@@ -19,7 +19,7 @@ namespace FLink.Streaming.Api.Functions.Source
             _typeInfo = typeInfo;
         }
 
-        public override void Run(ISourceContext<TOutput> ctx)
+        public override void Run(ISourceFunctionContext<TOutput> ctx)
         {
             throw new System.NotImplementedException();
         }

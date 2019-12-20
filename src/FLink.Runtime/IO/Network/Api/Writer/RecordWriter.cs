@@ -5,6 +5,7 @@ using FLink.Core.IO;
 using FLink.Core.Util;
 using FLink.Extensions.DependencyInjection;
 using FLink.Metrics.Core;
+using FLink.Runtime.Events;
 using FLink.Runtime.IO.Network.Api.Serialization;
 using Microsoft.Extensions.Logging;
 
@@ -58,7 +59,38 @@ namespace FLink.Runtime.IO.Network.Api.Writer
             }
         }
 
-        protected void Emit(TRecord record, int targetChannel)
+        public void Emit(TRecord record, int targetChannel)
+        {
+
+        }
+
+        /// <summary>
+        /// This is used to send regular records.
+        /// </summary>
+        /// <param name="record"></param>
+        public abstract void Emit(TRecord record);
+
+        /// <summary>
+        /// This is used to send LatencyMarks to a random target channel.
+        /// </summary>
+        /// <param name="record"></param>
+        public abstract void RandomEmit(TRecord record);
+
+        /// <summary>
+        /// This is used to broadcast streaming Watermarks in-band with records.
+        /// </summary>
+        /// <param name="record"></param>
+        public abstract void BroadcastEmit(TRecord record);
+
+        public void BroadcastEvent(AbstractEvent @event)
+        {
+
+        }
+
+        /// <summary>
+        /// Closes the writer. This stops the flushing thread (if there is one).
+        /// </summary>
+        public void Close()
         {
 
         }

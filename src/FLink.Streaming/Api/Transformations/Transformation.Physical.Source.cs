@@ -30,15 +30,16 @@ namespace FLink.Streaming.Api.Transformations
             string name,
             StreamSource<TElement, ISourceFunction<TElement>> @operator,
             TypeInformation<TElement> outputType,
-            int parallelism) : this(name, new SimpleOperatorFactory<TElement>(@operator), outputType, parallelism)
-        {
-        }
+            int parallelism)
+            : this(name, new SimpleOperatorFactory<TElement>(@operator), outputType, parallelism)
+        { }
 
         public SourceTransformation(
             string name,
             IStreamOperatorFactory<TElement> operatorFactory,
             TypeInformation<TElement> outputType,
-            int parallelism) : base(name, outputType, parallelism)
+            int parallelism) 
+            : base(name, outputType, parallelism)
         {
             OperatorFactory = operatorFactory;
         }

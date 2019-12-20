@@ -45,7 +45,7 @@ namespace FLink.Streaming.Api.Functions.Source
             _delayBetweenRetries = delayBetweenRetries;
         }
 
-        public void Run(ISourceContext<string> ctx)
+        public void Run(ISourceFunctionContext<string> ctx)
         {
             var attempt = 0;
 

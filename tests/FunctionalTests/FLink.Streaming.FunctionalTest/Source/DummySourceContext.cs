@@ -4,7 +4,7 @@ using FLink.Streaming.Api.Watermarks;
 
 namespace FLink.Streaming.FunctionalTest.Source
 {
-    public class DummySourceContext : ISourceContext<string>
+    public class DummySourceContext : ISourceFunctionContext<string>
     {
         public void Close()
         {

@@ -6,7 +6,7 @@ namespace FLink.Streaming.Api.Functions.Source
     /// <summary>
     /// Base interface for all stream data sources in FLink.
     /// The contract of a stream source is the following:
-    /// 1. When the source should start emitting elements, the <see cref="Run"/> method is called with a <see cref="ISourceContext{T}"/> that can be used for emitting elements. The run method can run for as long as necessary.
+    /// 1. When the source should start emitting elements, the <see cref="Run"/> method is called with a <see cref="ISourceFunctionContext{T}"/> that can be used for emitting elements. The run method can run for as long as necessary.
     /// 2. The source must, however, react to an invocation of <see cref="Cancel"/> by breaking out of its main loop.
     /// </summary>
     /// <remarks>
@@ -25,17 +25,17 @@ namespace FLink.Streaming.Api.Functions.Source
     /// of state updates and element emission.
     /// interface. 
     /// </remarks>
-    /// <typeparam name="T">The type of the elements produced by this source.</typeparam>
-    public interface ISourceFunction<out T> : IFunction
+    /// <typeparam name="TElement">The type of the elements produced by this source.</typeparam>
+    public interface ISourceFunction<out TElement> : IFunction
     {
         /// <summary>
-        /// Starts the source. Implementations can use the <see cref="ISourceContext{T}"/> emit elements.
+        /// Starts the source. Implementations can use the <see cref="ISourceFunctionContext{T}"/> emit elements.
         /// </summary>
         /// <param name="ctx">The context to emit elements to and for accessing locks.</param>
-        void Run(ISourceContext<T> ctx);
+        void Run(ISourceFunctionContext<TElement> ctx);
 
         /// <summary>
-        /// Cancels the source. Most sources will have a while loop inside the <see cref="ISourceContext{T}"/> method. The implementation needs to ensure that the source will break out of that loop after this method is called.
+        /// Cancels the source. Most sources will have a while loop inside the <see cref="ISourceFunctionContext{T}"/> method. The implementation needs to ensure that the source will break out of that loop after this method is called.
         /// </summary>
         void Cancel();
     }
@@ -43,8 +43,8 @@ namespace FLink.Streaming.Api.Functions.Source
     /// <summary>
     /// Interface that source functions use to emit elements, and possibly watermarks.
     /// </summary>
-    /// <typeparam name="T">The type of the elements produced by the source.</typeparam>
-    public interface ISourceContext<in T>
+    /// <typeparam name="TElement">The type of the elements produced by the source.</typeparam>
+    public interface ISourceFunctionContext<in TElement>
     {
         /// <summary>
         /// Emits one element from the source, without attaching a timestamp. In most cases, this is the default way of emitting elements.
@@ -64,7 +64,7 @@ namespace FLink.Streaming.Api.Functions.Source
         /// </list>
         /// </remarks>
         /// <param name="element">The element to emit</param>
-        void Collect(T element);
+        void Collect(TElement element);
 
         /// <summary>
         /// Emits one element from the source, and attaches the given timestamp. This method is relevant for programs using <see cref="TimeCharacteristic.EventTime"/>, where the sources assign timestamps themselves, rather than relying on a <see cref="ITimestampAssigner{T}"/> on the stream.
@@ -85,7 +85,7 @@ namespace FLink.Streaming.Api.Functions.Source
         /// </remarks>
         /// <param name="element">The element to emit</param>
         /// <param name="timestamp">The timestamp in milliseconds since the Epoch</param>
-        void CollectWithTimestamp(T element, long timestamp);
+        void CollectWithTimestamp(TElement element, long timestamp);
 
         /// <summary>
         /// Emits the given <see cref="Watermark"/>. 

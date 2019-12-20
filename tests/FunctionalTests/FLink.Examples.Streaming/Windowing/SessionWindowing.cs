@@ -56,7 +56,7 @@ namespace FLink.Examples.Streaming.Windowing
 
         public class DataSourceFunctor : ISourceFunction<SessionElement>
         {
-            public void Run(ISourceContext<SessionElement> ctx)
+            public void Run(ISourceFunctionContext<SessionElement> ctx)
             {
                 foreach (var element in GetSource())
                 {

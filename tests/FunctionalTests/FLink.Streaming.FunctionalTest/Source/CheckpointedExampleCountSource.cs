@@ -12,7 +12,7 @@ namespace FLink.Streaming.FunctionalTest.Source
 
         private IListState<long> _checkpointedCount;
 
-        public void Run(ISourceContext<long> ctx)
+        public void Run(ISourceFunctionContext<long> ctx)
         {
             while (_isRunning && _counter < 1000)
             {

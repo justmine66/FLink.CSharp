@@ -8,7 +8,7 @@ namespace FLink.Streaming.Api.Functions.Source
     /// </summary>
     public abstract class RichParallelSourceFunction<TOutput> : AbstractRichFunction, IParallelSourceFunction<TOutput>
     {
-        public abstract void Run(ISourceContext<TOutput> ctx);
+        public abstract void Run(ISourceFunctionContext<TOutput> ctx);
 
         public abstract void Cancel();
     }

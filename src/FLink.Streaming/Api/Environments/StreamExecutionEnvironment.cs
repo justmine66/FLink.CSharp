@@ -359,10 +359,8 @@ namespace FLink.Streaming.Api.Environments
         /// <param name="hostname">The host name which a server socket binds</param>
         /// <param name="port">The port number which a server socket binds. A port number of 0 means that the port number is automatically allocated.</param>
         /// <returns>A data stream containing the strings received from the socket</returns>
-        public DataStreamSource<string> SocketTextStream(string hostname, int port)
-        {
-            return SocketTextStream(hostname, port, "\n");
-        }
+        public DataStreamSource<string> SocketTextStream(string hostname, int port) =>
+            SocketTextStream(hostname, port, "\n");
 
         /// <summary>
         /// Creates a new data stream that contains the strings received infinitely from a socket. Received strings are decoded by the system's default character set. On the termination of the socket server connection retries can be initiated.
@@ -371,10 +369,8 @@ namespace FLink.Streaming.Api.Environments
         /// <param name="port">The port number which a server socket binds. A port number of 0 means that the port number is automatically allocated.</param>
         /// <param name="delimiter">A string which splits received strings into records</param>
         /// <returns>A data stream containing the strings received from the socket</returns>
-        public DataStreamSource<string> SocketTextStream(string hostname, int port, string delimiter)
-        {
-            return SocketTextStream(hostname, port, delimiter, 0);
-        }
+        public DataStreamSource<string> SocketTextStream(string hostname, int port, string delimiter) =>
+            SocketTextStream(hostname, port, delimiter, 0);
 
         /// <summary>
         /// Creates a new data stream that contains the strings received infinitely from a socket. Received strings are decoded by the system's default character set. On the termination of the socket server connection retries can be initiated.
@@ -385,11 +381,9 @@ namespace FLink.Streaming.Api.Environments
         /// <param name="maxRetryIntervalSeconds">The maximal retry interval in seconds while the program waits for a socket that is temporarily down. Reconnection is initiated every second. A number of 0 means that the reader is immediately terminated, while a negative value ensures retrying forever.</param>
         /// <returns>A data stream containing the strings received from the socket</returns>
         public DataStreamSource<string> SocketTextStream(string hostname, int port, string delimiter,
-            int maxRetryIntervalSeconds)
-        {
-            return AddSource(new SocketTextStreamFunction(hostname, port, delimiter, maxRetryIntervalSeconds),
+            int maxRetryIntervalSeconds) =>
+            AddSource(new SocketTextStreamFunction(hostname, port, delimiter, maxRetryIntervalSeconds),
                 "Socket Stream");
-        }
 
         #endregion
 
@@ -467,7 +461,7 @@ namespace FLink.Streaming.Api.Environments
             {
                 try
                 {
-                    typeInfo = TypeExtractor.CreateTypeInfo<object, object, TOut>(typeof(ISourceFunction<>), function.GetType(), 0, null, null);
+                    typeInfo = TypeExtractor.CreateTypeInfo<object, object, TOut>(typeof(ISourceFunction<TOut>), function.GetType(), 0, null, null);
                 }
                 catch (InvalidTypesException e)
                 {
