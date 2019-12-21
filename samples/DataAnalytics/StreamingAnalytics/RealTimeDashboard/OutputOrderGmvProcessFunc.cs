@@ -13,7 +13,7 @@ namespace RealTimeDashboard
         public override void Open(Configuration parameters)
         {
             var descriptor = new MapStateDescriptor<long, OrderAccumulator>("state_site_order_gmv",
-                TypeInformation<long>.Of(), TypeInformation<OrderAccumulator>.Of());
+                TypeInformation.Of<long>(), TypeInformation.Of<OrderAccumulator>());
 
             _state = RuntimeContext.GetMapState(descriptor);
         }

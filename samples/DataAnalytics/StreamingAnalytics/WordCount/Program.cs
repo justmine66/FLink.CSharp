@@ -6,7 +6,8 @@ namespace WordCount
     {
         static void Main(string[] args)
         {
-            SocketWindowWordCount.Run();
+            //SocketWindowWordCount.Run();
+            CollectionWindowWordCount.Run();
 
             Console.Read();
         }

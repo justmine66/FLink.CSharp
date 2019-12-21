@@ -88,7 +88,7 @@ namespace FLink.Core.Api.Common.State
 
             try
             {
-                TypeInfo = TypeExtractor.CreateTypeInfo<TValue>(type);
+                TypeInfo = TypeExtractor.CreateTypeInfo<TValue>();
             }
             catch (Exception e)
             {

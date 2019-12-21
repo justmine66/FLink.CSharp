@@ -57,14 +57,16 @@ namespace FLink.Core.Api.CSharp.TypeUtils
 
         #region [ Create type information ]
 
-        public static TypeInformation<T> CreateTypeInfo<T>(Type type)
-        {
-            return TypeInformation<T>.Of();
-        }
-
         public static TypeInformation<T> CreateTypeInfo<T>()
         {
-            return TypeInformation<T>.Of();
+            var ti = new TypeExtractor().PrivateCreateTypeInfo<T>();
+
+            if (ti == null)
+            {
+                throw new InvalidTypesException("Could not extract type information.");
+            }
+
+            return ti;
         }
 
         public static TypeInformation<TOutput> CreateTypeInfo<TInput1, TInput2, TOutput>(
@@ -81,6 +83,43 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             }
 
             return ti;
+        }
+
+        private TypeInformation<T> PrivateCreateTypeInfo<T>()
+        {
+            var t = typeof(T);
+            var typeHierarchy = new List<Type> { t };
+
+            return CreateTypeInfoWithTypeHierarchy<T>(typeHierarchy);
+        }
+
+        private TypeInformation<T> CreateTypeInfoWithTypeHierarchy<T>(List<Type> typeHierarchy)
+        {
+            var t = typeof(T);
+
+            return null;
+        }
+
+        private TypeInformation<TOut> CreateTypeInfoFromFactory<TIn1, TIn2, TOut>(Type t, IList<Type> typeHierarchy, TypeInformation<TIn1> in1Type, TypeInformation<TIn2> in2Type)
+        {
+            var factoryHierarchy = new List<Type>(typeHierarchy);
+
+            return null;
+        }
+
+        /// <summary>
+        /// Traverses the type hierarchy up until a type information factory can be found.
+        /// </summary>
+        /// <typeparam name="TOut"></typeparam>
+        /// <param name="typeHierarchy"></param>
+        /// <param name="t">type for which a factory needs to be found</param>
+        /// <returns>closest type information factory or null if there is no factory in the type hierarchy</returns>
+        private static  TypeInfoFactory<TOut> GetClosestFactory<TOut>(IList<Type> typeHierarchy, Type t)
+        {
+            TypeInfoFactory<TOut> factory = null;
+
+
+            return factory;
         }
 
         private TypeInformation<TOutput> PrivateCreateTypeInfo<TInput1, TInput2, TOutput>(

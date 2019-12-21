@@ -52,7 +52,7 @@ namespace RealTimeDashboard
             // 6. 只输出变化的聚合指标
             var siteResultStream = siteAggStream
                 .KeyBy(0)
-                .Process(new OutputOrderGmvProcessFunc(), TypeInformation<(long, string)>.Of())
+                .Process(new OutputOrderGmvProcessFunc(), TypeInformation.Of<(long, string)>())
                 .SetName("process_site_gmv_changed")
                 .SetUId("process_site_gmv_changed");
 

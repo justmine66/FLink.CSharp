@@ -427,7 +427,8 @@ namespace FLink.Streaming.Api.Environments
         public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function) => AddSource(function, "Custom Source");
 
         /// <summary>
-        /// Adds a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>. Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
+        /// Adds a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>.
+        /// Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
         /// </summary>
         /// <typeparam name="TOut">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>
@@ -436,7 +437,8 @@ namespace FLink.Streaming.Api.Environments
         public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName) => AddSource(function, sourceName, null);
 
         /// <summary>
-        /// Ads a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>. Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
+        /// Ads a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>.
+        /// Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
         /// </summary>
         /// <typeparam name="TOut">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>
@@ -445,7 +447,8 @@ namespace FLink.Streaming.Api.Environments
         public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, TypeInformation<TOut> typeInfo) => AddSource(function, "Custom Source", typeInfo);
 
         /// <summary>
-        /// Ads a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>. Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
+        /// Ads a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>.
+        /// Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
         /// </summary>
         /// <typeparam name="TOut">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>

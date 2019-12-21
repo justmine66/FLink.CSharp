@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeUtils;
+using FLink.Core.Api.CSharp.TypeUtils;
+using FLink.Core.Exceptions;
 
 namespace FLink.Core.Api.Common.TypeInfo
 {
@@ -8,7 +11,6 @@ namespace FLink.Core.Api.Common.TypeInfo
     /// The core class of FLink's type system. FLink requires a type information for all types that are used as input or return type of a user function. This type information class acts as the tool to generate serializers and comparators, and to perform semantic checks such as whether the fields that are uses as join/grouping keys actually exist.
     /// </summary>
     /// <typeparam name="TType">The type represented by this type information.</typeparam>
-    [Serializable]
     public abstract class TypeInformation<TType>
     {
         /// <summary>
@@ -66,15 +68,36 @@ namespace FLink.Core.Api.Common.TypeInfo
         public abstract override string ToString();
         public abstract override bool Equals(object obj);
         public abstract override int GetHashCode();
+    }
 
-        public static TypeInformation<TType> Of()
+    public class TypeInformation
+    {
+        /// <summary>
+        /// Creates a TypeInformation for a generic type via a utility "type hint".
+        /// </summary>
+        /// <param name="typeHint">The hint for the generic type.</param>
+        /// <returns> The TypeInformation object for the type described by the hint.</returns>
+        public static TypeInformation<TType> Of<TType>(TypeHint<TType> typeHint)
         {
             return null;
         }
 
-        public static TypeInformation<TType> Of(Type typeClass)
+        /// <summary>
+        /// Creates a TypeInformation for the type described by the given class.
+        /// This method only works for non-generic types. For generic types, use the <see cref="Of(TypeHint{TType})"/>
+        /// </summary>
+        /// <exception cref="FLinkRuntimeException"></exception>
+        /// <returns>The TypeInformation object for the type described by the hint.</returns>
+        public static TypeInformation<TType> Of<TType>()
         {
-            return null;
+            try
+            {
+                return TypeExtractor.CreateTypeInfo<TType>();
+            }
+            catch (InvalidTypesException e)
+            {
+                throw new FLinkRuntimeException("Cannot extract TypeInformation from Class alone, because generic parameters are missing. Please use TypeInformation.of(TypeHint) instead, or another equivalent method in the API that accepts a TypeHint instead of a Class. For example for a Tuple2<Long, String> pass a 'new TypeHint<Tuple2<Long, String>>(){}'.", e);
+            }
         }
     }
 }

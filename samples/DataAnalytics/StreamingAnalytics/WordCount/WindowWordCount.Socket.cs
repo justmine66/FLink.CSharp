@@ -21,6 +21,7 @@ namespace WordCount
 
             ServiceLocator.Services = services;
         }
+
         public static void Run()
         {
             Init();
