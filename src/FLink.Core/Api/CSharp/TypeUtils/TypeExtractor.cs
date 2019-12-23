@@ -59,7 +59,7 @@ namespace FLink.Core.Api.CSharp.TypeUtils
 
         public static TypeInformation<T> CreateTypeInfo<T>()
         {
-            var ti = new TypeExtractor().PrivateCreateTypeInfo<T>();
+            var ti = new TypeExtractor().PrivateCreateTypeInfo<object, object, T>();
 
             if (ti == null)
             {
@@ -85,24 +85,61 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             return ti;
         }
 
-        private TypeInformation<T> PrivateCreateTypeInfo<T>()
+        private TypeInformation<T> PrivateCreateTypeInfo<TIn1, TIn2, T>()
         {
             var t = typeof(T);
             var typeHierarchy = new List<Type> { t };
 
-            return CreateTypeInfoWithTypeHierarchy<T>(typeHierarchy);
+            return null;
         }
 
-        private TypeInformation<T> CreateTypeInfoWithTypeHierarchy<T>(List<Type> typeHierarchy)
+        private TypeInformation<TOutput> CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
+            IList<Type> typeHierarchy,
+            TypeInformation<TInput1> in1Type,
+            TypeInformation<TInput2> in2Type)
         {
-            var t = typeof(T);
+            var t = typeof(TOutput);
+
+            // check if type information can be created using a type factory
+            var typeFromFactory = CreateTypeInfoFromFactory<TInput1, TInput2, TOutput>(t, typeHierarchy, in1Type, in2Type);
+            if (typeFromFactory != null)
+            {
+                return typeFromFactory;
+            }
+            // check if type is a subclass of tuple
+            else if (TypeExtractionUtils.IsClassType(t))
+            {
+
+            }
 
             return null;
         }
 
-        private TypeInformation<TOut> CreateTypeInfoFromFactory<TIn1, TIn2, TOut>(Type t, IList<Type> typeHierarchy, TypeInformation<TIn1> in1Type, TypeInformation<TIn2> in2Type)
+        /// <summary>
+        /// Creates type information using a factory if for this type or super types. Returns null otherwise.
+        /// </summary>
+        private TypeInformation<TOutput> CreateTypeInfoFromFactory<TInput1, TInput2, TOutput>(
+            Type t,
+            IList<Type> typeHierarchy,
+            TypeInformation<TInput1> in1Type,
+            TypeInformation<TInput2> in2Type)
         {
             var factoryHierarchy = new List<Type>(typeHierarchy);
+            var factory = GetClosestFactory<TOutput>(factoryHierarchy, t);
+            if (factory == null)
+            {
+                return null;
+            }
+
+            var factoryDefiningType = factoryHierarchy[factoryHierarchy.Count - 1];
+
+            // infer possible type parameters from input
+            IDictionary<string,TypeInformation<object>> genericParams;
+            if (factoryDefiningType.IsGenericTypeParameter)
+            {
+                genericParams = new Dictionary<string, TypeInformation<object>>();
+                var args = factoryDefiningType.GetGenericParameterConstraints();
+            }
 
             return null;
         }
@@ -110,16 +147,29 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         /// <summary>
         /// Traverses the type hierarchy up until a type information factory can be found.
         /// </summary>
-        /// <typeparam name="TOut"></typeparam>
+        /// <typeparam name="TOutput"></typeparam>
         /// <param name="typeHierarchy"></param>
         /// <param name="t">type for which a factory needs to be found</param>
         /// <returns>closest type information factory or null if there is no factory in the type hierarchy</returns>
-        private static  TypeInfoFactory<TOut> GetClosestFactory<TOut>(IList<Type> typeHierarchy, Type t)
+        private static TypeInfoFactory<TOutput> GetClosestFactory<TOutput>(IList<Type> typeHierarchy, Type t)
         {
-            TypeInfoFactory<TOut> factory = null;
+            TypeInfoFactory<TOutput> factory = null;
 
 
             return factory;
+        }
+
+        private TypeInformation<TOutput>[] CreateSubTypesInfo<TIn1, TIn2, TOutput>(
+            Type originalType, 
+            Type definingType,
+            IList<Type> typeHierarchy, 
+            TypeInformation<TIn1> in1Type, 
+            TypeInformation<TIn2> in2Type, 
+            bool lenient)
+        {
+
+
+            return null;
         }
 
         private TypeInformation<TOutput> PrivateCreateTypeInfo<TInput1, TInput2, TOutput>(
