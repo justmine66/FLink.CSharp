@@ -2,8 +2,8 @@
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.Operators;
-using FLink.Core.Api.Common.State;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.States;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;

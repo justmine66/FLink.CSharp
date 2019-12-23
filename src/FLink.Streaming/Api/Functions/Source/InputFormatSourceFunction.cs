@@ -1,5 +1,5 @@
 ﻿using FLink.Core.Api.Common.IO;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.IO;
 
 namespace FLink.Streaming.Api.Functions.Source

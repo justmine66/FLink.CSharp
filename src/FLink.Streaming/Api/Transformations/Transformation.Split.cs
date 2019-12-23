@@ -1,7 +1,7 @@
 ﻿using FLink.Core.Api.Dag;
-using FLink.Streaming.Api.Collector.Selector;
 using FLink.Streaming.Api.DataStreams;
 using System.Collections.Generic;
+using FLink.Streaming.Api.Collectors.Selectors;
 
 namespace FLink.Streaming.Api.Transformations
 {

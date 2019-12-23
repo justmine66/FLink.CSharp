@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
 

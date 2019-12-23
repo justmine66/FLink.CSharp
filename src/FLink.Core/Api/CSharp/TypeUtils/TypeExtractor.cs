@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.IO;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.IO;
 
 namespace FLink.Core.Api.CSharp.TypeUtils

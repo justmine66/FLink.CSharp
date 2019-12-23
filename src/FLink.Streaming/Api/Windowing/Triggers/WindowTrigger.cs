@@ -1,5 +1,5 @@
 ﻿using System;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Streaming.Api.Windowing.Assigners;
 using FLink.Streaming.Api.Windowing.Windows;
 

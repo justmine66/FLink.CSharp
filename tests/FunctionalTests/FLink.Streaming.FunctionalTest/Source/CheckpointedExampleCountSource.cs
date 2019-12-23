@@ -1,4 +1,4 @@
-﻿using FLink.Core.Api.Common.State;
+﻿using FLink.Core.Api.Common.States;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.Checkpoint;
 using FLink.Streaming.Api.Functions.Source;

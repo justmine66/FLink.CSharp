@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using FLink.Clients.Program;
+﻿using FLink.Clients.Program;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.IO;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Api.Dag;
 using FLink.Core.Configurations;
@@ -22,6 +18,10 @@ using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Api.Operators;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
 
 namespace FLink.Streaming.Api.Environments
 {
@@ -328,17 +328,17 @@ namespace FLink.Streaming.Api.Environments
 
         #region [ memory ]
 
-        public DataStreamSource<TOut> FromCollection<TOut>(IEnumerable<TOut> data, TypeInformation<TOut> typeInfo)
+        public DataStreamSource<TOutput> FromCollection<TOutput>(IEnumerable<TOutput> data, TypeInformation<TOutput> typeInfo)
         {
             Preconditions.CheckNotNull(data, "Collection must not be null");
 
             // must not have null elements and mixed elements
-            FromElementsFunction<TOut>.CheckCollection(data, typeInfo.TypeClass);
+            FromElementsFunction<TOutput>.CheckCollection(data, typeInfo.TypeClass);
 
-            ISourceFunction<TOut> function;
+            ISourceFunction<TOutput> function;
             try
             {
-                function = new FromElementsFunction<TOut>(typeInfo.CreateSerializer(ExecutionConfig), data);
+                function = new FromElementsFunction<TOutput>(typeInfo.CreateSerializer(ExecutionConfig), data);
             }
             catch (Exception e)
             {
@@ -389,7 +389,7 @@ namespace FLink.Streaming.Api.Environments
 
         #region [ file ]
 
-        public DataStreamSource<TOut> ReadCsvFile<TOut>(string filePath)
+        public DataStreamSource<TOutput> ReadCsvFile<TOutput>(string filePath)
         {
             return null;
         }
@@ -421,63 +421,63 @@ namespace FLink.Streaming.Api.Environments
         /// <summary>
         /// Adds a Data Source to the streaming topology.
         /// </summary>
-        /// <typeparam name="TOut">type of the returned stream</typeparam>
+        /// <typeparam name="TOutput">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>
         /// <returns>the data stream constructed</returns>
-        public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function) => AddSource(function, "Custom Source");
+        public DataStreamSource<TOutput> AddSource<TOutput>(ISourceFunction<TOutput> function) => AddSource(function, "Custom Source");
 
         /// <summary>
         /// Adds a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>.
         /// Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
         /// </summary>
-        /// <typeparam name="TOut">type of the returned stream</typeparam>
+        /// <typeparam name="TOutput">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>
         /// <param name="sourceName">Name of the data source</param>
         /// <returns>the data stream constructed</returns>
-        public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName) => AddSource(function, sourceName, null);
+        public DataStreamSource<TOutput> AddSource<TOutput>(ISourceFunction<TOutput> function, string sourceName) => AddSource(function, sourceName, null);
 
         /// <summary>
         /// Ads a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>.
         /// Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
         /// </summary>
-        /// <typeparam name="TOut">type of the returned stream</typeparam>
+        /// <typeparam name="TOutput">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>
         /// <param name="typeInfo">the user defined type information for the stream</param>
         /// <returns>the data stream constructed</returns>
-        public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, TypeInformation<TOut> typeInfo) => AddSource(function, "Custom Source", typeInfo);
+        public DataStreamSource<TOutput> AddSource<TOutput>(ISourceFunction<TOutput> function, TypeInformation<TOutput> typeInfo) => AddSource(function, "Custom Source", typeInfo);
 
         /// <summary>
         /// Ads a data source with a custom type information thus opening a <see cref="DataStream{TElement}"/>.
         /// Only in very special cases does the user need to support type information. Otherwise use <see cref="ISourceFunction{T}"/>.
         /// </summary>
-        /// <typeparam name="TOut">type of the returned stream</typeparam>
+        /// <typeparam name="TOutput">type of the returned stream</typeparam>
         /// <param name="function">the user defined function</param>
         /// <param name="sourceName">Name of the data source</param>
         /// <param name="typeInfo">the user defined type information for the stream</param>
         /// <returns>the data stream constructed</returns>
-        public DataStreamSource<TOut> AddSource<TOut>(ISourceFunction<TOut> function, string sourceName, TypeInformation<TOut> typeInfo)
+        public DataStreamSource<TOutput> AddSource<TOutput>(ISourceFunction<TOutput> function, string sourceName, TypeInformation<TOutput> typeInfo)
         {
-            if (function is IResultTypeQueryable<TOut> queryable)
+            if (function is IResultTypeQueryable<TOutput> queryable)
                 typeInfo = queryable.ProducedType;
 
             if (typeInfo == null)
             {
                 try
                 {
-                    typeInfo = TypeExtractor.CreateTypeInfo<object, object, TOut>(typeof(ISourceFunction<TOut>), function.GetType(), 0, null, null);
+                    typeInfo = TypeExtractor.CreateTypeInfo<object, object, TOutput>(typeof(ISourceFunction<TOutput>), function.GetType(), 0, null, null);
                 }
                 catch (InvalidTypesException e)
                 {
-                    typeInfo = new MissingTypeInfo(sourceName, e) as TypeInformation<TOut>;
+                    typeInfo = new MissingTypeInfo(sourceName, e) as TypeInformation<TOutput>;
                 }
             }
 
-            var isParallel = function is IParallelSourceFunction<TOut>;
+            var isParallel = function is IParallelSourceFunction<TOutput>;
 
             Clean(function);
 
-            var sourceOperator = new StreamSource<TOut, ISourceFunction<TOut>>(function);
-            return new DataStreamSource<TOut>(this, typeInfo, sourceOperator, isParallel, sourceName);
+            var sourceOperator = new StreamSource<TOutput, ISourceFunction<TOutput>>(function);
+            return new DataStreamSource<TOutput>(this, typeInfo, sourceOperator, isParallel, sourceName);
         }
 
         /// <summary>
@@ -518,8 +518,8 @@ namespace FLink.Streaming.Api.Environments
             return AddSource(function, sourceName, typeInfo);
         }
 
-        private DataStreamSource<OUT> CreateFileInput<OUT>(FileInputFormat<OUT> inputFormat,
-            TypeInformation<OUT> typeInfo,
+        private DataStreamSource<TOutput> CreateFileInput<TOutput>(FileInputFormat<TOutput> inputFormat,
+            TypeInformation<TOutput> typeInfo,
             String sourceName,
             FileProcessingMode monitoringMode,
             long interval)

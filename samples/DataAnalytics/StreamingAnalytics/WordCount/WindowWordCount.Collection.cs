@@ -3,7 +3,7 @@ using FLink.Core.Util;
 using FLink.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Streaming.Api.Environments;
 
 namespace WordCount
@@ -30,7 +30,7 @@ namespace WordCount
             // get the execution environment
             var env = StreamExecutionEnvironment.GetExecutionEnvironment();
 
-            // source: get input data by connecting to the socket.
+            // source: get input data.
             var stream = env.FromCollection(MemoryDataSource.Words, TypeInformation.Of<string>());
 
             // transformation

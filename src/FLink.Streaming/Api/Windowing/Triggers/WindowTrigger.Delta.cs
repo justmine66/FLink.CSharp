@@ -1,4 +1,4 @@
-﻿using FLink.Core.Api.Common.State;
+﻿using FLink.Core.Api.Common.States;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Streaming.Api.Functions.Windowing.Delta;
 using FLink.Streaming.Api.Windowing.Windows;

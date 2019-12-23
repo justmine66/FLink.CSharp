@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.Operators;
 using FLink.Core.Api.Common.Operators.Util;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;

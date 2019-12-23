@@ -1,7 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Functions;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Util;
 
 namespace FLink.Runtime.State
