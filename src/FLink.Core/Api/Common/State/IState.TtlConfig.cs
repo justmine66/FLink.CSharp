@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using FLink.Core.Util;
 
 namespace FLink.Core.Api.Common.State
@@ -91,11 +90,11 @@ namespace FLink.Core.Api.Common.State
             .SetUpdateType(TtlStateUpdateType.Disabled)
             .Build();
 
-        public TimeSpan Ttl;
-        public TtlStateUpdateType UpdateType;
-        public TtlStateVisibility StateVisibility;
-        public TtlTimeCharacteristic TimeCharacteristic;
-        public TtlCleanupStrategies CleanupStrategies;
+        public TimeSpan Ttl { get; }
+        public TtlStateUpdateType UpdateType { get; }
+        public TtlStateVisibility StateVisibility { get; }
+        public TtlTimeCharacteristic TimeCharacteristic { get; }
+        public TtlCleanupStrategies CleanupStrategies { get; }
 
         public bool IsEnabled => UpdateType != TtlStateUpdateType.Disabled;
 
@@ -115,29 +114,26 @@ namespace FLink.Core.Api.Common.State
             CheckArgument(ttl.TotalMilliseconds > 0, "TTL is expected to be positive.");
         }
 
-        public override string ToString() => "StateTtlConfig{" +
-                                             "updateType=" + UpdateType +
-                                             ", stateVisibility=" + StateVisibility +
-                                             ", ttlTimeCharacteristic=" + TimeCharacteristic +
-                                             ", ttl=" + Ttl +
-                                             '}';
-        public static StateTtlConfigBuilder NewBuilder([NotNull]TimeSpan ttl) => new StateTtlConfigBuilder(ttl);
+        public override string ToString() =>
+            $"StateTtlConfig{{{nameof(UpdateType)}={UpdateType}, {nameof(StateVisibility)}={StateVisibility}, {nameof(TimeCharacteristic)}={TimeCharacteristic}, {nameof(Ttl)}={Ttl}{'}'}";
+
+        public static StateTtlConfigBuilder NewBuilder(TimeSpan ttl) => new StateTtlConfigBuilder(ttl);
     }
 
     public class StateTtlConfigBuilder
     {
-        public TimeSpan Ttl;
-        public TtlStateUpdateType UpdateType;
-        public TtlStateVisibility StateVisibility;
-        public TtlTimeCharacteristic TimeCharacteristic;
-        public Dictionary<TtlCleanupStrategies.Strategies, TtlCleanupStrategies.ICleanupStrategy> CleanupStrategies;
-        public bool IsCleanupInBackground;
+        private readonly TimeSpan _ttl;
+        private TtlStateUpdateType _updateType;
+        private TtlStateVisibility _stateVisibility;
+        private TtlTimeCharacteristic _timeCharacteristic;
+        private readonly Dictionary<TtlCleanupStrategies.Strategies, TtlCleanupStrategies.ICleanupStrategy> _cleanupStrategies = new Dictionary<TtlCleanupStrategies.Strategies, TtlCleanupStrategies.ICleanupStrategy>();
+        private bool _isCleanupInBackground = true;
 
-        public StateTtlConfigBuilder([NotNull]TimeSpan ttl) => Ttl = ttl;
+        public StateTtlConfigBuilder(TimeSpan ttl) => _ttl = ttl;
 
         public StateTtlConfigBuilder SetUpdateType(TtlStateUpdateType updateType)
         {
-            UpdateType = updateType;
+            _updateType = updateType;
             return this;
         }
 
@@ -145,9 +141,9 @@ namespace FLink.Core.Api.Common.State
 
         public StateTtlConfigBuilder UpdateTtlOnReadAndWrite() => SetUpdateType(TtlStateUpdateType.OnReadAndWrite);
 
-        public StateTtlConfigBuilder SetStateVisibility([NotNull]TtlStateVisibility stateVisibility)
+        public StateTtlConfigBuilder SetStateVisibility(TtlStateVisibility stateVisibility)
         {
-            StateVisibility = stateVisibility;
+            _stateVisibility = stateVisibility;
             return this;
         }
 
@@ -155,7 +151,7 @@ namespace FLink.Core.Api.Common.State
 
         public StateTtlConfigBuilder NeverReturnExpired() => SetStateVisibility(TtlStateVisibility.NeverReturnExpired);
 
-        public StateTtlConfigBuilder SetTimeCharacteristic([NotNull]TtlTimeCharacteristic timeCharacteristic)
+        public StateTtlConfigBuilder SetTimeCharacteristic(TtlTimeCharacteristic timeCharacteristic)
         {
             CheckArgument(timeCharacteristic.Equals(TtlTimeCharacteristic.ProcessingTime),
                 "Only support TimeCharacteristic.ProcessingTime, this function has replaced by setTtlTimeCharacteristic.");
@@ -164,9 +160,9 @@ namespace FLink.Core.Api.Common.State
             return this;
         }
 
-        public StateTtlConfigBuilder SetTtlTimeCharacteristic([NotNull]TtlTimeCharacteristic ttlTimeCharacteristic)
+        public StateTtlConfigBuilder SetTtlTimeCharacteristic(TtlTimeCharacteristic ttlTimeCharacteristic)
         {
-            TimeCharacteristic = ttlTimeCharacteristic;
+            _timeCharacteristic = ttlTimeCharacteristic;
             return this;
         }
 
@@ -175,11 +171,11 @@ namespace FLink.Core.Api.Common.State
         public StateTtlConfig Build()
         {
             return new StateTtlConfig(
-                UpdateType,
-                StateVisibility,
-                TimeCharacteristic,
-                Ttl,
-                new TtlCleanupStrategies(CleanupStrategies, IsCleanupInBackground));
+                _updateType,
+                _stateVisibility,
+                _timeCharacteristic,
+                _ttl,
+                new TtlCleanupStrategies(_cleanupStrategies, _isCleanupInBackground));
         }
     }
 }
