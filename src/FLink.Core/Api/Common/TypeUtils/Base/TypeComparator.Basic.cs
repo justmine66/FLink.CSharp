@@ -3,7 +3,7 @@ using FLink.Core.Memory;
 
 namespace FLink.Core.Api.Common.TypeUtils.Base
 {
-    public abstract class BasicTypeComparator<T> : TypeComparator<T> where T : IComparable<T>
+    public abstract class BasicTypeComparator<T> : TypeComparator<T>
     {
         private T _reference;
 
@@ -22,14 +22,26 @@ namespace FLink.Core.Api.Common.TypeUtils.Base
 
         public override int CompareToReference(TypeComparator<T> referencedComparator)
         {
-            var comp = ((BasicTypeComparator<T>)referencedComparator)._reference.CompareTo(_reference);
-            return AscendingComparison ? comp : -comp;
+            if (referencedComparator is BasicTypeComparator<T> comparator &&
+                comparator._reference is IComparable<T> comparable)
+            {
+                var comp = comparable.CompareTo(_reference);
+
+                return AscendingComparison ? comp : -comp;
+            }
+
+            throw new InvalidCastException(nameof(referencedComparator));
         }
 
         public override int Compare(T first, T second)
         {
-            var cmp = first.CompareTo(second);
-            return AscendingComparison ? cmp : -cmp;
+            if (first is IComparable<T> comparable)
+            {
+                var cmp = comparable.CompareTo(second);
+                return AscendingComparison ? cmp : -cmp;
+            }
+
+            throw new InvalidCastException(nameof(first));
         }
 
         public override bool InvertNormalizedKey => !AscendingComparison;

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.IO;
+using FLink.Core.Util;
 
 namespace FLink.Core.Api.CSharp.TypeUtils
 {
@@ -134,7 +136,7 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             var factoryDefiningType = factoryHierarchy[factoryHierarchy.Count - 1];
 
             // infer possible type parameters from input
-            IDictionary<string,TypeInformation<object>> genericParams;
+            IDictionary<string, TypeInformation<object>> genericParams;
             if (factoryDefiningType.IsGenericTypeParameter)
             {
                 genericParams = new Dictionary<string, TypeInformation<object>>();
@@ -149,22 +151,61 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         /// </summary>
         /// <typeparam name="TOutput"></typeparam>
         /// <param name="typeHierarchy"></param>
-        /// <param name="t">type for which a factory needs to be found</param>
+        /// <param name="type">type for which a factory needs to be found</param>
         /// <returns>closest type information factory or null if there is no factory in the type hierarchy</returns>
-        private static TypeInfoFactory<TOutput> GetClosestFactory<TOutput>(IList<Type> typeHierarchy, Type t)
+        private static TypeInfoFactory<TOutput> GetClosestFactory<TOutput>(IList<Type> typeHierarchy, Type type)
         {
             TypeInfoFactory<TOutput> factory = null;
 
+            while (factory == null && type.IsClass && type != typeof(object))
+            {
+                typeHierarchy.Add(type);
+                factory = GetTypeInfoFactory<TOutput>(type);
+                type = type.BaseType;
+
+                if (type == null)
+                {
+                    break;
+                }
+            }
 
             return factory;
         }
 
+        /// <summary>
+        /// Returns the type information factory for a type using the factory registry or annotations.
+        /// </summary>
+        /// <typeparam name="TOutput"></typeparam>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static TypeInfoFactory<TOutput> GetTypeInfoFactory<TOutput>(Type t)
+        {
+            TypeInfoFactory<TOutput> factoryClass = null;
+
+            if (RegisteredTypeInfoFactories.ContainsKey(t))
+            {
+                factoryClass = RegisteredTypeInfoFactories[t] as TypeInfoFactory<TOutput>;
+            }
+            else
+            {
+                if (t.IsClass && typeof(ITypeInfo).IsAssignableFrom(t))
+                {
+                    if (Activator.CreateInstance(t) is ITypeInfo typeInfo)
+                    {
+                        factoryClass = typeInfo.Value<TOutput>();
+                    }
+                }
+            }
+
+            return factoryClass;
+        }
+
         private TypeInformation<TOutput>[] CreateSubTypesInfo<TIn1, TIn2, TOutput>(
-            Type originalType, 
+            Type originalType,
             Type definingType,
-            IList<Type> typeHierarchy, 
-            TypeInformation<TIn1> in1Type, 
-            TypeInformation<TIn2> in2Type, 
+            IList<Type> typeHierarchy,
+            TypeInformation<TIn1> in1Type,
+            TypeInformation<TIn2> in2Type,
             bool lenient)
         {
 
@@ -219,6 +260,103 @@ namespace FLink.Core.Api.CSharp.TypeUtils
         private Type GetParameterTypeFromGenericType(Type baseClass, IList<Type> typeHierarchy, in Type t, in int returnParamPos)
         {
             return null;
+        }
+
+        public static TypeInformation<T> GetForObject<T>(T value) => new TypeExtractor().PrivateGetForObject(value);
+
+        private TypeInformation<T> PrivateGetForObject<T>(T value)
+        {
+            Preconditions.CheckNotNull(value);
+
+            // check if type information can be produced using a factory
+            var type = value.GetType();
+            var typeHierarchy = new List<Type>() { type };
+
+            var typeFromFactory = CreateTypeInfoFromFactory<object, object, T>(type, typeHierarchy, null, null);
+            if (typeFromFactory != null)
+            {
+                return typeFromFactory;
+            }
+
+            // check if we can extract the types from tuples, otherwise work with the class
+            if (value is ITuple tuple)
+            {
+                var numFields = tuple.Length;
+                var types = new TypeInformation<object>[numFields];
+
+                for (var i = 0; i < numFields; i++)
+                {
+                    var field = tuple[i];
+                    if (field == null)
+                    {
+                        throw new InvalidTypesException("Automatic type extraction is not possible on candidates with null values. Please specify the types directly.");
+                    }
+
+                    types[i] = PrivateGetForObject(field);
+                }
+
+                return new TupleTypeInfo<T>(type, types);
+            }
+            else
+            {
+                return PrivateGetForClass<T>(type, new List<Type>());
+            }
+        }
+
+        private TypeInformation<T> PrivateGetForClass<T>(Type clazz, IList<Type> typeHierarchy) =>
+            PrivateGetForClass<T, object, object>(clazz, typeHierarchy, null, null);
+
+        private TypeInformation<T> PrivateGetForClass<T, TIn1, TIn2>(Type clazz, IList<Type> typeHierarchy, TypeInformation<TIn1> in1Type, TypeInformation<TIn2> in2Type)
+        {
+            Preconditions.CheckNotNull(clazz);
+
+            // check if type information can be produced using a factory
+            var typeFromFactory = CreateTypeInfoFromFactory<TIn1, TIn2, T>(clazz, typeHierarchy, in1Type, in2Type);
+            if (typeFromFactory != null)
+            {
+                return typeFromFactory;
+            }
+
+            // Object is handled as generic type info
+            if (clazz is object obj)
+            {
+                return new GenericTypeInfo<T>(clazz);
+            }
+
+            // check for arrays
+            if (clazz.IsArray)
+            {
+                // primitive arrays: int[], byte[], ...
+                
+            }
+
+            return null;
+        }
+
+        #endregion
+
+        #region [ TypeInfoFactory registry ]
+
+        private static readonly IDictionary<Type, TypeInfoFactory<object>> RegisteredTypeInfoFactories = new Dictionary<Type, TypeInfoFactory<object>>();
+
+        /// <summary>
+        /// Registers a type information factory globally for a certain type.
+        /// Every following type extraction operation will use the provided factory for this type. The factory will have highest precedence  for this type. In a hierarchy of types the registered factory has higher precedence than annotations at the same level but lower precedence than factories defined down the hierarchy.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type">type for which a new factory is registered</param>
+        /// <param name="factory">type information factory that will produce <see cref="TypeInfoFactory{T}"/></param>
+        private static void RegisterFactory<T>(Type type, TypeInfoFactory<T> factory)
+        {
+            Preconditions.CheckNotNull(type, $"{nameof(type)} parameter must not be null.");
+            Preconditions.CheckNotNull(factory, $"{nameof(factory)} parameter must not be null.");
+
+            if (RegisteredTypeInfoFactories.ContainsKey(type))
+            {
+                throw new InvalidTypesException($"A TypeInfoFactory for type '{type}' is already registered.");
+            }
+
+            RegisteredTypeInfoFactories[type] = factory as TypeInfoFactory<object>;
         }
 
         #endregion

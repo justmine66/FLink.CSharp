@@ -6,6 +6,8 @@ namespace FLink.Core.Api.Common.Operators
     {
         public class ExpressionKeys<T> : Keys<T>
         {
+            public static readonly string SelectAllChar = "*";
+
             public ExpressionKeys(int[] keyPositions, TypeInformation<T> type)
                 : this(keyPositions, type, false)
             {

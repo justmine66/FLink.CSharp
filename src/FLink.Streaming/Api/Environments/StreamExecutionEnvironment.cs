@@ -1,4 +1,9 @@
-﻿using FLink.Clients.Program;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using FLink.Clients.Program;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
 using FLink.Core.Api.Common.Functions;
@@ -18,10 +23,6 @@ using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Api.Operators;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 
 namespace FLink.Streaming.Api.Environments
 {
@@ -327,6 +328,30 @@ namespace FLink.Streaming.Api.Environments
         #region [ Source ]
 
         #region [ memory ]
+
+        public DataStreamSource<TOutput> FromCollection<TOutput>(IEnumerable<TOutput> data)
+        {
+            Preconditions.CheckNotNull(data, "Collection must not be null");
+            Preconditions.CheckArgument(data.Any(), "Collection must not be empty");
+
+            var first = data.First();
+            Preconditions.CheckNotNull(first, "Collection must not contain null elements");
+
+            TypeInformation<TOutput> typeInfo;
+
+            try
+            {
+                typeInfo = TypeExtractor.GetForObject(first);
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(
+                    $"Could not create TypeInformation for type {first}; please specify the TypeInformation manually via StreamExecutionEnvironment#fromElements(Collection, TypeInformation)",
+                    e);
+            }
+
+            return FromCollection(data, typeInfo);
+        }
 
         public DataStreamSource<TOutput> FromCollection<TOutput>(IEnumerable<TOutput> data, TypeInformation<TOutput> typeInfo)
         {

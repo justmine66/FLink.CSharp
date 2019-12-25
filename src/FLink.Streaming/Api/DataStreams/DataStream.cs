@@ -103,9 +103,9 @@ namespace FLink.Streaming.Api.DataStreams
         /// </summary>
         /// <param name="fields">The position of the fields on which the <see cref="DataStream{TElement}"/> will be grouped.</param>
         /// <returns>The <see cref="DataStream{TElement}"/> with partitioned state (i.e. <see cref="KeyedStream{T,TKey}"/>)</returns>
-        public KeyedStream<TElement, int> KeyBy(params int[] fields)
+        public KeyedStream<TElement, int> KeyBy(params int[] fields) 
         {
-            if (Type is BasicArrayTypeInfo<TElement[], TElement> ||
+            if (Type is BasicArrayTypeInfo<TElement> ||
                 Type is PrimitiveArrayTypeInfo<TElement>)
             {
                 return KeyBy(KeySelectorUtil.GetSelectorForArray<TElement, int>(fields, Type));

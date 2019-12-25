@@ -31,7 +31,7 @@ namespace WordCount
             var env = StreamExecutionEnvironment.GetExecutionEnvironment();
 
             // source: get input data.
-            var stream = env.FromCollection(MemoryDataSource.Words, TypeInformation.Of<string>());
+            var stream = env.FromCollection(MemoryDataSource.Words);
 
             // transformation
             var stat = stream

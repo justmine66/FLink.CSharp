@@ -18,6 +18,6 @@ namespace FLink.Core.Api.Common.TypeInfos
         /// <param name="t">the exact type the type information is created for; </param>
         /// <param name="genericParameters">mapping of the type's generic type parameters to type information extracted with Flink's type extraction facilities; null values indicate that type information could not be extracted for this parameter </param>
         /// <returns>type information for the type the factory is targeted for</returns>
-        public abstract TypeInformation<T> CreateTypeInfo(Type t, IDictionary<string, TypeInformation<object>> genericParameters);
+        public abstract TypeInformation<T> CreateTypeInfo(Type t, IDictionary<string, TypeInformation<object>> genericParameters = null);
     }
 }

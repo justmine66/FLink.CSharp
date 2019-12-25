@@ -7,11 +7,10 @@ namespace FLink.Core.Api.Common.TypeInfos
     /// <summary>
     /// Type information for arrays boxed primitive types.
     /// </summary>
-    /// <typeparam name="TArray">The type (class) of the array itself.</typeparam>
     /// <typeparam name="TComponent">The type (class) of the array component.</typeparam>
-    public class BasicArrayTypeInfo<TArray, TComponent> : TypeInformation<TArray>
+    public class BasicArrayTypeInfo<TComponent> : TypeInformation<TComponent[]>
     {
-        public static readonly BasicArrayTypeInfo<string[], string> StringArrayTypeInfo = new BasicArrayTypeInfo<string[], string>(default, BasicTypeInfo.StringTypeInfo);
+        public static readonly BasicArrayTypeInfo<string> StringArrayTypeInfo = new BasicArrayTypeInfo<string>(default, BasicTypeInfo.StringTypeInfo);
 
         public override bool IsBasicType => false;
         public override bool IsTupleType => false;
@@ -29,7 +28,7 @@ namespace FLink.Core.Api.Common.TypeInfos
             _componentInfo = Preconditions.CheckNotNull(componentInfo);
         }
 
-        public override TypeSerializer<TArray> CreateSerializer(ExecutionConfig config)
+        public override TypeSerializer<TComponent[]> CreateSerializer(ExecutionConfig config)
         {
             throw new NotImplementedException();
         }
