@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using FLink.Core.Api.Common.Accumulators;
 using FLink.Core.Api.Common.Cache;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Metrics.Core;

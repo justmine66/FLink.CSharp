@@ -8,7 +8,7 @@ using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.Dag;
 using FLink.Core.Exceptions;
 using FLink.Core.IO;
-using FLink.Streaming.Api.Collector.Selector;
+using FLink.Streaming.Api.Collectors.Selectors;
 using FLink.Streaming.Api.Operators;
 
 namespace FLink.Streaming.Api.Graphs

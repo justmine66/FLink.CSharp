@@ -1,7 +1,7 @@
 ﻿using System;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Operators;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.CSharp.Functions;
 using FLink.Core.Api.CSharp.TypeUtils;
 

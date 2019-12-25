@@ -1,4 +1,4 @@
-﻿using FLink.Core.Api.Common.TypeInfo;
+﻿using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Exceptions;
 using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Functions.Source;

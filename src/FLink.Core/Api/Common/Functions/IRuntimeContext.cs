@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FLink.Core.Api.Common.Accumulators;
 using FLink.Core.Api.Common.Cache;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Metrics.Core;
 
 namespace FLink.Core.Api.Common.Functions

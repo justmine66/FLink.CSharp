@@ -1,5 +1,5 @@
 ﻿using System;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 
 namespace FLink.Core.Util
 {

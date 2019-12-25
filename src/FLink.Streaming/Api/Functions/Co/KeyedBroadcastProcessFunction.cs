@@ -1,5 +1,5 @@
 ﻿using System;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Util;
 using FLink.Runtime.State;
 using FLink.Streaming.Api.DataStreams;

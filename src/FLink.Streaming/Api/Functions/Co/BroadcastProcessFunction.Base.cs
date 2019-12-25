@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FLink.Core.Api.Common.Functions;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Util;
 using FLink.Streaming.Api.DataStreams;
 

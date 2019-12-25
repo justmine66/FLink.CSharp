@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FLink.Core.Api.Common.Accumulators;
 using FLink.Core.Api.Common.Functions.Util;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Exceptions;
 using FLink.Core.Util;
 using FLink.Runtime.Execution;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Exceptions;
 using FLink.Extensions.DependencyInjection;
 using FLink.Streaming.Api.Operators;

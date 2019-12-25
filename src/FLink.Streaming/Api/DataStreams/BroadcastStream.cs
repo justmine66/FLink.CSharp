@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using FLink.Core.Api.Common.State;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.States;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.Dag;
 using FLink.Streaming.Api.Environments;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using FLink.Core.Api.Common;
-using FLink.Core.Api.Common.State;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.States;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.Common.TypeUtils.Base;
 using FLink.Core.Util;

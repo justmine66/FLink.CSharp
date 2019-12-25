@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using System;
 
 namespace FLink.Runtime.State.Internal

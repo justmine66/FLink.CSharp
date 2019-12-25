@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using FLink.Core.Api.Common.Functions;
-using FLink.Core.Api.Common.State;
+using FLink.Core.Api.Common.States;
 using FLink.Core.Api.CSharp.TypeUtils;
 using FLink.Core.Configurations;
 using FLink.Core.Util;

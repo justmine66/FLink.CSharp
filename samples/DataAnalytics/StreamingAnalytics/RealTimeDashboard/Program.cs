@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using FLink.Core.Api.Common.Functions;
-using FLink.Core.Api.Common.TypeInfo;
+using FLink.Core.Api.Common.TypeInfos;
 using FLink.Streaming.Api;
 using FLink.Streaming.Api.Environments;
 using FLink.Streaming.Api.Windowing.Assigners;
