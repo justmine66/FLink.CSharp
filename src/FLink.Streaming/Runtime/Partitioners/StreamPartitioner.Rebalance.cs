@@ -22,6 +22,12 @@ namespace FLink.Streaming.Runtime.Partitioners
             _nextChannelToSendTo = _threadLocalRandom.Value.Next(numberOfChannels);
         }
 
+        /// <summary>
+        /// 先随机选择一个下游算子的实例，然后用轮询（round-robin）的方式从该实例开始循环输出。
+        /// 该方式能保证完全的下游负载均衡，所以常用来处理有倾斜的原数据流。
+        /// </summary>
+        /// <param name="record">the stream record.</param>
+        /// <returns>the sub-task id.</returns>
         public override int SelectChannel(SerializationDelegate<StreamRecord<TElement>> record)
             => (_nextChannelToSendTo + 1) % NumberOfChannels;
 

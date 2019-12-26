@@ -26,6 +26,11 @@ namespace FLink.Streaming.Runtime.Partitioners
             MaxParallelism = maxParallelism;
         }
 
+        /// <summary>
+        /// KeyBy()算子底层所采用的StreamPartitioner.
+        /// </summary>
+        /// <param name="record">the stream record.</param>
+        /// <returns>the sub-task id.</returns>
         public override int SelectChannel(SerializationDelegate<StreamRecord<TElement>> record)
         {
             TKey key;

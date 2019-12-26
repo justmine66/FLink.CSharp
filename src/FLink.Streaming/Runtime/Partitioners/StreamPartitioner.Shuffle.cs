@@ -10,8 +10,13 @@ namespace FLink.Streaming.Runtime.Partitioners
     /// <typeparam name="TElement">Type of the Tuple</typeparam>
     public class ShufflePartitioner<TElement> : StreamPartitioner<TElement>
     {
-        private Random _random = new Random();
+        private readonly Random _random = new Random();
 
+        /// <summary>
+        /// 将数据随机输出到下游算子的并发实例。
+        /// </summary>
+        /// <param name="record">the stream record.</param>
+        /// <returns>the sub-task id.</returns>
         public override int SelectChannel(SerializationDelegate<StreamRecord<TElement>> record) => _random.Next(NumberOfChannels);
 
         public override StreamPartitioner<TElement> Copy() => new ShufflePartitioner<TElement>();
