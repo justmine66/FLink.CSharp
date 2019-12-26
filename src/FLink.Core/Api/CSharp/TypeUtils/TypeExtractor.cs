@@ -96,7 +96,16 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             return null;
         }
 
-        private TypeInformation<TOutput> CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
+        private  TypeInformation<TOutput> CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
+            IList<Type> typeHierarchy,
+            Type t,
+            TypeInformation<TInput1> in1Type, 
+            TypeInformation<TInput2> in2Type)
+        {
+            return null;
+        }
+
+        private TypeInformation<TOutput>CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
             IList<Type> typeHierarchy,
             TypeInformation<TInput1> in1Type,
             TypeInformation<TInput2> in2Type)
@@ -331,6 +340,21 @@ namespace FLink.Core.Api.CSharp.TypeUtils
                 {
                     return primitiveArrayInfo;
                 }
+
+                // basic type arrays: String[]
+                var basicArrayInfo = BasicArrayTypeInfo.GetInfoFor(type);
+                if (basicArrayInfo != null)
+                {
+                    return basicArrayInfo;
+                }
+
+                var componentTypeInfo = CreateTypeInfoWithTypeHierarchy<TIn1, TIn2, T>(
+                    typeHierarchy,
+                    type.GetElementType(),
+                    in1Type,
+                    in2Type);
+
+                return ObjectArrayTypeInfo.GetInfoFor<T>(type, componentTypeInfo);
             }
 
             return null;
