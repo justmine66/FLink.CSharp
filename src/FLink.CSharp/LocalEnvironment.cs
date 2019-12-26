@@ -1,6 +1,7 @@
 ﻿using FLink.Core.Configurations;
 using FLink.Core.Util;
 using FLink.Core.Api.Common;
+using FLink.Core.Exceptions;
 
 namespace FLink.CSharp
 {

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using FLink.Clients.Program;
+﻿using FLink.Clients.Program;
 using FLink.Core.Api.Common;
 using FLink.Core.Api.Common.Cache;
-using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.IO;
 using FLink.Core.Api.Common.TypeInfos;
 using FLink.Core.Api.CSharp.TypeUtils;
@@ -23,6 +17,11 @@ using FLink.Streaming.Api.DataStreams;
 using FLink.Streaming.Api.Functions.Source;
 using FLink.Streaming.Api.Graphs;
 using FLink.Streaming.Api.Operators;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
 
 namespace FLink.Streaming.Api.Environments
 {

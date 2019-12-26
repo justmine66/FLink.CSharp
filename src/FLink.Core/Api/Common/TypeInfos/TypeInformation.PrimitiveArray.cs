@@ -1,9 +1,9 @@
-﻿using System;
-using FLink.Core.Api.Common.Functions;
-using FLink.Core.Api.Common.TypeUtils;
+﻿using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.Common.TypeUtils.Base;
 using FLink.Core.Api.Common.TypeUtils.Base.Array;
+using FLink.Core.Exceptions;
 using FLink.Core.Util;
+using System;
 
 namespace FLink.Core.Api.Common.TypeInfos
 {
@@ -112,6 +112,13 @@ namespace FLink.Core.Api.Common.TypeInfos
                 BytePrimitiveArraySerializer.Instance,
                 BytePrimitiveArrayComparator.Instance);
 
+        /// <summary>
+        /// Tries to get the PrimitiveArrayTypeInfo for an array. Returns null, if the type is an array, but the component type is not a primitive type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type">The class of the array.</param>
+        /// <returns>The corresponding PrimitiveArrayTypeInfo, or null, if the array is not an array of primitives.</returns>
+        /// <exception cref="InvalidTypesException">Thrown, if the given class does not represent an array.</exception>
         public static PrimitiveArrayTypeInfo<T> GetInfoFor<T>(Type type)
         {
             if (!type.IsArray)

@@ -1,12 +1,13 @@
-﻿using System;
+﻿using FLink.Core.Api.Common.Functions;
+using FLink.Core.Api.Common.IO;
+using FLink.Core.Api.Common.TypeInfos;
+using FLink.Core.Exceptions;
+using FLink.Core.IO;
+using FLink.Core.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FLink.Core.Api.Common.Functions;
-using FLink.Core.Api.Common.IO;
-using FLink.Core.Api.Common.TypeInfos;
-using FLink.Core.IO;
-using FLink.Core.Util;
 
 namespace FLink.Core.Api.CSharp.TypeUtils
 {
@@ -297,37 +298,35 @@ namespace FLink.Core.Api.CSharp.TypeUtils
 
                 return new TupleTypeInfo<T>(type, types);
             }
-            else
-            {
-                return PrivateGetForClass<T>(type, new List<Type>());
-            }
+
+            return PrivateGetForClass<T>(type, new List<Type>());
         }
 
         private TypeInformation<T> PrivateGetForClass<T>(Type clazz, IList<Type> typeHierarchy) =>
             PrivateGetForClass<T, object, object>(clazz, typeHierarchy, null, null);
 
-        private TypeInformation<T> PrivateGetForClass<T, TIn1, TIn2>(Type clazz, IList<Type> typeHierarchy, TypeInformation<TIn1> in1Type, TypeInformation<TIn2> in2Type)
+        private TypeInformation<T> PrivateGetForClass<T, TIn1, TIn2>(Type type, IList<Type> typeHierarchy, TypeInformation<TIn1> in1Type, TypeInformation<TIn2> in2Type)
         {
-            Preconditions.CheckNotNull(clazz);
+            Preconditions.CheckNotNull(type);
 
             // check if type information can be produced using a factory
-            var typeFromFactory = CreateTypeInfoFromFactory<TIn1, TIn2, T>(clazz, typeHierarchy, in1Type, in2Type);
+            var typeFromFactory = CreateTypeInfoFromFactory<TIn1, TIn2, T>(type, typeHierarchy, in1Type, in2Type);
             if (typeFromFactory != null)
             {
                 return typeFromFactory;
             }
 
             // Object is handled as generic type info
-            if (clazz is object obj)
+            if (type is object obj)
             {
-                return new GenericTypeInfo<T>(clazz);
+                return new GenericTypeInfo<T>(type);
             }
 
             // check for arrays
-            if (clazz.IsArray)
+            if (type.IsArray)
             {
                 // primitive arrays: int[], byte[], ...
-                var primitiveArrayInfo = PrimitiveArrayTypeInfo.GetInfoFor<T>(clazz);
+                var primitiveArrayInfo = PrimitiveArrayTypeInfo.GetInfoFor<T>(type);
             }
 
             return null;

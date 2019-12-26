@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FLink.Core.Api.Common.Functions
+namespace FLink.Core.Exceptions
 {
     /// <summary>
     /// A special case of the <see cref="InvalidTypesException"/>, indicating that the types used in an operation are invalid or inconsistent.
