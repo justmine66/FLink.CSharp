@@ -3,9 +3,11 @@ using System.Linq;
 
 namespace FLink.Core.Api.Common.TypeUtils.Base.Array
 {
-    public class CharPrimitiveArrayComparator : PrimitiveArrayComparator<char, CharComparator>
+    public class CharPrimitiveArrayComparator : PrimitiveArrayComparator<char, BasicTypeComparator<char>>
     {
-        public CharPrimitiveArrayComparator(bool @ascending)
+        public static readonly CharPrimitiveArrayComparator Instance = new CharPrimitiveArrayComparator();
+
+        public CharPrimitiveArrayComparator(bool @ascending = true)
             : base(@ascending, new CharComparator(ascending))
         { }
 

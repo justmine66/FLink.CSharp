@@ -1,4 +1,5 @@
 ﻿using System;
+using FLink.Core.Api.Common.Functions;
 using FLink.Core.Api.Common.TypeUtils;
 using FLink.Core.Api.Common.TypeUtils.Base;
 using FLink.Core.Api.Common.TypeUtils.Base.Array;
@@ -12,10 +13,14 @@ namespace FLink.Core.Api.Common.TypeInfos
     /// </summary>
     /// <typeparam name="TElement">The type represented by this type information, e.g., int[], double[], long[]</typeparam>
     public class PrimitiveArrayTypeInfo<TElement> :
-        TypeInformation<TElement[]>, IAtomicType<TElement[]>,
+        TypeInformation<TElement[]>,
+        IAtomicType<TElement[]>,
         IEquatable<PrimitiveArrayTypeInfo<TElement>>
     {
-        private PrimitiveArrayTypeInfo(Type arrayClass, TypeSerializer<TElement[]> serializer, PrimitiveArrayComparator<TElement, BasicTypeComparator<TElement>> comparatorClass)
+        public PrimitiveArrayTypeInfo(
+            Type arrayClass,
+            TypeSerializer<TElement[]> serializer,
+            PrimitiveArrayComparator<TElement, BasicTypeComparator<TElement>> comparatorClass)
         {
             TypeClass = Preconditions.CheckNotNull(arrayClass);
             Serializer = Preconditions.CheckNotNull(serializer);
@@ -61,6 +66,101 @@ namespace FLink.Core.Api.Common.TypeInfos
             if (ReferenceEquals(this, other)) return true;
 
             return Equals(Serializer, other.Serializer) && Equals(ComparatorClass, other.ComparatorClass) && TypeClass == other.TypeClass;
+        }
+    }
+
+    public class PrimitiveArrayTypeInfo
+    {
+        public static readonly PrimitiveArrayTypeInfo<bool> BoolPrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<bool>(
+                typeof(bool),
+                BoolPrimitiveArraySerializer.Instance,
+                BoolPrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<char> CharPrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<char>(
+                typeof(char),
+                CharPrimitiveArraySerializer.Instance,
+                CharPrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<int> IntPrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<int>(
+                typeof(int),
+                IntPrimitiveArraySerializer.Instance,
+                IntPrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<long> LongPrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<long>(
+                typeof(bool),
+                LongPrimitiveArraySerializer.Instance,
+                LongPrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<short> ShortPrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<short>(
+                typeof(bool),
+                ShortPrimitiveArraySerializer.Instance,
+                ShortPrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<float> FloatPrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<float>(
+                typeof(float),
+                FloatPrimitiveArraySerializer.Instance,
+                FloatPrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<double> DoublePrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<double>(
+                typeof(double),
+                DoublePrimitiveArraySerializer.Instance,
+                DoublePrimitiveArrayComparator.Instance);
+        public static readonly PrimitiveArrayTypeInfo<byte> BytePrimitiveArrayTypeInfo =
+            new PrimitiveArrayTypeInfo<byte>(
+                typeof(byte),
+                BytePrimitiveArraySerializer.Instance,
+                BytePrimitiveArrayComparator.Instance);
+
+        public static PrimitiveArrayTypeInfo<T> GetInfoFor<T>(Type type)
+        {
+            if (!type.IsArray)
+            {
+                throw new InvalidTypesException("The given class is no array.");
+            }
+
+            // basic type arrays
+            if (type == typeof(bool))
+            {
+                return BoolPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(int))
+            {
+                return IntPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(long))
+            {
+                return LongPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(short))
+            {
+                return ShortPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(char))
+            {
+                return CharPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(float))
+            {
+                return FloatPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(double))
+            {
+                return DoublePrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            if (type == typeof(byte))
+            {
+                return BytePrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+            }
+
+            return null;
         }
     }
 }

@@ -3,9 +3,11 @@ using System.Linq;
 
 namespace FLink.Core.Api.Common.TypeUtils.Base.Array
 {
-    public class LongPrimitiveArrayComparator : PrimitiveArrayComparator<long, LongComparator>
+    public class LongPrimitiveArrayComparator : PrimitiveArrayComparator<long, BasicTypeComparator<long>>
     {
-        public LongPrimitiveArrayComparator(bool @ascending)
+        public static readonly LongPrimitiveArrayComparator Instance = new LongPrimitiveArrayComparator();
+
+        public LongPrimitiveArrayComparator(bool @ascending = true)
             : base(@ascending, new LongComparator(ascending))
         { }
 

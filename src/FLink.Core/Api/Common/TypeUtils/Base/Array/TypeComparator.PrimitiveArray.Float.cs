@@ -3,9 +3,11 @@ using System.Linq;
 
 namespace FLink.Core.Api.Common.TypeUtils.Base.Array
 {
-    public class FloatPrimitiveArrayComparator : PrimitiveArrayComparator<float, FloatComparator>
+    public class FloatPrimitiveArrayComparator : PrimitiveArrayComparator<float, BasicTypeComparator<float>>
     {
-        public FloatPrimitiveArrayComparator(bool @ascending)
+        public static readonly FloatPrimitiveArrayComparator Instance = new FloatPrimitiveArrayComparator();
+
+        public FloatPrimitiveArrayComparator(bool @ascending = true)
             : base(@ascending, new FloatComparator(ascending))
         { }
 
