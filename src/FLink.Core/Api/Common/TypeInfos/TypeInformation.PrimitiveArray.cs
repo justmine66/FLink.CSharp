@@ -119,7 +119,7 @@ namespace FLink.Core.Api.Common.TypeInfos
         /// <param name="type">The class of the array.</param>
         /// <returns>The corresponding PrimitiveArrayTypeInfo, or null, if the array is not an array of primitives.</returns>
         /// <exception cref="InvalidTypesException">Thrown, if the given class does not represent an array.</exception>
-        public static PrimitiveArrayTypeInfo<T> GetInfoFor<T>(Type type)
+        public static dynamic GetInfoFor(Type type)
         {
             if (!type.IsArray)
             {
@@ -127,44 +127,44 @@ namespace FLink.Core.Api.Common.TypeInfos
             }
 
             // basic type arrays
-            if (type == typeof(bool))
+            if (type == typeof(bool[]))
             {
-                return BoolPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return BoolPrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(int))
+            if (type == typeof(int[]))
             {
-                return IntPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return IntPrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(long))
+            if (type == typeof(long[]))
             {
-                return LongPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return LongPrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(short))
+            if (type == typeof(short[]))
             {
-                return ShortPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return ShortPrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(char))
+            if (type == typeof(char[]))
             {
-                return CharPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return CharPrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(float))
+            if (type == typeof(float[]))
             {
-                return FloatPrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return FloatPrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(double))
+            if (type == typeof(double[]))
             {
-                return DoublePrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return DoublePrimitiveArrayTypeInfo;
             }
 
-            if (type == typeof(byte))
+            if (type == typeof(byte[]))
             {
-                return BytePrimitiveArrayTypeInfo as PrimitiveArrayTypeInfo<T>;
+                return BytePrimitiveArrayTypeInfo;
             }
 
             return null;

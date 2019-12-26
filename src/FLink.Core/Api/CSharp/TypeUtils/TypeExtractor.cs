@@ -326,7 +326,11 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             if (type.IsArray)
             {
                 // primitive arrays: int[], byte[], ...
-                var primitiveArrayInfo = PrimitiveArrayTypeInfo.GetInfoFor<T>(type);
+                var primitiveArrayInfo = PrimitiveArrayTypeInfo.GetInfoFor(type);
+                if (primitiveArrayInfo != null)
+                {
+                    return primitiveArrayInfo;
+                }
             }
 
             return null;
