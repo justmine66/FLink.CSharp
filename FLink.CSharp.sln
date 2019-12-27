@@ -57,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FLink.CSharp", "src\FLink.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserActionsEvaluation", "samples\DataAnalytics\StreamingAnalytics\UserActionsEvaluation\UserActionsEvaluation.csproj", "{E950D436-A2B7-43AD-9F18-023B3D17CEC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTimeDashboard", "samples\DataAnalytics\StreamingAnalytics\RealTimeDashboard\RealTimeDashboard.csproj", "{CCCA8454-9DEA-4FE8-AD0C-7F4E44CC8933}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTimeDashboard", "samples\DataAnalytics\StreamingAnalytics\RealTimeDashboard\RealTimeDashboard.csproj", "{CCCA8454-9DEA-4FE8-AD0C-7F4E44CC8933}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

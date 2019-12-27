@@ -119,7 +119,7 @@ namespace FLink.Core.Api.Common.TypeInfos
         /// <param name="type">The class of the array.</param>
         /// <returns>The corresponding PrimitiveArrayTypeInfo, or null, if the array is not an array of primitives.</returns>
         /// <exception cref="InvalidTypesException">Thrown, if the given class does not represent an array.</exception>
-        public static dynamic GetInfoFor(Type type)
+        public static dynamic GetTypeInfoFor(Type type)
         {
             if (!type.IsArray)
             {

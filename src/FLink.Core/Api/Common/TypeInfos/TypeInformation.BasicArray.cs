@@ -51,7 +51,7 @@ namespace FLink.Core.Api.Common.TypeInfos
     {
         public static readonly BasicArrayTypeInfo<string> StringArrayTypeInfo = new BasicArrayTypeInfo<string>(default, BasicTypeInfo.StringTypeInfo);
 
-        public static dynamic GetInfoFor(Type type)
+        public static dynamic GetTypeInfoFor(Type type)
         {
             if (!type.IsArray)
             {

@@ -96,16 +96,16 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             return null;
         }
 
-        private  TypeInformation<TOutput> CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
+        private TypeInformation<TOutput> CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
             IList<Type> typeHierarchy,
             Type t,
-            TypeInformation<TInput1> in1Type, 
+            TypeInformation<TInput1> in1Type,
             TypeInformation<TInput2> in2Type)
         {
             return null;
         }
 
-        private TypeInformation<TOutput>CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
+        private TypeInformation<TOutput> CreateTypeInfoWithTypeHierarchy<TInput1, TInput2, TOutput>(
             IList<Type> typeHierarchy,
             TypeInformation<TInput1> in1Type,
             TypeInformation<TInput2> in2Type)
@@ -288,7 +288,7 @@ namespace FLink.Core.Api.CSharp.TypeUtils
                 return typeFromFactory;
             }
 
-            // check if we can extract the types from tuples, otherwise work with the class
+            // check if we can extract the types from tuples, otherwise work with the class.
             if (value is ITuple tuple)
             {
                 var numFields = tuple.Length;
@@ -325,8 +325,15 @@ namespace FLink.Core.Api.CSharp.TypeUtils
                 return typeFromFactory;
             }
 
+            // check for basic types
+            var basicTypeInfo = BasicTypeInfo.GetTypeInfoFor<T>(type);
+            if (basicTypeInfo != null)
+            {
+                return basicTypeInfo as TypeInformation<T>;
+            }
+
             // Object is handled as generic type info
-            if (type is object obj)
+            if (type is object)
             {
                 return new GenericTypeInfo<T>(type);
             }
@@ -335,14 +342,14 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             if (type.IsArray)
             {
                 // primitive arrays: int[], byte[], ...
-                var primitiveArrayInfo = PrimitiveArrayTypeInfo.GetInfoFor(type);
+                var primitiveArrayInfo = PrimitiveArrayTypeInfo.GetTypeInfoFor(type);
                 if (primitiveArrayInfo != null)
                 {
                     return primitiveArrayInfo;
                 }
 
                 // basic type arrays: String[]
-                var basicArrayInfo = BasicArrayTypeInfo.GetInfoFor(type);
+                var basicArrayInfo = BasicArrayTypeInfo.GetTypeInfoFor(type);
                 if (basicArrayInfo != null)
                 {
                     return basicArrayInfo;

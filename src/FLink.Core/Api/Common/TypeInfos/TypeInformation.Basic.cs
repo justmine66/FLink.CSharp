@@ -108,5 +108,36 @@ namespace FLink.Core.Api.Common.TypeInfos
             DateTimeComparator.Instance);
 
         public static readonly BasicTypeInfo<decimal> DecimalTypeInfo = new BasicTypeInfo<decimal>(typeof(decimal), new Type[] { }, DecimalSerializer.Instance, DecimalComparator.Instance);
+
+        public static BasicTypeInfo<T> GetTypeInfoFor<T>(Type type)
+        {
+            Preconditions.CheckNotNull(type);
+
+            switch (type.Name)
+            {
+                case "Bool":
+                    return BoolTypeInfo as BasicTypeInfo<T>;
+                case "Int":
+                    return IntTypeInfo as BasicTypeInfo<T>;
+                case "long":
+                    return LongTypeInfo as BasicTypeInfo<T>;
+                case "Short":
+                    return ShortTypeInfo as BasicTypeInfo<T>;
+                case "Char":
+                    return CharTypeInfo as BasicTypeInfo<T>;
+                case "Float":
+                    return FloatTypeInfo as BasicTypeInfo<T>;
+                case "Double":
+                    return DoubleTypeInfo as BasicTypeInfo<T>;
+                case "Byte":
+                    return ByteTypeInfo as BasicTypeInfo<T>;
+                case "DateTime":
+                    return DateTimeTypeInfo as BasicTypeInfo<T>;
+                case "String":
+                    return StringTypeInfo as BasicTypeInfo<T>;
+                default:
+                    return null;
+            }
+        }
     }
 }
