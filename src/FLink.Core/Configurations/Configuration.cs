@@ -51,6 +51,11 @@ namespace FLink.Core.Configurations
             throw new NotImplementedException();
         }
 
+        public long GetLong(ConfigOption<long> configOption)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Write(IDataOutputView output)
         {
             throw new NotImplementedException();

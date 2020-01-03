@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Operators\" />
-    <Folder Include="JobManagers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\FLink.Core\FLink.Core.csproj" />
   </ItemGroup>
 

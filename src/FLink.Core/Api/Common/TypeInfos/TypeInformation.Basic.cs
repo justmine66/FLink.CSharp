@@ -109,7 +109,7 @@ namespace FLink.Core.Api.Common.TypeInfos
 
         public static readonly BasicTypeInfo<decimal> DecimalTypeInfo = new BasicTypeInfo<decimal>(typeof(decimal), new Type[] { }, DecimalSerializer.Instance, DecimalComparator.Instance);
 
-        public static BasicTypeInfo<T> GetTypeInfoFor<T>(Type type)
+        public static BasicTypeInfo<T> GetTypeInfoFor<T>(Type type) 
         {
             Preconditions.CheckNotNull(type);
 

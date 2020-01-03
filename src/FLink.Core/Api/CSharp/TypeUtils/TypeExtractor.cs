@@ -329,7 +329,7 @@ namespace FLink.Core.Api.CSharp.TypeUtils
             var basicTypeInfo = BasicTypeInfo.GetTypeInfoFor<T>(type);
             if (basicTypeInfo != null)
             {
-                return basicTypeInfo as TypeInformation<T>;
+                return basicTypeInfo;
             }
 
             // Object is handled as generic type info
